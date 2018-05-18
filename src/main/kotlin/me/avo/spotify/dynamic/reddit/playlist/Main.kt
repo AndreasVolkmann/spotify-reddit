@@ -9,10 +9,11 @@ import java.util.*
 fun main(args: Array<String>) {
 
     val spotifyService: SpotifyService = kodein.instance()
-    spotifyService.getRedirectUri().let(::println)
+    val uri = spotifyService.getRedirectUri().toString().also(::println)
 
-    prepareServer(kodein).start(wait = true)
+    val server = prepareServer(kodein).start(wait = false)
 
+    //runClient(uri, server)
 }
 
 object Main

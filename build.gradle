@@ -29,6 +29,9 @@ dependencies {
 
     compile group: "io.ktor", name: "ktor-server-core", version: ktor_version
     compile group: "io.ktor", name: "ktor-server-netty", version: ktor_version
+    compile "io.ktor:ktor-client-core:$ktor_version"
+    //compile "io.ktor:ktor-client-cio:$ktor_version"
+    compile "io.ktor:ktor-client-apache:$ktor_version"
 
     compile group: "org.slf4j", name: "slf4j-simple", version: "1.7.25"
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
