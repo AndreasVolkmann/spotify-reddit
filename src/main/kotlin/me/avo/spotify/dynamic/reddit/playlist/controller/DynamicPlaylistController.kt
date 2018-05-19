@@ -5,6 +5,7 @@ import me.avo.spotify.dynamic.reddit.playlist.config.kodein
 import me.avo.spotify.dynamic.reddit.playlist.model.Playlist
 import me.avo.spotify.dynamic.reddit.playlist.server.prepareServer
 import me.avo.spotify.dynamic.reddit.playlist.service.RedditService
+import me.avo.spotify.dynamic.reddit.playlist.service.RedditServiceImpl
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyAuthService
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyService
 import me.avo.spotify.dynamic.reddit.playlist.util.YamlConfigReader
@@ -46,30 +47,17 @@ class DynamicPlaylistController(
 
         val foundTracks = mutableListOf<Track>()
 
-        val tracks = redditService.getTracks(playlist)
-        spotifyService
-            .findTracks(tracks)
+        while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
+            .getTracks(playlist)
+            .let(spotifyService::findTracks)
+            .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }
-        /*
-        when (redditService) {
-            is RedditServiceAccurateImpl -> while (foundTracks.size < playlist.maxSize && !redditService.done) {
-                val tracks = redditService.getTracks(playlist).onEach(::println)
-                logger.info("Pre lookup: ${tracks.size} tracks")
-                //tracks.mapNotNull(RedditTrack::flair).distinct().let(::println)
-                spotifyService
-                    .findTracks(tracks)
-                    .mapTo(foundTracks) { it }
-                    .also { redditService.update(it.size) }
-            }
-            else -> {
+            .also { Thread.sleep(250) }
 
-            }
-        }
-*/
         spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id)
     }
 
-    private val timeout = 3L
+    private val timeout = 2L
     private val logger = LoggerFactory.getLogger(this::class.java)
 
 }

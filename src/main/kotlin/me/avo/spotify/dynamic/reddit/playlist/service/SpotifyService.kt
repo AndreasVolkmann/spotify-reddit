@@ -31,13 +31,13 @@ class SpotifyService(
         .onEach { Thread.sleep(250) }
 
     private fun SpotifyApi.findTrack(track: RedditTrack): Pair<RedditTrack, Array<Track>> {
-        val query = listOf(track.artist, track.title, track.mix).joinToString(" ")
-        logger.info("Searching for $query")
+        val query = listOf(track.artist, track.title, track.mix ?: "").joinToString(" ")
+        logger.debug("Searching for $query")
         val results = searchTracks(query).limit(10).offset(0).build().execute()
         val items = results.items
         items.firstOrNull()
             .let { "Found ${results.total} results. " + if (it != null) "Top 1: ${it.artists.joinToString { it.name }} ${it.name}" else "" }
-            .let(::println)
+            .let { if (results.total == 0) logger.debug(it) else logger.info(it) }
         return track to items
     }
 
@@ -56,7 +56,8 @@ class SpotifyService(
                 logger.info("${willBeAddedAgain.size} tracks are already in the playlist, ${willBeRemoved.size} tracks will be removed")
                 val jsonTracks = willBeRemoved.map { jsonObject("uri" to it.uri) }.toJsonArray()
                 removeTracksFromPlaylist(userId, playlistId, jsonTracks).build().execute()
-                tracksToAdd.filter(willBeAddedAgain::contains)
+                val againIds = willBeAddedAgain.map { it.id }
+                tracksToAdd.filterNot { againIds.contains(it.id) }
             }
         }
     }

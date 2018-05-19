@@ -7,4 +7,8 @@ interface RedditService {
 
     fun getTracks(playlist: Playlist): List<RedditTrack>
 
+    fun update(amountTaken: Int)
+
+    val isDone: Boolean
+
 }
