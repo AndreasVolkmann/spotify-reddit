@@ -1,11 +1,10 @@
 package me.avo.spotify.dynamic.reddit.playlist.config
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
+import com.github.salomonbrys.kodein.*
 import me.avo.spotify.dynamic.reddit.playlist.controller.DynamicPlaylistController
+import me.avo.spotify.dynamic.reddit.playlist.model.Playlist
 import me.avo.spotify.dynamic.reddit.playlist.service.RedditService
+import me.avo.spotify.dynamic.reddit.playlist.service.RedditServiceImpl
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyAuthService
 import java.util.*
 
@@ -16,7 +15,12 @@ val kodein = Kodein {
 
     fun getProperty(key: String) = props.getProperty(key)
 
-    bind<DynamicPlaylistController>() with singleton { DynamicPlaylistController(instance(), instance()) }
+    bind<DynamicPlaylistController>() with singleton {
+        DynamicPlaylistController(
+            spotifyAuthService = instance(),
+            redditServiceFactory = factory()
+        )
+    }
 
     bind<SpotifyAuthService>() with singleton {
         SpotifyAuthService(
@@ -26,11 +30,12 @@ val kodein = Kodein {
         )
     }
 
-    bind<RedditService>() with singleton {
-        RedditService(
+    bind<RedditService>() with factory { playlist: Playlist ->
+        RedditServiceImpl(
             clientId = getProperty("reddit-clientId"),
             clientSecret = getProperty("reddit-clientSecret"),
             deviceName = getProperty("deviceName")
+            //playlist = playlist
         )
     }
 

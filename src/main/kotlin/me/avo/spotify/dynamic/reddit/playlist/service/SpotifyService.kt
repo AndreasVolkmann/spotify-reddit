@@ -11,17 +11,20 @@ class SpotifyService(
     private val authService: SpotifyAuthService
 ) {
 
-    fun updatePlaylist(tracks: List<RedditTrack>, userId: String, playlistId: String) {
+    fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String) {
         logger.info("Updating Playlist")
+        logger.info("Found ${tracks.size} tracks")
+
         val api = buildSpotifyApi(authService.accesstoken)
 
-        api.searchForTracks(tracks)
-            .mapNotNull { (_, results) -> results.firstOrNull() } // TODO how to select from multiple results?
-            .also { logger.info("Found ${it.size} tracks") }
-            .let { api.clearPlaylist(it, userId, playlistId) }
+        api.clearPlaylist(tracks, userId, playlistId)
             .also { logger.info("Adding ${it.size} tracks to the playlist") }
             .let { api.addTracks(it, userId, playlistId) }
     }
+
+    fun findTracks(tracks: List<RedditTrack>): List<Track> = buildSpotifyApi(authService.accesstoken)
+        .searchForTracks(tracks)
+        .mapNotNull { (_, results) -> results.firstOrNull() } // TODO how to select from multiple results?
 
     private fun SpotifyApi.searchForTracks(tracks: List<RedditTrack>): List<Pair<RedditTrack, Array<Track>>> = tracks
         .map { findTrack(it) }

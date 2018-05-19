@@ -23,18 +23,16 @@ internal class YamlConfigReaderTest {
                     maxSize = 20,
                     subreddit = "subred",
                     userId = userId,
-                    postFilters = listOf(
-                        PostFilter(SubredditSort.TOP, TimePeriod.WEEK, 10)
-                    )
+                    sort = SubredditSort.TOP,
+                    timePeriod = TimePeriod.WEEK
                 ),
                 Playlist(
                     id = "someplid2",
                     maxSize = 30,
                     subreddit = "othersub",
                     userId = userId,
-                    postFilters = listOf(
-                        PostFilter(SubredditSort.TOP, TimePeriod.ALL, 10)
-                    )
+                    sort = SubredditSort.TOP,
+                    timePeriod = TimePeriod.ALL
                 )
             )
         )

@@ -1,17 +1,14 @@
 userId: 110022034
 
 playlists:
-  - playlistId: someplid1
+  - id: someplid1
     maxSize: 20
     subreddit: subred
-    postFilters:
-      - sort: TOP
-        timePeriod: WEEK
-        limit: 10
-  - playlistId: someplid2
+    sort: TOP
+    timePeriod: WEEK
+  - id: someplid2
     maxSize: 30
     subreddit: othersub
-    postFilters:
-      - sort: TOP
-        timePeriod: ALL
-        limit: 10
+    sort: TOP
+    timePeriod: ALL
+

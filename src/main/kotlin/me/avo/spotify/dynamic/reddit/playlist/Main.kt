@@ -10,5 +10,5 @@ fun main(args: Array<String>) {
     if (arguments.help) return
 
     val dynamicPlaylistController: DynamicPlaylistController = kodein.instance()
-    dynamicPlaylistController.updateDynamicPlaylist(arguments.configPath)
+    dynamicPlaylistController.updatePlaylists(arguments.configPath)
 }

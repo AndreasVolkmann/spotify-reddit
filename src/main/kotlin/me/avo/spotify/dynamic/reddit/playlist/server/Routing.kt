@@ -35,8 +35,8 @@ fun Routing.setup(kodein: Kodein) {
             when {
                 code.isNullOrBlank() -> throw StatusException(HttpStatusCode.BadRequest, "Invalid code supplied")
                 else -> {
-                    call.respond(FreeMarkerContent("auth.ftl", null, "e"))
                     spotifyAuthService.grantAccess(code)
+                    call.respond(FreeMarkerContent("auth.ftl", null, "e"))
                 }
             }
         }
