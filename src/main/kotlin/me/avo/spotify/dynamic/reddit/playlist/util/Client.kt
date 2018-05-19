@@ -1,4 +1,4 @@
-package me.avo.spotify.dynamic.reddit.playlist
+package me.avo.spotify.dynamic.reddit.playlist.util
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.call

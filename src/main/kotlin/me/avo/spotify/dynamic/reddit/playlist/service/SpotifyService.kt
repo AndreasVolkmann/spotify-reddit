@@ -3,58 +3,24 @@ package me.avo.spotify.dynamic.reddit.playlist.service
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
 import com.wrapper.spotify.SpotifyApi
-import com.wrapper.spotify.SpotifyHttpManager
-import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spotify.dynamic.reddit.playlist.model.RedditTrack
 import org.slf4j.LoggerFactory
-import java.net.URI
 
 class SpotifyService(
-    private val clientId: String,
-    private val clientSecret: String,
-    private val redirectUri: String,
-    private val userId: String,
-    private val playlistId: String
+    private val authService: SpotifyAuthService
 ) {
 
-    private lateinit var accesstoken: String
-
-    fun grantAccess(authCode: String?) {
-        val accesstoken = when {
-            ::accesstoken.isInitialized -> accesstoken
-            authCode != null -> getAccessToken(authCode).apply {
-                logger.debug("Access token expires in $expiresIn seconds")
-                logger.debug("Access scope: $scope")
-            }.accessToken
-            else -> throw IllegalStateException("Access Token is not yet initialized")
-        }
-        this.accesstoken = accesstoken
-
-        buildSpotifyApi(accesstoken).run {
-            val playlist = getPlaylist(userId, playlistId).build().execute()
-            //val tracks = getPlaylistsTracks(userId, playlistId).build().execute()
-            logger.info(playlist.name)
-            logger.info("Playlist contains ${playlist.tracks.total} tracks")
-        }
-    }
-
-    fun getRedirectUri(): URI = buildClientApi()
-        .authorizationCodeUri()
-        .scope("playlist-modify-public,playlist-read-collaborative,playlist-read-private") // comma separated String
-        .build()
-        .execute()
-
-    fun updatePlaylist(tracks: List<RedditTrack>) {
+    fun updatePlaylist(tracks: List<RedditTrack>, userId: String, playlistId: String) {
         logger.info("Updating Playlist")
-        val api = buildSpotifyApi(accesstoken)
+        val api = buildSpotifyApi(authService.accesstoken)
 
-        val results = api.searchForTracks(tracks)
-
-        api.clearPlaylist()
-
-        val tracksToAdd = results.mapNotNull { (redditTrack, results) -> results.firstOrNull() }
-        api.addTracks(tracksToAdd)
+        api.searchForTracks(tracks)
+            .mapNotNull { (_, results) -> results.firstOrNull() } // TODO how to select from multiple results?
+            .also { logger.info("Found ${it.size} tracks") }
+            .let { api.clearPlaylist(it, userId, playlistId) }
+            .also { logger.info("Adding ${it.size} tracks to the playlist") }
+            .let { api.addTracks(it, userId, playlistId) }
     }
 
     private fun SpotifyApi.searchForTracks(tracks: List<RedditTrack>): List<Pair<RedditTrack, Array<Track>>> = tracks
@@ -72,27 +38,33 @@ class SpotifyService(
         return track to items
     }
 
-    private fun SpotifyApi.clearPlaylist() {
+    private fun SpotifyApi.clearPlaylist(tracksToAdd: List<Track>, userId: String, playlistId: String): List<Track> {
         logger.info("Clearing Playlist")
-        val tracksToRemove = getPlaylistsTracks(userId, playlistId).build().execute().items
-            .map { it.track.uri }
-            .map { jsonObject("uri" to it) }
-            .toJsonArray()
-        removeTracksFromPlaylist(userId, playlistId, tracksToRemove).build().execute()
+        val idsToAdd = tracksToAdd.map { it.id }
+        val tracksInPlaylist = getPlaylistsTracks(userId, playlistId).build().execute().items.map { it.track }
+
+        return when {
+            tracksInPlaylist.isEmpty() -> {
+                logger.info("The playlist is currently empty, all found tracks will be added")
+                tracksToAdd
+            }
+            else -> {
+                val (willBeAddedAgain, willBeRemoved) = tracksInPlaylist.partition { idsToAdd.contains(it.id) }
+                logger.info("${willBeAddedAgain.size} tracks are already in the playlist, ${willBeRemoved.size} tracks will be removed")
+                val jsonTracks = willBeRemoved.map { jsonObject("uri" to it.uri) }.toJsonArray()
+                removeTracksFromPlaylist(userId, playlistId, jsonTracks).build().execute()
+                tracksToAdd.filter(willBeAddedAgain::contains)
+            }
+        }
     }
 
-    private fun SpotifyApi.addTracks(tracks: Collection<Track>) {
+    private fun SpotifyApi.addTracks(tracks: Collection<Track>, userId: String, playlistId: String) {
+        if (tracks.isEmpty()) {
+            logger.warn("Did not find any tracks to add")
+            return
+        }
         addTracksToPlaylist(userId, playlistId, tracks.map { it.uri }.toTypedArray()).build().execute()
     }
-
-    private fun getAccessToken(code: String): AuthorizationCodeCredentials =
-        buildClientApi().authorizationCode(code).build().execute()
-
-    private fun buildClientApi(): SpotifyApi = SpotifyApi.Builder()
-        .setClientId(clientId)
-        .setClientSecret(clientSecret)
-        .setRedirectUri(SpotifyHttpManager.makeUri(redirectUri))
-        .build()!!
 
     private fun buildSpotifyApi(accesstoken: String): SpotifyApi = SpotifyApi.Builder()
         .setAccessToken(accesstoken)

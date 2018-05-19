@@ -1,5 +1,6 @@
 package me.avo.spotify.dynamic.reddit.playlist.service
 
+import me.avo.spotify.dynamic.reddit.playlist.model.Playlist
 import me.avo.spotify.dynamic.reddit.playlist.model.RedditTrack
 import net.dean.jraw.http.OkHttpNetworkAdapter
 import net.dean.jraw.http.UserAgent
@@ -8,7 +9,6 @@ import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import net.dean.jraw.oauth.Credentials
 import net.dean.jraw.oauth.OAuthHelper
-import net.dean.jraw.pagination.DefaultPaginator
 import net.dean.jraw.references.SubredditReference
 import java.util.*
 
@@ -18,26 +18,28 @@ class RedditService(
     private val deviceName: String
 ) {
 
-    fun getTracks(): List<RedditTrack> {
+    fun getTracks(playlist: Playlist): List<RedditTrack> {
         val userAgent = UserAgent("bot", "me.avo.spotify.dynamic.reddit.playlist", "v0.1", "idajuul")
         val credentials = Credentials.userless(clientId, clientSecret, UUID.fromString(deviceName))
         val adapter = OkHttpNetworkAdapter(userAgent)
         val reddit = OAuthHelper.automatic(adapter, credentials)
-        val subreddit = reddit.subreddit("trance")
+        val subreddit = reddit.subreddit(playlist.subreddit)
 
         val validPosts = mutableListOf<Submission>()
 
-        val postsAllTime = subreddit.getTopPosts()
-        val postsRecent = subreddit.getLatestPosts()
+        playlist.postFilters.forEach {
+            var postsAdded = 0
+            val posts = subreddit.getTracks(it.sort, it.timePeriod)
 
-        while (validPosts.size < max) {
-            val page = postsRecent.next()
-            if (page.isEmpty()) break
-            page
-                .filterNot { it.isSelfPost }
-                .filterNot { it.linkFlairText in flairsToExclude }
-                //.filter { it.linkFlairText == null }
-                .mapTo(validPosts) { it }
+            while (validPosts.size < playlist.maxSize && postsAdded < it.limit) {
+                val page = posts.next()
+                if (page.isEmpty()) break
+                page
+                    .filterNot { it.isSelfPost }
+                    .filterNot { it.linkFlairText in flairsToExclude }
+                    .mapTo(validPosts) { it }
+                    .also { postsAdded += it.size }
+            }
         }
 
         return validPosts.map {
@@ -55,18 +57,12 @@ class RedditService(
         }
     }
 
-    private fun SubredditReference.getTopPosts(): DefaultPaginator<Submission> =
-        getTracks(SubredditSort.TOP, TimePeriod.ALL, limit)
-
-    private fun SubredditReference.getLatestPosts() = getTracks(SubredditSort.TOP, TimePeriod.WEEK, limit)
-
-    private fun SubredditReference.getTracks(sort: SubredditSort, timePeriod: TimePeriod, limit: Int) = posts()
+    private fun SubredditReference.getTracks(sort: SubredditSort, timePeriod: TimePeriod) = posts()
         .sorting(sort)
         .limit(limit)
         .timePeriod(timePeriod)
         .build()
 
-    private val max = 20
     private val limit = 50
 
     private val flairsToExclude = listOf("Mix", "Liveset", "Radio Show", "Album", "Upcoming AMA", "Concluded", "RIP")

@@ -1,5 +1,5 @@
 # spotify-reddit
-Update Spotify playlists dynamically based on a subreddit
+Update Spotify configuration dynamically based on a subreddit
 
 ### Reference
 * [Reddit API](https://www.reddit.com/dev/api/)

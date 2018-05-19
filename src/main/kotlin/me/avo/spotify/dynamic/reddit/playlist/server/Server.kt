@@ -1,28 +1,29 @@
 package me.avo.spotify.dynamic.reddit.playlist.server
 
 import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.instance
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.StatusPages
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.freemarker.FreeMarker
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.route
 import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyService
+import me.avo.spotify.dynamic.reddit.playlist.config.Dependency
 import org.slf4j.event.Level
 
 fun prepareServer(kodein: Kodein) = embeddedServer(Netty, 5000) {
 
     install(Routing) {
         setup(kodein)
+    }
+
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(Dependency::class.java.classLoader, "templates")
     }
 
     install(ShutDownUrl.ApplicationCallFeature) {
