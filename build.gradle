@@ -2,6 +2,8 @@ buildscript {
     ext {
         kotlin_version = '1.2.41'
         ktor_version = '0.9.2'
+        spotify_api_vesrion = '2.0.2'
+        jrawVersion = '1.0.0'
     }
 
     repositories {
@@ -25,7 +27,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'se.michaelthelin.spotify:spotify-web-api-java:2.0.2'
+    compile "se.michaelthelin.spotify:spotify-web-api-java:$spotify_api_vesrion"
+    implementation "net.dean.jraw:JRAW:$jrawVersion"
 
     compile group: "io.ktor", name: "ktor-server-core", version: ktor_version
     compile group: "io.ktor", name: "ktor-server-netty", version: ktor_version
@@ -35,6 +38,7 @@ dependencies {
 
     compile group: "org.slf4j", name: "slf4j-simple", version: "1.7.25"
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
+    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
     testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.38'

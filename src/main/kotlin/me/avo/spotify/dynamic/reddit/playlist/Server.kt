@@ -13,6 +13,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyService
 import org.slf4j.event.Level
 
 fun prepareServer(kodein: Kodein) = embeddedServer(Netty, 5000) {
@@ -31,12 +32,12 @@ fun prepareServer(kodein: Kodein) = embeddedServer(Netty, 5000) {
                 else -> call.respondText("")
             }
 
-            spotifyService.updatePlaylist(code)
+            spotifyService.grantAccess(code)
 
         }
 
         get("update") {
-            spotifyService.updatePlaylist(null)
+            spotifyService.grantAccess(null)
             call.respondText("Success")
         }
 
