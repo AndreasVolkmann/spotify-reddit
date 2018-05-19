@@ -19,6 +19,18 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'spotify-dynamic-reddit-playlist',
+                'Implementation-Version': version,
+                'Main-Class': 'me.avo.spotify.dynamic.reddit.playlist.MainKt'
+    }
+    baseName = project.name
+    from { configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    with jar
+}
+
 repositories {
     mavenCentral()
     maven { url "http://dl.bintray.com/kotlin/ktor" }

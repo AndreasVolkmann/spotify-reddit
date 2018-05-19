@@ -2,7 +2,9 @@ package me.avo.spotify.dynamic.reddit.playlist
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
+import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
+import me.avo.spotify.dynamic.reddit.playlist.controller.DynamicPlaylistController
 import me.avo.spotify.dynamic.reddit.playlist.service.RedditService
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyService
 import java.util.*
@@ -13,6 +15,8 @@ val kodein = Kodein {
     }
 
     fun getProperty(key: String) = props.getProperty(key)
+
+    bind<DynamicPlaylistController>() with singleton { DynamicPlaylistController(instance(), instance()) }
 
     bind<SpotifyService>() with singleton {
         SpotifyService(
@@ -34,4 +38,4 @@ val kodein = Kodein {
 
 }
 
-object Dependency
+private object Dependency
