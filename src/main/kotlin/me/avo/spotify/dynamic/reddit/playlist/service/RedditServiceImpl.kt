@@ -17,7 +17,8 @@ import java.util.*
 class RedditServiceImpl(
     clientId: String,
     clientSecret: String,
-    deviceName: String
+    deviceName: String,
+    private val playlist: Playlist
 ) : RedditService {
 
     private val reddit by lazy {
@@ -34,11 +35,10 @@ class RedditServiceImpl(
     override var isDone = false
         private set
 
-    override fun getTracks(playlist: Playlist): List<RedditTrack> {
-
+    override fun getTracks(): List<RedditTrack> {
         val validPosts = mutableListOf<Submission>()
 
-        initializePaginator(playlist)
+        initializePaginator()
 
         while (currentSize + validPosts.size < playlist.maxSize) {
             val page = paginator.next()
@@ -84,7 +84,7 @@ class RedditServiceImpl(
         currentSize += amountTaken
     }
 
-    private fun initializePaginator(playlist: Playlist) {
+    private fun initializePaginator() {
         if (!::paginator.isInitialized) {
             val subreddit = reddit.subreddit(playlist.subreddit)
             paginator = subreddit.getTracks(playlist.sort, playlist.timePeriod)
@@ -111,11 +111,13 @@ class RedditServiceImpl(
         .map(MatchResult::value)
         .toList()
 
-    private val prefixChars = listOf("(", "[")
-    private val suffixChars = listOf(")", "]")
+    private val prefixSuffixChars = listOf(
+        "(" to ")",
+        "[" to "]"
+    )
 
-    private fun String.removePrefixSuffix() = prefixChars.fold(this) { acc, s -> acc.removePrefix(s) }
-        .let { suffixChars.fold(it) { acc, s -> acc.removeSuffix(s) } }
+    private fun String.removePrefixSuffix(): String =
+        prefixSuffixChars.fold(this) { acc, (prefix, suffix) -> acc.removeSurrounding(prefix, suffix) }
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

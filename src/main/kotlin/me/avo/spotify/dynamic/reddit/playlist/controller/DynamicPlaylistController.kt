@@ -48,7 +48,7 @@ class DynamicPlaylistController(
         val foundTracks = mutableListOf<Track>()
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
-            .getTracks(playlist)
+            .getTracks()
             .let(spotifyService::findTracks)
             .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }

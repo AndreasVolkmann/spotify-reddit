@@ -4,7 +4,6 @@ buildscript {
         ktor_version = '0.9.2'
         spotify_api_vesrion = '2.0.2'
         jrawVersion = '1.0.0'
-        exposedVersion = '0.10.2'
     }
 
     repositories {
@@ -35,7 +34,6 @@ task fatJar(type: Jar) {
 repositories {
     mavenCentral()
     maven { url "http://dl.bintray.com/kotlin/ktor" }
-    maven { url "http://dl.bintray.com/kotlin/exposed" }
     jcenter()
 }
 
@@ -52,10 +50,6 @@ dependencies {
     compile "io.ktor:ktor-client-core:$ktor_version"
     compile "io.ktor:ktor-client-apache:$ktor_version"
     compile "io.ktor:ktor-freemarker:$ktor_version"
-
-    /* Database */
-    compile "org.jetbrains.exposed:exposed:$exposedVersion"
-    runtime 'org.xerial:sqlite-jdbc:3.21.0.1'
 
     /* Util */
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'

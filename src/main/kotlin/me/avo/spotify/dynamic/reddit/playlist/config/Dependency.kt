@@ -34,8 +34,8 @@ val kodein = Kodein {
         RedditServiceImpl(
             clientId = getProperty("reddit-clientId"),
             clientSecret = getProperty("reddit-clientSecret"),
-            deviceName = getProperty("deviceName")
-            //playlist = playlist
+            deviceName = getProperty("deviceName"),
+            playlist = playlist
         )
     }
 
