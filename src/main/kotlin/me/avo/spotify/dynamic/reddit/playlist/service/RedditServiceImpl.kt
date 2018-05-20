@@ -49,7 +49,7 @@ class RedditServiceImpl(
             }
             page
                 .filterNot { it.isSelfPost }
-                .filterNot { it.linkFlairText in flairsToExclude }
+                .filterNot { it.linkFlairText in flairsToExclude } // TODO make dynamic
                 .mapTo(validPosts) { it }
         }
 

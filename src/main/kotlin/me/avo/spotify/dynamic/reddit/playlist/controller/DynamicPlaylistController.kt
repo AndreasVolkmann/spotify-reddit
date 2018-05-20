@@ -5,9 +5,9 @@ import me.avo.spotify.dynamic.reddit.playlist.config.kodein
 import me.avo.spotify.dynamic.reddit.playlist.model.Playlist
 import me.avo.spotify.dynamic.reddit.playlist.server.prepareServer
 import me.avo.spotify.dynamic.reddit.playlist.service.RedditService
-import me.avo.spotify.dynamic.reddit.playlist.service.RedditServiceImpl
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyAuthService
 import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyService
+import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyServiceImpl
 import me.avo.spotify.dynamic.reddit.playlist.util.YamlConfigReader
 import me.avo.spotify.dynamic.reddit.playlist.util.openUrlInBrowser
 import org.slf4j.LoggerFactory
@@ -16,10 +16,9 @@ import java.util.concurrent.TimeUnit
 
 class DynamicPlaylistController(
     private val spotifyAuthService: SpotifyAuthService,
+    private val spotifyService: SpotifyService,
     private val redditServiceFactory: (Playlist) -> RedditService
 ) {
-
-    private val spotifyService = SpotifyService(spotifyAuthService)
 
     fun updatePlaylists(configPath: String) {
         val configuration = YamlConfigReader.read(File(configPath).readText())

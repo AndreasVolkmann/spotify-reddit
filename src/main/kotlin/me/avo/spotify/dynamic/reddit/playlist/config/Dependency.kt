@@ -3,9 +3,7 @@ package me.avo.spotify.dynamic.reddit.playlist.config
 import com.github.salomonbrys.kodein.*
 import me.avo.spotify.dynamic.reddit.playlist.controller.DynamicPlaylistController
 import me.avo.spotify.dynamic.reddit.playlist.model.Playlist
-import me.avo.spotify.dynamic.reddit.playlist.service.RedditService
-import me.avo.spotify.dynamic.reddit.playlist.service.RedditServiceImpl
-import me.avo.spotify.dynamic.reddit.playlist.service.SpotifyAuthService
+import me.avo.spotify.dynamic.reddit.playlist.service.*
 import java.util.*
 
 val kodein = Kodein {
@@ -18,8 +16,13 @@ val kodein = Kodein {
     bind<DynamicPlaylistController>() with singleton {
         DynamicPlaylistController(
             spotifyAuthService = instance(),
+            spotifyService = instance(),
             redditServiceFactory = factory()
         )
+    }
+
+    bind<SpotifyService>() with singleton {
+        SpotifyServiceImpl(authService = instance())
     }
 
     bind<SpotifyAuthService>() with singleton {

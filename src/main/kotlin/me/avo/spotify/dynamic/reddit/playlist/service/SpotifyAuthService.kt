@@ -11,7 +11,7 @@ class SpotifyAuthService(
     private val redirectUri: String
 ) {
 
-    lateinit var accesstoken: String
+    private lateinit var accesstoken: String
 
     fun grantAccess(authCode: String?) {
         val accesstoken = when {
@@ -27,6 +27,12 @@ class SpotifyAuthService(
         .scope("playlist-modify-public,playlist-read-collaborative,playlist-read-private") // comma separated String
         .build()
         .execute()
+
+    fun getSpotifyApi() = buildSpotifyApi(accesstoken)
+
+    private fun buildSpotifyApi(accesstoken: String): SpotifyApi = SpotifyApi.Builder()
+        .setAccessToken(accesstoken)
+        .build()
 
     private fun buildClientApi(): SpotifyApi = SpotifyApi.Builder()
         .setClientId(clientId)
