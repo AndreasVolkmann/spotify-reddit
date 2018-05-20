@@ -1,4 +1,6 @@
-# Spotify Reddit
+# Spotify + Reddit = Spottit
+![Spottit Logo](/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
+
 Dynamic Spotify playlists, based on Reddit.
   
 Easily set up your own subreddit playlist. 
