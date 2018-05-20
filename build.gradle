@@ -58,7 +58,7 @@ dependencies {
     runtime 'org.xerial:sqlite-jdbc:3.21.0.1'
 
     /* Util */
-    runtime group: "org.slf4j", name: "slf4j-simple", version: "1.7.25"
+    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile 'org.yaml:snakeyaml:1.21'

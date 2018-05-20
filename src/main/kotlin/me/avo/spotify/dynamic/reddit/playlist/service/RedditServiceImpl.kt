@@ -20,10 +20,12 @@ class RedditServiceImpl(
     deviceName: String
 ) : RedditService {
 
-    private val userAgent = UserAgent("bot", "me.avo.spotify.dynamic.reddit.playlist", "v0.1", "idajuul")
-    private val credentials = Credentials.userless(clientId, clientSecret, UUID.fromString(deviceName))
-    private val adapter = OkHttpNetworkAdapter(userAgent)
-    private val reddit = OAuthHelper.automatic(adapter, credentials)
+    private val reddit by lazy {
+        val userAgent = UserAgent("bot", "me.avo.spotify.dynamic.reddit.playlist", "v0.1", "idajuul")
+        val adapter = OkHttpNetworkAdapter(userAgent)
+        val credentials = Credentials.userless(clientId, clientSecret, UUID.fromString(deviceName))
+        OAuthHelper.automatic(adapter, credentials)
+    }
 
     private lateinit var paginator: Paginator<Submission>
 
@@ -55,19 +57,21 @@ class RedditServiceImpl(
             stop()
         }
 
-        return validPosts.map {
-            val fixedTitle = it.title.fixChars()
-            val extraInformation = fixedTitle.getExtraInformation()
-            val mix = fixedTitle.getMix()
-            val fullTitle = (extraInformation + mix).fold(fixedTitle) { acc, s -> acc.replace(s, "").trim() }
-            RedditTrack(
-                artist = fullTitle.substringBefore("-").trim(),
-                title = fullTitle.substringAfter("-").trim(),
-                mix = mix.firstOrNull()?.removePrefixSuffix(),
-                extraInformation = (extraInformation + mix.drop(1)).map { it.removePrefixSuffix() },
-                flair = it.linkFlairText
-            )
-        }
+        return validPosts.map(::submissionToRedditTrack)
+    }
+
+    private fun submissionToRedditTrack(submission: Submission): RedditTrack {
+        val fixedTitle = submission.title.fixChars()
+        val extraInformation = fixedTitle.getExtraInformation()
+        val mix = fixedTitle.getMix()
+        val fullTitle = (extraInformation + mix).fold(fixedTitle) { acc, s -> acc.replace(s, "").trim() }
+        return RedditTrack(
+            artist = fullTitle.substringBefore("-").trim(),
+            title = fullTitle.substringAfter("-").trim(),
+            mix = mix.firstOrNull()?.removePrefixSuffix(),
+            extraInformation = (extraInformation + mix.drop(1)).map { it.removePrefixSuffix() },
+            flair = submission.linkFlairText
+        )
     }
 
     private fun stop() {
@@ -83,11 +87,11 @@ class RedditServiceImpl(
     private fun initializePaginator(playlist: Playlist) {
         if (!::paginator.isInitialized) {
             val subreddit = reddit.subreddit(playlist.subreddit)
-            paginator = subreddit.getTracks(playlist.sort, playlist.timePeriod, playlist.maxSize)
+            paginator = subreddit.getTracks(playlist.sort, playlist.timePeriod)
         }
     }
 
-    private fun SubredditReference.getTracks(sort: SubredditSort, timePeriod: TimePeriod, limit: Int) = posts()
+    private fun SubredditReference.getTracks(sort: SubredditSort, timePeriod: TimePeriod) = posts()
         .sorting(sort)
         .timePeriod(timePeriod)
         .build()

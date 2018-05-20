@@ -1,0 +1,27 @@
+#Spotify user ID
+userId: YOUR_USER_ID
+
+# Add an entry for each playlist you want to update
+playlists:
+    # First Playlist, based on the top tracks from last week
+  - id: YOUR_PLAYLIST_ID
+
+    # How many tracks should the list contain at max?
+    maxSize: 10
+
+    # What subreddit do you want to target?
+    subreddit: trance
+
+    # can be either of: HOT, NEW, RISING, CONTROVERSIAL, TOP
+    sort: TOP
+
+    # can be either of: HOUR, DAY, WEEK, MONTH, YEAR, ALL
+    # Only applies when sort is set to CONTROVERSIAL or TOP
+    timePeriod: WEEK
+
+    # Second Playlist, based on the top tracks from all time
+  - id: YOUR_OTHER_PLAYLIST_ID
+    maxSize: 10
+    subreddit: trance
+    sort: TOP
+    timePeriod: ALL
