@@ -3,42 +3,75 @@ package me.avo.spottit.service
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
 import com.wrapper.spotify.SpotifyApi
+import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
+import me.avo.spottit.util.SpotifyQueryTools
 import org.slf4j.LoggerFactory
 
 class SpotifyServiceImpl(
     private val authService: SpotifyAuthService
 ) : SpotifyService {
 
-    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String) {
-        logger.info("Updating Playlist")
-        logger.info("Found ${tracks.size} tracks")
-
-        val api = authService.getSpotifyApi()
-
-        api.clearPlaylist(tracks, userId, playlistId)
-            .also { logger.info("Adding ${it.size} tracks to the playlist") }
-            .let { api.addTracks(it, userId, playlistId) }
-    }
+    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String) = authService
+        .also { logger.info("Updating Playlist with ${tracks.size} potential tracks") }
+        .getSpotifyApi().run {
+            clearPlaylist(tracks, userId, playlistId)
+                .also { logger.info("Adding ${it.size} tracks to the playlist") }
+                .let { addTracks(it, userId, playlistId) }
+        }
 
     override fun findTracks(tracks: List<RedditTrack>): List<Track> = authService.getSpotifyApi()
         .searchForTracks(tracks)
-        .mapNotNull { (_, results) -> results.firstOrNull() } // TODO how to select from multiple results?
 
-    private fun SpotifyApi.searchForTracks(tracks: List<RedditTrack>): List<Pair<RedditTrack, Array<Track>>> = tracks
+    private fun SpotifyApi.searchForTracks(tracks: List<RedditTrack>): List<Track> = tracks
         .map { findTrack(it) }
+        .mapNotNull { (reddit, chosenTrack, total) ->
+            logger.info("Found $total results for: $reddit | ${chosenTrack?.artists?.joinToString { it.name }} - ${chosenTrack?.name}")
+            chosenTrack
+        }
         .onEach { Thread.sleep(250) }
 
-    private fun SpotifyApi.findTrack(track: RedditTrack): Pair<RedditTrack, Array<Track>> {
-        val query = listOf(track.artist, track.title, track.mix ?: "").joinToString(" ")
+    private fun SpotifyApi.findTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> =
+        SpotifyQueryTools.initialQuery(track)
+            .let { searchQuery(it) }
+            .let { results ->
+                val chosenTrack = evaluateResults(track, results.items, 0)
+                Triple(track, chosenTrack, results.total)
+            }
+
+    private fun SpotifyApi.evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? {
+        println(track)
+        items.map { it.name to it.durationMs }.let { println(it) }
+        return when (items.size) {
+            0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
+            1 -> items.first() // only one result
+            else -> {
+                // there are multiple results, sort
+                //val shouldNotInclude = listOf("Mix Cut", "Radio Edit", "Edit", "ASOT")
+                SpotifyQueryTools.sortItems(items, track).first()
+            }
+        }
+    }
+
+    private fun SpotifyApi.adjustQuery(track: RedditTrack, stack: Int) = when {
+        stack > 1 -> null
+        track.artist.contains("&") -> {
+            val fixedArtist = track.artist.split("&").first().trim()
+            research(track.copy(artist = fixedArtist), stack, fixedArtist, track.title, track.mix)
+        }
+        track.mix != null -> research(track, stack, track.artist, track.title)
+        else -> null
+    }
+
+    private fun SpotifyApi.research(track: RedditTrack, stack: Int, vararg items: String?) =
+        searchQuery(SpotifyQueryTools.makeQuery(*items)).let {
+            evaluateResults(track, it.items, stack + 1)
+        }
+
+    private fun SpotifyApi.searchQuery(query: String): Paging<Track> {
         logger.debug("Searching for $query")
-        val results = searchTracks(query).limit(10).offset(0).build().execute()
-        val items = results.items
-        items.firstOrNull()
-            .let { "Found ${results.total} results. " + if (it != null) "Top 1: ${it.artists.joinToString { it.name }} ${it.name}" else "" }
-            .let { if (results.total == 0) logger.debug(it) else logger.info(it) }
-        return track to items
+        return searchTracks(query).limit(10).offset(0).build().execute()
     }
 
     private fun SpotifyApi.clearPlaylist(tracksToAdd: List<Track>, userId: String, playlistId: String): List<Track> {

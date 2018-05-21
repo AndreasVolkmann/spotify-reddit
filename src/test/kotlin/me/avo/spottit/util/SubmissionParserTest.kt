@@ -1,5 +1,6 @@
 package me.avo.spottit.util
 
+import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest

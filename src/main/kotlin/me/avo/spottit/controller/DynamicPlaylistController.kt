@@ -44,9 +44,7 @@ class DynamicPlaylistController(
 
     private fun processPlaylist(configuration: Configuration, playlist: Playlist) {
         logger.info("Processing playlist ${playlist.id}")
-        //val postFilter = playlist.postFilters.first()
         val redditService = RedditServiceImpl(playlist, configuration.flairsToExclude, redditCredentials)
-
         val foundTracks = mutableListOf<Track>()
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
