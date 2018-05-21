@@ -11,6 +11,9 @@
         <h2 class="subtitle">
             The playlists will now be updated.
         </h2>
+        <div>
+            <i class="fas fa-sync fa-spin"></i>
+        </div>
     </div>
 </div>
 <#include "footer.ftl" parse=true>

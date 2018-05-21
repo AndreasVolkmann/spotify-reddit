@@ -40,19 +40,12 @@ class SpotifyServiceImpl(
                 Triple(track, chosenTrack, results.total)
             }
 
-    private fun SpotifyApi.evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? {
-        println(track)
-        items.map { it.name to it.durationMs }.let { println(it) }
-        return when (items.size) {
+    private fun SpotifyApi.evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? =
+        when (items.size) {
             0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
             1 -> items.first() // only one result
-            else -> {
-                // there are multiple results, sort
-                //val shouldNotInclude = listOf("Mix Cut", "Radio Edit", "Edit", "ASOT")
-                SpotifyQueryTools.sortItems(items, track).first()
-            }
+            else -> SpotifyQueryTools.sortItems(items, track).first() // there are multiple results, sort
         }
-    }
 
     private fun SpotifyApi.adjustQuery(track: RedditTrack, stack: Int) = when {
         stack > 1 -> null
