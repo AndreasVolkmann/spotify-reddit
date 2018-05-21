@@ -21,9 +21,9 @@ apply plugin: 'kotlin'
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Compile-Title': 'spotify-dynamic-reddit-playlist',
+        attributes 'Compile-Title': 'spottit',
                 'Compile-Version': version,
-                'Main-Class': 'me.avo.spotify.dynamic.reddit.playlist.MainKt'
+                'Main-Class': 'me.avo.spottit.MainKt'
     }
     baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

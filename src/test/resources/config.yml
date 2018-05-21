@@ -12,3 +12,6 @@ playlists:
     sort: TOP
     timePeriod: ALL
 
+flairsToExclude:
+  - one
+  - Discussion

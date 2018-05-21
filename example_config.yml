@@ -25,3 +25,15 @@ playlists:
     subreddit: trance
     sort: TOP
     timePeriod: ALL
+
+# When a reddit post has any of the following flairs, it will be excluded
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
