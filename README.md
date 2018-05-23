@@ -44,7 +44,13 @@ playlists:
     maxSize: 10
     subreddit: trance
     sort: TOP
-timePeriod: ALL
+    timePeriod: ALL
+    
+# You can also add a list of flairs which is used to exclude posts from Reddit
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
 ```
 
 To find your Spotify user ID, click your profile, click the `...` and select `Share` > `Copy Spotify URI`.
