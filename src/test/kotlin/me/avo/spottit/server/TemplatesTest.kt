@@ -1,12 +1,9 @@
 package me.avo.spottit.server
 
-import com.wrapper.spotify.model_objects.specification.ArtistSimplified
-import com.wrapper.spotify.model_objects.specification.Track
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.freemarker.FreeMarker
 import io.ktor.freemarker.FreeMarkerContent
-import io.ktor.http.httpDateFormat
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -67,13 +64,17 @@ internal class TemplatesTest {
 
     @Test fun checkout() {
         class SimpleTrack(val id: String, val artist: String, val name: String)
-        class Results(val total: Int, val tracks: List<SimpleTrack>)
+        class Results(val total: Int, val tracks: List<SimpleTrack>) {
+            constructor(tracks: List<SimpleTrack>): this(tracks.size, tracks)
+        }
 
-        val results = Results(1, listOf(
+        val tracksToAdd = listOf(
             SimpleTrack("1", "John Maus", "Sensitive Recollections"),
             SimpleTrack("2", "Adele", "Hometown Glory (High Contrast Remix)")
-        ))
-        render(FreeMarkerContent("checkout.ftl", mapOf("results" to results), "e"))
+        )
+
+        val resultsAdd = Results(tracksToAdd)
+        render(FreeMarkerContent("checkout.ftl", mapOf("resultsAdd" to resultsAdd), "e"))
     }
 
 }
