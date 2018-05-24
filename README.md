@@ -8,8 +8,8 @@ Easily set up your own subreddit playlist.
 Originally this was made for /r/trance but it can be used for any subreddit. 
 
 Current test playlists can be found here: 
-* [Weekly](https://open.spotify.com/user/113258637/playlist/7eoppWh6XjOIIp10DKpSAs)
-* [All Time](https://open.spotify.com/user/113258637/playlist/6cQk28LM0k3ogiCNEH0d9e?si=zFxqpxt6T2C9NhWFTwbDfw)
+* [Top Monthly /r/Trance](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi/playlist/4nY3CWQHuROmtsVXsw4N10?si=geNzarxpQCy0M2SRN1BgQA)
+* [Top Songs /r/Trance](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi/playlist/67pOXwIa0C4n9ZMpQubc0s?si=NCAkwMniRae9rMohzVIVQg)
 
 
 ### How to use
