@@ -10,10 +10,9 @@ import org.junit.jupiter.api.Test
 internal class YamlConfigReaderTest {
 
     @Test fun `should parse config`() {
-
         val yaml = this::class.java.classLoader.getResource("config.yml").readText()
-
         val userId = "110022034"
+
         val expected = Configuration(
             userId = userId,
             playlists = listOf(
@@ -34,7 +33,8 @@ internal class YamlConfigReaderTest {
                     timePeriod = TimePeriod.ALL
                 )
             ),
-            flairsToExclude = listOf("one", "Discussion")
+            flairsToExclude = listOf("one", "Discussion"),
+            minimumLength = 100
         )
 
         val actual = YamlConfigReader.read(yaml)

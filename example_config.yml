@@ -37,3 +37,6 @@ flairsToExclude:
   - AMA
   - Concluded
   - RIP
+
+# minimum length of tracks in seconds in order to be added to the playlists
+minimumLength: 100

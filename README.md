@@ -51,6 +51,9 @@ flairsToExclude:
   - Mix
   - Liveset
   - Radio
+  
+# minimum length of tracks in seconds in order to be added to the playlists
+minimumLength: 100
 ```
 
 To find your Spotify user ID, click your profile, click the `...` and select `Share` > `Copy Spotify URI`.

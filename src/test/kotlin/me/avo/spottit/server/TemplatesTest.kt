@@ -13,9 +13,11 @@ import me.avo.spottit.model.Playlist
 import me.avo.spottit.util.openUrlInBrowser
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
+@Disabled
 internal class TemplatesTest {
 
     private fun render(content: FreeMarkerContent) {
@@ -65,7 +67,7 @@ internal class TemplatesTest {
     @Test fun checkout() {
         class SimpleTrack(val id: String, val artist: String, val name: String)
         class Results(val total: Int, val tracks: List<SimpleTrack>) {
-            constructor(tracks: List<SimpleTrack>): this(tracks.size, tracks)
+            constructor(tracks: List<SimpleTrack>) : this(tracks.size, tracks)
         }
 
         val tracksToAdd = listOf(
@@ -73,8 +75,21 @@ internal class TemplatesTest {
             SimpleTrack("2", "Adele", "Hometown Glory (High Contrast Remix)")
         )
 
+        val tracksToDelete = listOf(
+            SimpleTrack("3", "Luke Bond", "U"),
+            SimpleTrack("4", "ARTY", "Rain (ASOT 858)")
+        )
+
         val resultsAdd = Results(tracksToAdd)
-        render(FreeMarkerContent("checkout.ftl", mapOf("resultsAdd" to resultsAdd), "e"))
+        val resultsDel = Results(tracksToDelete)
+        render(
+            FreeMarkerContent(
+                "checkout.ftl", mapOf(
+                    "resultsAdd" to resultsAdd,
+                    "resultsDel" to resultsDel
+                ), "e"
+            )
+        )
     }
 
 }
