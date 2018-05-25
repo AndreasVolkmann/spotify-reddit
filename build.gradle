@@ -4,6 +4,7 @@ buildscript {
         ktor_version = '0.9.2'
         spotify_api_vesrion = '2.0.2'
         jrawVersion = '1.0.0'
+        junit_version = '5.2.0'
     }
 
     repositories {
@@ -58,8 +59,18 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.21'
     compile 'com.beust:jcommander:1.72'
 
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
     testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.38'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags 'slow'
+        includeEngines 'junit-jupiter'
+    }
+
+    failFast = true
 }
 
 compileKotlin {
