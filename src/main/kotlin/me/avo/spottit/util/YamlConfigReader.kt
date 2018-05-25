@@ -23,7 +23,8 @@ object YamlConfigReader {
                     maxSize = it["maxSize"]?.toString()?.toInt() ?: 50,
                     subreddit = it["subreddit"].toString(),
                     sort = SubredditSort.valueOf(it["sort"].toString()),
-                    timePeriod = TimePeriod.valueOf(it["timePeriod"].toString())
+                    timePeriod = TimePeriod.valueOf(it["timePeriod"].toString()),
+                    minimumUpvotes = it["minUpvotes"]?.toString()?.toInt() ?: 0
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),

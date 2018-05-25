@@ -9,5 +9,6 @@ data class Playlist(
     val maxSize: Int,
     val subreddit: String,
     val sort: SubredditSort,
-    val timePeriod: TimePeriod
+    val timePeriod: TimePeriod,
+    val minimumUpvotes: Int
 )

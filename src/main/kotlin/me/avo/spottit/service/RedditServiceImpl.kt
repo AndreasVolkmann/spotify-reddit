@@ -48,6 +48,7 @@ class RedditServiceImpl(
             page
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
+                .filter { it.score > playlist.minimumUpvotes }
                 .mapTo(validPosts) { it }
         }
 

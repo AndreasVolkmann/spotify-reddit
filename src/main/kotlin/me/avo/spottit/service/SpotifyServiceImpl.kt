@@ -44,8 +44,8 @@ class SpotifyServiceImpl(
 
                 val sizeAfterRemoval = currentSize - willBeRemoved.size
                 val tracksToRemove = if (sizeAfterRemoval > maxSize) {
-                    willBeAddedAgain.takeLast(sizeAfterRemoval - maxSize)
-                } else listOf()
+                    willBeAddedAgain.takeLast(sizeAfterRemoval - maxSize) + willBeRemoved
+                } else willBeRemoved
 
                 tracksInPlaylist.filter { it.id !in idsToAdd }
 

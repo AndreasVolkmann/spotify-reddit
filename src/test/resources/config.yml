@@ -6,11 +6,14 @@ playlists:
     subreddit: subred
     sort: TOP
     timePeriod: WEEK
+    minUpvotes: 5
+
   - id: someplid2
     maxSize: 30
     subreddit: othersub
     sort: TOP
     timePeriod: ALL
+    minUpvotes: 10
 
 flairsToExclude:
   - one

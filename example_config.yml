@@ -19,12 +19,16 @@ playlists:
     # Only applies when sort is set to CONTROVERSIAL or TOP
     timePeriod: WEEK
 
+    # Minimum number of upvotes that a reddit post needs to have before being considered
+    minUpvotes: 10
+
     # Second Playlist, based on the top tracks from all time
   - id: YOUR_OTHER_PLAYLIST_ID
     maxSize: 10
     subreddit: trance
     sort: TOP
     timePeriod: ALL
+    minUpvotes: 1
 
 # When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:

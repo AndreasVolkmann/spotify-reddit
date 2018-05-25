@@ -50,7 +50,8 @@ internal class TemplatesTest {
                 subreddit = "trance",
                 timePeriod = TimePeriod.ALL,
                 sort = SubredditSort.TOP,
-                maxSize = 20
+                maxSize = 20,
+                minimumUpvotes = 5
             ),
             Playlist(
                 id = "hjfh373hf29",
@@ -58,7 +59,8 @@ internal class TemplatesTest {
                 subreddit = "trance",
                 timePeriod = TimePeriod.WEEK,
                 sort = SubredditSort.TOP,
-                maxSize = 10
+                maxSize = 10,
+                minimumUpvotes = 10
             )
         )
         render(FreeMarkerContent("test.ftl", mapOf("playlists" to playlists), "e"))
