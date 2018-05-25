@@ -13,9 +13,11 @@ import me.avo.spottit.model.Playlist
 import me.avo.spottit.util.openUrlInBrowser
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
+@Disabled
 internal class TemplatesTest {
 
     private fun render(content: FreeMarkerContent) {

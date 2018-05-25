@@ -15,3 +15,5 @@ playlists:
 flairsToExclude:
   - one
   - Discussion
+
+minimumLength: 100

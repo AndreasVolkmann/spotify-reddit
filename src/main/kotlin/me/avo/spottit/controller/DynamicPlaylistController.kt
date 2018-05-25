@@ -25,6 +25,8 @@ class DynamicPlaylistController(
         val configuration = YamlConfigReader.read(File(configPath).readText())
 
         val uri = spotifyAuthService.getRedirectUri().toString().also(::println)
+        logger.info(uri)
+        //return
 
         val server = prepareServer(kodein).start(wait = false)
 
@@ -50,12 +52,16 @@ class DynamicPlaylistController(
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()
             .let(spotifyService::findTracks)
+            .filter { checkTrackLength(configuration, it) } // only add tracks above minimum length
             .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }
             .also { Thread.sleep(250) }
 
         spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id)
     }
+
+    fun checkTrackLength(configuration: Configuration, track: Track) =
+        track.durationMs / 1000 > configuration.minimumLength
 
     private val timeout = 2L
     private val logger = LoggerFactory.getLogger(this::class.java)

@@ -11,10 +11,9 @@ object YamlConfigReader {
 
     fun read(yaml: String): Configuration {
         val data = Yaml().load<Map<String, Any>>(yaml)
-
         val playlists = data["playlists"] as? List<Map<String, Any>> ?: listOf()
-
         val userId = data["userId"].toString()
+
         return Configuration(
             userId = userId,
             playlists = playlists.map {
@@ -27,7 +26,8 @@ object YamlConfigReader {
                     timePeriod = TimePeriod.valueOf(it["timePeriod"].toString())
                 )
             },
-            flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf()
+            flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
+            minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0
         )
     }
 
