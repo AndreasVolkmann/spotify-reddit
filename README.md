@@ -38,6 +38,9 @@ playlists:
     # can be either of: HOUR, DAY, WEEK, MONTH, YEAR, ALL
     # Only applies when sort is set to CONTROVERSIAL or TOP
     timePeriod: WEEK
+    
+    # Minimum number of upvotes that a reddit post needs to have before being considered
+    minUpvotes: 13    
 
     # Second Playlist, based on the top tracks from all time
   - id: YOUR_OTHER_PLAYLIST_ID
