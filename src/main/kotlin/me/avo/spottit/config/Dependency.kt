@@ -7,7 +7,6 @@ import com.github.salomonbrys.kodein.singleton
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.service.SpotifyAuthService
-import me.avo.spottit.service.ElectronicSearchAlgorithm
 import me.avo.spottit.service.SpotifyService
 import me.avo.spottit.service.SpotifyServiceImpl
 import java.util.*
@@ -28,10 +27,7 @@ val kodein = Kodein {
     }
 
     bind<SpotifyService>() with singleton {
-        SpotifyServiceImpl(
-            authService = instance(),
-            spotifySearchAlgorithm = ElectronicSearchAlgorithm()
-        )
+        SpotifyServiceImpl(authService = instance())
     }
 
     bind<SpotifyAuthService>() with singleton {

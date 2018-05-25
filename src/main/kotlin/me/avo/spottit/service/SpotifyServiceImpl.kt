@@ -8,8 +8,7 @@ import me.avo.spottit.model.RedditTrack
 import org.slf4j.LoggerFactory
 
 class SpotifyServiceImpl(
-    private val authService: SpotifyAuthService,
-    private val spotifySearchAlgorithm: SpotifySearchAlgorithm
+    private val authService: SpotifyAuthService
 ) : SpotifyService {
 
     override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String) = authService
@@ -20,11 +19,13 @@ class SpotifyServiceImpl(
                 .let { addTracks(it, userId, playlistId) }
         }
 
-    override fun findTracks(tracks: List<RedditTrack>): List<Track> = authService.getSpotifyApi()
-        .searchForTracks(tracks)
+    override fun findTracks(tracks: List<RedditTrack>, searchAlgorithm: SpotifySearchAlgorithm): List<Track> =
+        authService.getSpotifyApi().searchForTracks(tracks, searchAlgorithm)
 
-    private fun SpotifyApi.searchForTracks(tracks: List<RedditTrack>): List<Track> =
-        spotifySearchAlgorithm.searchForTracks(this, tracks)
+    private fun SpotifyApi.searchForTracks(
+        tracks: List<RedditTrack>,
+        searchAlgorithm: SpotifySearchAlgorithm
+    ): List<Track> = searchAlgorithm.searchForTracks(this, tracks)
 
     private fun SpotifyApi.clearPlaylist(tracksToAdd: List<Track>, userId: String, playlistId: String): List<Track> {
         logger.info("Clearing Playlist")

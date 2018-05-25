@@ -1,13 +1,11 @@
-package me.avo.spottit.controller
+package me.avo.spottit.util
 
-import com.github.salomonbrys.kodein.instance
 import com.wrapper.spotify.model_objects.specification.Track
-import me.avo.spottit.config.kodein
 import me.avo.spottit.model.Configuration
 import org.amshove.kluent.shouldBe
 import org.junit.jupiter.api.Test
 
-internal class DynamicPlaylistControllerTest {
+internal class TrackFilterTest {
 
     @Test fun `checkTrackLength should calculate correctly`() {
         val configuration = Configuration("", listOf(), listOf(), 1)
@@ -19,10 +17,10 @@ internal class DynamicPlaylistControllerTest {
             setDurationMs(999)
         }.build()
 
-        val playlistController: DynamicPlaylistController = kodein.instance()
+        val trackFilter = TrackFilter(configuration)
 
-        playlistController.checkTrackLength(configuration, trackAbove) shouldBe true
-        playlistController.checkTrackLength(configuration, trackBelow) shouldBe false
+        trackFilter.checkTrackLength(trackAbove) shouldBe true
+        trackFilter.checkTrackLength(trackBelow) shouldBe false
     }
 
 }

@@ -1,13 +1,13 @@
 package me.avo.spottit.service
 
 import com.wrapper.spotify.SpotifyApi
-import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.SpotifyQueryTools
+import me.avo.spottit.util.TrackFilter
 import org.slf4j.LoggerFactory
 
-class ElectronicSearchAlgorithm : SpotifySearchAlgorithm {
+class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifySearchAlgorithm {
 
     override fun searchForTracks(spotifyApi: SpotifyApi, tracks: List<RedditTrack>): List<Track> = with(spotifyApi) {
         tracks
@@ -19,19 +19,20 @@ class ElectronicSearchAlgorithm : SpotifySearchAlgorithm {
             .onEach { Thread.sleep(250) }
     }
 
-    private fun SpotifyApi.findTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> =
-        SpotifyQueryTools.initialQuery(track)
-            .let { searchQuery(it) }
-            .let { results ->
-                val chosenTrack = evaluateResults(track, results.items, 0)
-                Triple(track, chosenTrack, results.total)
-            }
+    private fun SpotifyApi.findTrack(
+        track: RedditTrack
+    ): Triple<RedditTrack, Track?, Int> = SpotifyQueryTools.initialQuery(track)
+        .let { searchQuery(it) }
+        .let { (total, items) ->
+            val validTracks = trackFilter.applyFilters(items)
+            val chosenTrack = evaluateResults(track, validTracks, 0)
+            Triple(track, chosenTrack, total)
+        }
 
-
-    private fun SpotifyApi.searchQuery(query: String): Paging<Track> {
-        logger.debug("Searching for $query")
-        return searchTracks(query).limit(10).offset(0).build().execute()
-    }
+    private fun SpotifyApi.searchQuery(query: String): Pair<Int, Array<Track>> = query
+        .also { logger.debug("Searching for $it") }
+        .let { searchTracks(it) }.limit(10).offset(0).build().execute()
+        .let { it.total to trackFilter.applyFilters(it.items) }
 
     private fun SpotifyApi.evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? =
         when (items.size) {
@@ -51,8 +52,8 @@ class ElectronicSearchAlgorithm : SpotifySearchAlgorithm {
     }
 
     private fun SpotifyApi.research(track: RedditTrack, stack: Int, vararg items: String?) =
-        searchQuery(SpotifyQueryTools.makeQuery(*items)).let {
-            evaluateResults(track, it.items, stack + 1)
+        searchQuery(SpotifyQueryTools.makeQuery(*items)).let { (_, items) ->
+            evaluateResults(track, items, stack + 1)
         }
 
     private val logger = LoggerFactory.getLogger(this::class.java)

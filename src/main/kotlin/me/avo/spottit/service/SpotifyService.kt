@@ -7,6 +7,6 @@ interface SpotifyService {
 
     fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String)
 
-    fun findTracks(tracks: List<RedditTrack>): List<Track>
+    fun findTracks(tracks: List<RedditTrack>, searchAlgorithm: SpotifySearchAlgorithm): List<Track>
 
 }

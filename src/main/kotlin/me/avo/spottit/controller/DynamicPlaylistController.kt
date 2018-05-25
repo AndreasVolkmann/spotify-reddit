@@ -6,9 +6,11 @@ import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.server.prepareServer
+import me.avo.spottit.service.ElectronicSearchAlgorithm
 import me.avo.spottit.service.RedditServiceImpl
 import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.service.SpotifyService
+import me.avo.spottit.util.TrackFilter
 import me.avo.spottit.util.YamlConfigReader
 import me.avo.spottit.util.openUrlInBrowser
 import org.slf4j.LoggerFactory
@@ -49,19 +51,17 @@ class DynamicPlaylistController(
         val redditService = RedditServiceImpl(playlist, configuration.flairsToExclude, redditCredentials)
         val foundTracks = mutableListOf<Track>()
 
+        val searchAlgorithm = ElectronicSearchAlgorithm(TrackFilter(configuration))
+
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()
-            .let(spotifyService::findTracks)
-            .filter { checkTrackLength(configuration, it) } // only add tracks above minimum length
+            .let { spotifyService.findTracks(it, searchAlgorithm) }
             .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }
             .also { Thread.sleep(250) }
 
         spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id)
     }
-
-    fun checkTrackLength(configuration: Configuration, track: Track) =
-        track.durationMs / 1000 > configuration.minimumLength
 
     private val timeout = 2L
     private val logger = LoggerFactory.getLogger(this::class.java)
