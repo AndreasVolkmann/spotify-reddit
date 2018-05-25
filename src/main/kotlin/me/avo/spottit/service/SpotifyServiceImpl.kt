@@ -11,10 +11,10 @@ class SpotifyServiceImpl(
     private val authService: SpotifyAuthService
 ) : SpotifyService {
 
-    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String) = authService
+    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String, maxSize: Int) = authService
         .also { logger.info("Updating Playlist with ${tracks.size} potential tracks") }
         .getSpotifyApi().run {
-            clearPlaylist(tracks, userId, playlistId)
+            clearPlaylist(tracks, userId, playlistId, maxSize)
                 .also { logger.info("Adding ${it.size} tracks to the playlist") }
                 .let { addTracks(it, userId, playlistId) }
         }
@@ -27,24 +27,49 @@ class SpotifyServiceImpl(
         searchAlgorithm: SpotifySearchAlgorithm
     ): List<Track> = searchAlgorithm.searchForTracks(this, tracks)
 
-    private fun SpotifyApi.clearPlaylist(tracksToAdd: List<Track>, userId: String, playlistId: String): List<Track> {
+    private fun SpotifyApi.clearPlaylist(
+        tracksToAdd: List<Track>, userId: String, playlistId: String, maxSize: Int
+    ): List<Track> {
         logger.info("Clearing Playlist")
-        val idsToAdd = tracksToAdd.map { it.id }
         val tracksInPlaylist = getPlaylistsTracks(userId, playlistId).build().execute().items.map { it.track }
-
         return when {
             tracksInPlaylist.isEmpty() -> {
                 logger.info("The playlist is currently empty, all found tracks will be added")
                 tracksToAdd
             }
             else -> {
+                val idsToAdd = tracksToAdd.map { it.id }
                 val (willBeAddedAgain, willBeRemoved) = tracksInPlaylist.partition { idsToAdd.contains(it.id) }
-                logger.info("${willBeAddedAgain.size} tracks are already in the playlist, ${willBeRemoved.size} tracks will be removed")
-                val jsonTracks = willBeRemoved.map { jsonObject("uri" to it.uri) }.toJsonArray()
+                val currentSize = tracksInPlaylist.size
+
+                val sizeAfterRemoval = currentSize - willBeRemoved.size
+                val tracksToRemove = if (sizeAfterRemoval > maxSize) {
+                    willBeAddedAgain.takeLast(sizeAfterRemoval - maxSize)
+                } else listOf()
+
+                tracksInPlaylist.filter { it.id !in idsToAdd }
+
+                logger.info("${willBeAddedAgain.size} tracks are already in the playlist, ${tracksToRemove.size} tracks will be removed")
+                val jsonTracks = tracksToRemove.map { jsonObject("uri" to it.uri) }.toJsonArray()
                 removeTracksFromPlaylist(userId, playlistId, jsonTracks).build().execute()
-                val againIds = willBeAddedAgain.map { it.id }
-                tracksToAdd.filterNot { againIds.contains(it.id) }
+                calculateTracksToAdd(tracksInPlaylist.size, tracksToAdd, willBeAddedAgain, maxSize)
             }
+        }
+    }
+
+    fun calculateTracksToAdd(
+        amountInPlaylist: Int,
+        tracksToAdd: List<Track>,
+        willBeAddedAgain: List<Track>,
+        maxSize: Int
+    ): List<Track> {
+        val amountToAdd = maxSize - amountInPlaylist
+        return if (amountToAdd < 1) listOf()
+        else {
+            val againIds = willBeAddedAgain.map { it.id }
+            tracksToAdd
+                .filterNot { againIds.contains(it.id) }
+                .take(amountToAdd)
         }
     }
 

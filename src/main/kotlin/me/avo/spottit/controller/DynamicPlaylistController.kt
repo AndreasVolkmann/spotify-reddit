@@ -60,7 +60,7 @@ class DynamicPlaylistController(
             .mapTo(foundTracks) { it }
             .also { Thread.sleep(250) }
 
-        spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id)
+        spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id, playlist.maxSize)
     }
 
     private val timeout = 2L
