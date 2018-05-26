@@ -4,12 +4,10 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.model.SpotifyCredentials
 import me.avo.spottit.service.ElectronicSearchAlgorithm
 import me.avo.spottit.service.RedditServiceImpl
 import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.service.SpotifyService
-import me.avo.spottit.service.SpotifyHeadlessAuthService
 import me.avo.spottit.util.TrackFilter
 import me.avo.spottit.util.YamlConfigReader
 import org.slf4j.LoggerFactory
@@ -18,23 +16,16 @@ import java.io.File
 class DynamicPlaylistController(
     private val spotifyAuthService: SpotifyAuthService,
     private val spotifyService: SpotifyService,
-    private val redditCredentials: RedditCredentials,
-    private val client: SpotifyHeadlessAuthService
+    private val redditCredentials: RedditCredentials
 ) {
 
     fun updatePlaylists(configPath: String) {
+        spotifyAuthService.loadCredentials()
         val configuration = YamlConfigReader.read(File(configPath).readText())
-        authenticate(configuration)
+
         configuration.playlists.forEach {
             processPlaylist(configuration, it)
         }
-    }
-
-    private fun authenticate(configuration: Configuration) {
-        val uri = spotifyAuthService.getRedirectUri().toString()
-        val spotifyCredentials = SpotifyCredentials(configuration.spotifyUser, configuration.spotifyPass, uri)
-        val authCode = client.getAuthCode(spotifyCredentials)
-        spotifyAuthService.grantAccess(authCode)
     }
 
     private fun processPlaylist(configuration: Configuration, playlist: Playlist) {

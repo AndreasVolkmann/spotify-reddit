@@ -8,3 +8,6 @@ src/main/resources/application.properties
 /other
 
 /src/test/kotlin/me/avo/spottit/util/ClientTest.kt
+
+/access-token
+/refresh-token

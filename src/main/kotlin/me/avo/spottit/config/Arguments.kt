@@ -13,6 +13,10 @@ class Arguments(args: Array<String>) {
     var manualAuth = false
         private set
 
+    @Parameter(names = ["-r", "--refresh"], description = "Refresh the Spotify access token")
+    var doRefresh = false
+        private set
+
     @Parameter(names = ["--help", "-h"], help = true)
     var help = false
         private set

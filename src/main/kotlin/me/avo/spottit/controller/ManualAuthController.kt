@@ -6,10 +6,9 @@ import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.util.openUrlInBrowser
 import java.util.concurrent.TimeUnit
 
-class ManualAuthController(private val spotifyAuthService: SpotifyAuthService) {
+class ManualAuthController(private val spotifyAuthService: SpotifyAuthService) : AuthorizationController {
 
-
-    fun authorize() {
+    override fun authorize() {
         val uri = spotifyAuthService.getRedirectUri().toString()
         val server = prepareServer(kodein).start(wait = false)
 
@@ -22,6 +21,5 @@ class ManualAuthController(private val spotifyAuthService: SpotifyAuthService) {
             server.stop(timeout, timeout, TimeUnit.SECONDS)
         }
     }
-
 
 }

@@ -5,17 +5,16 @@ import me.avo.spottit.config.Arguments
 import me.avo.spottit.config.kodein
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.controller.ManualAuthController
+import me.avo.spottit.controller.TokenRefreshController
 
-fun main(args: Array<String>) {
-    val arguments = Arguments(args)
-    if (arguments.help) return
+fun main(args: Array<String>): Unit = Arguments(args).run {
+    when {
+        help -> return
 
-    if (arguments.manualAuth) {
-        val manualAuthController: ManualAuthController = kodein.instance()
-        manualAuthController.authorize()
-    } else {
-        val dynamicPlaylistController: DynamicPlaylistController = kodein.instance()
-        dynamicPlaylistController.updatePlaylists(arguments.configPath)
+        manualAuth -> kodein.instance<ManualAuthController>().authorize()
+
+        doRefresh -> kodein.instance<TokenRefreshController>().refresh()
+
+        else -> kodein.instance<DynamicPlaylistController>().updatePlaylists(configPath)
     }
-
 }

@@ -4,13 +4,12 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
+import me.avo.spottit.controller.AutomaticAuthController
 import me.avo.spottit.controller.DynamicPlaylistController
+import me.avo.spottit.controller.ManualAuthController
+import me.avo.spottit.controller.TokenRefreshController
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.SpotifyAuthService
-import me.avo.spottit.service.SpotifyAuthServiceImpl
-import me.avo.spottit.service.SpotifyService
-import me.avo.spottit.service.SpotifyServiceImpl
-import me.avo.spottit.service.SpotifyHeadlessAuthService
+import me.avo.spottit.service.*
 import java.util.*
 
 val kodein = Kodein {
@@ -25,9 +24,23 @@ val kodein = Kodein {
         DynamicPlaylistController(
             spotifyAuthService = instance(),
             spotifyService = instance(),
-            redditCredentials = instance(),
+            redditCredentials = instance()
+        )
+    }
+
+    bind<ManualAuthController>() with singleton {
+        ManualAuthController(spotifyAuthService = instance())
+    }
+
+    bind<AutomaticAuthController>() with singleton {
+        AutomaticAuthController(
+            spotifyAuthService = instance(),
             client = instance()
         )
+    }
+
+    bind<TokenRefreshController>() with singleton {
+        TokenRefreshController(spotifyAuthService = instance())
     }
 
     bind<SpotifyService>() with singleton {

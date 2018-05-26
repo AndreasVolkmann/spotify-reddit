@@ -20,6 +20,7 @@ import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import me.avo.spottit.config.Dependency
+import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.service.SpotifyAuthService
 import org.slf4j.event.Level
 
@@ -29,16 +30,20 @@ fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
 
 fun module(kodein: Kodein): Application.() -> Unit = {
     install(Routing) {
+
         val spotifyAuthService: SpotifyAuthService = kodein.instance()
-        get("auth/{...}") {
+        val manualAuthController: ManualAuthController = kodein.instance()
+
+        get("spotify/auth/{...}") {
             val code = call.parameters["code"]
             when {
                 code == null || code.isBlank() -> throw StatusException(
                     HttpStatusCode.BadRequest, "Invalid code supplied"
                 )
                 else -> {
-                    val credentials = spotifyAuthService.getAccessToken(code)
+                    val credentials = spotifyAuthService.grantAccess(code)
                     call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
+                    manualAuthController.writeCredentials(credentials)
                 }
             }
         }

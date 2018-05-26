@@ -7,8 +7,5 @@ data class Configuration(
     /**
      * Minimum length of tracks in seconds to get added to the playlists
      */
-    val minimumLength: Int = 0,
-
-    val spotifyUser: String,
-    val spotifyPass: String
+    val minimumLength: Int = 0
 )
