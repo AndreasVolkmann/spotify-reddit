@@ -22,7 +22,7 @@ val kodein = Kodein {
 
     bind<DynamicPlaylistController>() with singleton {
         DynamicPlaylistController(
-            spotifyAuthService = instance(),
+            refreshController = instance(),
             spotifyService = instance(),
             redditCredentials = instance()
         )

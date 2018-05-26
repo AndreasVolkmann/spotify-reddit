@@ -20,7 +20,3 @@ flairsToExclude:
   - Discussion
 
 minimumLength: 100
-
-spotify:
-  user: name
-  pass: word

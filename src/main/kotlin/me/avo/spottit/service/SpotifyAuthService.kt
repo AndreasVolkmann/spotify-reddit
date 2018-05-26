@@ -11,16 +11,17 @@ interface SpotifyAuthService {
     val clientSecret: String
     val redirectUri: String
 
-    fun grantAccess(authCode: String): AuthorizationCodeCredentials
+    var accessToken: String
+    var refreshToken: String
 
-    fun grantRefresh(refreshToken: String)
+    fun grantAccess(authCode: String): AuthorizationCodeCredentials
 
     fun refresh(): String
 
     fun getSpotifyApi(): SpotifyApi
 
-    fun buildSpotifyApi(accesstoken: String): SpotifyApi = SpotifyApi.Builder()
-        .setAccessToken(accesstoken)
+    fun buildSpotifyApi(accessToken: String): SpotifyApi = SpotifyApi.Builder()
+        .setAccessToken(accessToken)
         .build()
 
     fun buildClientApi(): SpotifyApi = SpotifyApi.Builder()
@@ -37,7 +38,5 @@ interface SpotifyAuthService {
         .scope("playlist-modify-public,playlist-read-collaborative,playlist-read-private") // comma separated String
         .build()
         .execute()
-
-    fun loadCredentials()
 
 }
