@@ -20,6 +20,9 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'kotlin'
 
+task stage(dependsOn: ['fatJar', 'clean'])
+build.mustRunAfter clean
+
 task fatJar(type: Jar) {
     manifest {
         attributes 'Compile-Title': 'spottit',

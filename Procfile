@@ -1,0 +1,1 @@
+worker: java -jar build/libs/spottit-1.0-SNAPSHOT.jar -c config.yml
