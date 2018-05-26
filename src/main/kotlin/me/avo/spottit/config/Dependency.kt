@@ -10,11 +10,17 @@ import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.controller.TokenRefreshController
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.service.*
+import org.slf4j.LoggerFactory
 import java.util.*
 
 val kodein = Kodein {
+    val logger = LoggerFactory.getLogger(Dependency::class.java)
     val props = Properties().apply {
-        load(Dependency::class.java.classLoader.getResourceAsStream("application.properties"))
+        try {
+            load(Dependency::class.java.classLoader.getResourceAsStream("application.properties"))
+        } catch (ex: NullPointerException) {
+            logger.warn("Could not find application.properties")
+        }
     }
 
     fun getProperty(key: String) = props.getProperty(key)
