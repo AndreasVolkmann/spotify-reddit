@@ -10,8 +10,9 @@ import org.yaml.snakeyaml.Yaml
 object YamlConfigReader {
 
     fun read(yaml: String): Configuration {
-        val data = Yaml().load<Map<String, Any>>(yaml)
+        val data = Yaml().load<Map<String, Any?>>(yaml)
         val playlists = data["playlists"] as? List<Map<String, Any>> ?: listOf()
+        val spotifyCredentials = data["spotify"] as? Map<String, Any?> ?: mapOf()
         val userId = data["userId"].toString()
 
         return Configuration(
@@ -28,9 +29,16 @@ object YamlConfigReader {
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
-            minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0
+            minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0,
+            spotifyUser = spotifyCredentials.getEnvOrYaml("SPOTIFY_USER", "user").toString(),
+            spotifyPass = spotifyCredentials.getEnvOrYaml("SPOTIFY_PASS", "pass").toString()
         )
     }
 
+    private fun Map<String, Any?>.getEnvOrYaml(envKey: String, yamlKey: String): Any =
+        System.getenv(envKey) ?: get(yamlKey) ?: failRequiredProp(yamlKey)
+
+    private fun failRequiredProp(key: String): Nothing =
+        throw IllegalArgumentException("The yaml config requires $key to be defined")
 
 }

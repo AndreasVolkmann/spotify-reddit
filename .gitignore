@@ -6,3 +6,5 @@ src/main/resources/application.properties
 
 /config.yml
 /other
+
+/src/test/kotlin/me/avo/spottit/util/ClientTest.kt

@@ -7,8 +7,10 @@ import com.github.salomonbrys.kodein.singleton
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.service.SpotifyAuthService
+import me.avo.spottit.service.SpotifyAuthServiceImpl
 import me.avo.spottit.service.SpotifyService
 import me.avo.spottit.service.SpotifyServiceImpl
+import me.avo.spottit.service.SpotifyHeadlessAuthService
 import java.util.*
 
 val kodein = Kodein {
@@ -17,12 +19,14 @@ val kodein = Kodein {
     }
 
     fun getProperty(key: String) = props.getProperty(key)
+    fun getEnvOrProp(key: String) = System.getenv(key) ?: getProperty(key)
 
     bind<DynamicPlaylistController>() with singleton {
         DynamicPlaylistController(
             spotifyAuthService = instance(),
             spotifyService = instance(),
-            redditCredentials = instance()
+            redditCredentials = instance(),
+            client = instance()
         )
     }
 
@@ -31,7 +35,7 @@ val kodein = Kodein {
     }
 
     bind<SpotifyAuthService>() with singleton {
-        SpotifyAuthService(
+        SpotifyAuthServiceImpl(
             clientId = getProperty("clientId"),
             clientSecret = getProperty("clientSecret"),
             redirectUri = getProperty("redirectUri")
@@ -44,6 +48,10 @@ val kodein = Kodein {
             clientSecret = getProperty("reddit-clientSecret"),
             deviceName = getProperty("deviceName")
         )
+    }
+
+    bind<SpotifyHeadlessAuthService>() with singleton {
+        SpotifyHeadlessAuthService(serviceUrl = getEnvOrProp("SERVICE_URL"))
     }
 
 }

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 internal class TrackFilterTest {
 
     @Test fun `checkTrackLength should calculate correctly`() {
-        val configuration = Configuration("", listOf(), listOf(), 1)
+        val configuration = Configuration("", listOf(), listOf(), 1, "", "")
         val trackAbove = Track.Builder().apply {
             setDurationMs(2000)
         }.build()

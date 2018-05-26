@@ -36,7 +36,9 @@ internal class YamlConfigReaderTest {
                 )
             ),
             flairsToExclude = listOf("one", "Discussion"),
-            minimumLength = 100
+            minimumLength = 100,
+            spotifyUser = "name",
+            spotifyPass = "word"
         )
 
         val actual = YamlConfigReader.read(yaml)
