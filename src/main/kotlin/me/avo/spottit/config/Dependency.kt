@@ -49,17 +49,17 @@ val kodein = Kodein {
 
     bind<SpotifyAuthService>() with singleton {
         SpotifyAuthServiceImpl(
-            clientId = getProperty("clientId"),
-            clientSecret = getProperty("clientSecret"),
-            redirectUri = getProperty("redirectUri")
+            clientId = getEnvOrProp("clientId"),
+            clientSecret = getEnvOrProp("clientSecret"),
+            redirectUri = getEnvOrProp("redirectUri")
         )
     }
 
     bind<RedditCredentials>() with singleton {
         RedditCredentials(
-            clientId = getProperty("reddit-clientId"),
-            clientSecret = getProperty("reddit-clientSecret"),
-            deviceName = getProperty("deviceName")
+            clientId = getEnvOrProp("reddit-clientId"),
+            clientSecret = getEnvOrProp("reddit-clientSecret"),
+            deviceName = getEnvOrProp("deviceName")
         )
     }
 
