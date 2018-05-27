@@ -76,7 +76,7 @@ test {
         includeEngines 'junit-jupiter'
     }
 
-    failFast = true
+    failFast = false
 }
 
 compileKotlin {
