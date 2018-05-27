@@ -36,9 +36,17 @@ class DynamicPlaylistController(
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()
             .let { spotifyService.findTracks(it, searchAlgorithm) }
+            .filterNot { it.id in foundTracks.map { it.id } }
+            .distinctBy { it.id } // TODO find out why there are duplicates
             .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }
             .also { Thread.sleep(250) }
+
+        foundTracks
+            .groupBy { it.id }
+            .filterValues { it.size > 1 }
+            .also { println("Duplicate tracks:") }
+            .forEach { _, u -> println("${u.first().name}: ${u.size}") }
 
         spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id, playlist.maxSize)
     }
