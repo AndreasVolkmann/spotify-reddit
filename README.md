@@ -59,9 +59,12 @@ flairsToExclude:
 minimumLength: 100
 ```
 
+
+##### Spotify User ID
 To find your Spotify user ID, click your profile, click the `...` and select `Share` > `Copy Spotify URI`.
 The last numerical part is your user ID.
 
+##### Spotify Playlist ID
 To find the ID of your playlist, right click it, select `Share` > `Copy Spotify URI`.
 The last part is your playlist's ID.
 

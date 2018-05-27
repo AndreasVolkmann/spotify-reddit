@@ -16,9 +16,12 @@ buildscript {
 }
 
 group 'me.avo'
-version '1.0-SNAPSHOT'
+version '0.3.0'
 
 apply plugin: 'kotlin'
+
+task stage(dependsOn: ['fatJar', 'clean'])
+build.mustRunAfter clean
 
 task fatJar(type: Jar) {
     manifest {
@@ -48,12 +51,15 @@ dependencies {
     /* Server */
     compile group: "io.ktor", name: "ktor-server-core", version: ktor_version
     compile group: "io.ktor", name: "ktor-server-netty", version: ktor_version
-    compile "io.ktor:ktor-client-core:$ktor_version"
-    compile "io.ktor:ktor-client-apache:$ktor_version"
     compile "io.ktor:ktor-freemarker:$ktor_version"
 
+    /* Http Client */
+    compile "io.ktor:ktor-client-core:$ktor_version"
+    compile "io.ktor:ktor-client-apache:$ktor_version"
+    compile "io.ktor:ktor-client-json:$ktor_version"
+
     /* Util */
-    runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile 'org.yaml:snakeyaml:1.21'
@@ -70,7 +76,7 @@ test {
         includeEngines 'junit-jupiter'
     }
 
-    failFast = true
+    failFast = false
 }
 
 compileKotlin {

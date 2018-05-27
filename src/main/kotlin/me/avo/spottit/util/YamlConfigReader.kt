@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.Yaml
 object YamlConfigReader {
 
     fun read(yaml: String): Configuration {
-        val data = Yaml().load<Map<String, Any>>(yaml)
+        val data = Yaml().load<Map<String, Any?>>(yaml)
         val playlists = data["playlists"] as? List<Map<String, Any>> ?: listOf()
         val userId = data["userId"].toString()
 
@@ -31,6 +31,5 @@ object YamlConfigReader {
             minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0
         )
     }
-
 
 }

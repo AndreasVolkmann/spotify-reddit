@@ -1,6 +1,4 @@
-
-
-    <div class="hero-foot">
+ <div class="hero-foot">
         <!--<nav class="tabs">-->
         <div class="container">
             <div class="content has-text-centered">

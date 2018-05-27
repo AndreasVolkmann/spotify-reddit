@@ -4,7 +4,8 @@ import io.ktor.freemarker.FreeMarkerContent
 
 object Templates {
 
-    fun auth() = FreeMarkerContent("auth.ftl", null, "e")
+    fun auth(accesToken: String, refreshToken: String) =
+        FreeMarkerContent("manual_auth.ftl", mapOf("accessToken" to accesToken, "refreshToken" to refreshToken), "e")
 
 
 }

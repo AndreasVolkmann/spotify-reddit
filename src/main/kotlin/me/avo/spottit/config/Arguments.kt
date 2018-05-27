@@ -9,6 +9,18 @@ class Arguments(args: Array<String>) {
     lateinit var configPath: String
         private set
 
+    @Parameter(names = ["-ma", "--manual-auth"], description = "Manually authorize the app to Spotify")
+    var manualAuth = false
+        private set
+
+    @Parameter(names = ["-aa", "--auto-auth"], description = "Automatically authorize the app to Spotify")
+    var automaticAuth = false
+        private set
+
+    @Parameter(names = ["-r", "--refresh"], description = "Refresh the Spotify access token")
+    var doRefresh = false
+        private set
+
     @Parameter(names = ["--help", "-h"], help = true)
     var help = false
         private set

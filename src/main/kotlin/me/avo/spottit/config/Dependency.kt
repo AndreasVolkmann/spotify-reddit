@@ -4,26 +4,49 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
+import me.avo.spottit.controller.AutomaticAuthController
 import me.avo.spottit.controller.DynamicPlaylistController
+import me.avo.spottit.controller.ManualAuthController
+import me.avo.spottit.controller.TokenRefreshController
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.SpotifyAuthService
-import me.avo.spottit.service.SpotifyService
-import me.avo.spottit.service.SpotifyServiceImpl
+import me.avo.spottit.service.*
+import org.slf4j.LoggerFactory
 import java.util.*
 
 val kodein = Kodein {
+    val logger = LoggerFactory.getLogger(Dependency::class.java)
     val props = Properties().apply {
-        load(Dependency::class.java.classLoader.getResourceAsStream("application.properties"))
+        try {
+            load(Dependency::class.java.classLoader.getResourceAsStream("application.properties"))
+        } catch (ex: NullPointerException) {
+            logger.warn("Could not find application.properties")
+        }
     }
 
     fun getProperty(key: String) = props.getProperty(key)
+    fun getEnvOrProp(key: String) = System.getenv(key) ?: getProperty(key)
 
     bind<DynamicPlaylistController>() with singleton {
         DynamicPlaylistController(
-            spotifyAuthService = instance(),
+            refreshController = instance(),
             spotifyService = instance(),
             redditCredentials = instance()
         )
+    }
+
+    bind<ManualAuthController>() with singleton {
+        ManualAuthController(spotifyAuthService = instance())
+    }
+
+    bind<AutomaticAuthController>() with singleton {
+        AutomaticAuthController(
+            spotifyAuthService = instance(),
+            client = instance()
+        )
+    }
+
+    bind<TokenRefreshController>() with singleton {
+        TokenRefreshController(spotifyAuthService = instance())
     }
 
     bind<SpotifyService>() with singleton {
@@ -31,19 +54,23 @@ val kodein = Kodein {
     }
 
     bind<SpotifyAuthService>() with singleton {
-        SpotifyAuthService(
-            clientId = getProperty("clientId"),
-            clientSecret = getProperty("clientSecret"),
-            redirectUri = getProperty("redirectUri")
+        SpotifyAuthServiceImpl(
+            clientId = getEnvOrProp("clientId"),
+            clientSecret = getEnvOrProp("clientSecret"),
+            redirectUri = getEnvOrProp("redirectUri")
         )
     }
 
     bind<RedditCredentials>() with singleton {
         RedditCredentials(
-            clientId = getProperty("reddit-clientId"),
-            clientSecret = getProperty("reddit-clientSecret"),
-            deviceName = getProperty("deviceName")
+            clientId = getEnvOrProp("reddit-clientId"),
+            clientSecret = getEnvOrProp("reddit-clientSecret"),
+            deviceName = getEnvOrProp("deviceName")
         )
+    }
+
+    bind<SpotifyHeadlessAuthService>() with singleton {
+        SpotifyHeadlessAuthService(serviceUrl = getEnvOrProp("SERVICE_URL"))
     }
 
 }

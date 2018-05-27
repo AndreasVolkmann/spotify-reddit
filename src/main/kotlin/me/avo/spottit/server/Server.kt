@@ -1,6 +1,7 @@
 package me.avo.spottit.server
 
 import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.instance
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration
 import io.ktor.application.Application
@@ -9,24 +10,43 @@ import io.ktor.application.install
 import io.ktor.features.CallLogging
 import io.ktor.features.StatusPages
 import io.ktor.freemarker.FreeMarker
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.get
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import me.avo.spottit.config.Dependency
+import me.avo.spottit.controller.ManualAuthController
+import me.avo.spottit.service.SpotifyAuthService
 import org.slf4j.event.Level
 
-fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(Netty, 5000, module = main(
-    kodein
-)
+fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
+    Netty, 5000, module = module(kodein)
 )
 
-fun main(kodein: Kodein): Application.() -> Unit = {
+fun module(kodein: Kodein): Application.() -> Unit = {
     install(Routing) {
-        setup(kodein)
+
+        val spotifyAuthService: SpotifyAuthService = kodein.instance()
+        val manualAuthController: ManualAuthController = kodein.instance()
+
+        get("spotify/auth/{...}") {
+            val code = call.parameters["code"]
+            when {
+                code == null || code.isBlank() -> throw StatusException(
+                    HttpStatusCode.BadRequest, "Invalid code supplied"
+                )
+                else -> {
+                    val credentials = spotifyAuthService.grantAccess(code)
+                    call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
+                    manualAuthController.writeCredentials(credentials)
+                }
+            }
+        }
     }
 
     install(FreeMarker) {
@@ -58,3 +78,4 @@ fun main(kodein: Kodein): Application.() -> Unit = {
 fun Configuration.setupFreemarker() {
     templateLoader = ClassTemplateLoader(Dependency::class.java.classLoader, "templates")
 }
+

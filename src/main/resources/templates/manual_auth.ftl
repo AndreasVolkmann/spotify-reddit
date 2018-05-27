@@ -6,14 +6,14 @@
         </div>
 
         <h1 class="title">
-            Spotify authentication succesfull!
+            Spotify authorization succesfull!
         </h1>
         <h2 class="subtitle">
-            The playlists will now be updated.
+            Here are your access and refresh tokens.
         </h2>
-        <div>
-            <i class="fas fa-sync fa-spin"></i>
-        </div>
+
+        <#include "credential_box.ftl">
+
     </div>
 </div>
 <#include "footer.ftl" parse=true>
