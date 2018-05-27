@@ -10,7 +10,7 @@ class TokenRefreshController(
 
     fun refresh(): String {
         logger.info("Refreshing Spotify access token")
-        val refreshToken = TokenUtil.refreshTokenFile.readText()
+        val refreshToken = TokenUtil.getRefreshToken()
         spotifyAuthService.refreshToken = refreshToken
 
         val newAccessToken = spotifyAuthService.refresh()
