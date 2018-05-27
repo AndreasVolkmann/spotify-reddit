@@ -1,5 +1,6 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
+[![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
 
 Dynamic Spotify playlists, based on Reddit.
   
@@ -13,6 +14,21 @@ Current test playlists can be found here:
 
 
 ### How to use
+To use the program, define your own `config.yml` and run the program with `-c ${PATH_TO_YOUR_CONFIG.YML}`.
+The following assumes that your config is called config.yml and is located in the same directory as the jar.
+
+Before running for the first time, you need to authorize the application. 
+
+Run with `-ma`: `java -jar spottit-${version}.jar -c config.yml -ma`
+
+This will obtain a refresh token, so that you do not need to authorize again. 
+
+Once this is done, you can omit the `-ma`. The application should now update the playlists.
+ 
+It is also possible to specify the refresh token via an environment variable called `REFRESH_TOKEN`. 
+
+
+#### Configuration
 To customize the application, edit the 
 [example_config.yml](https://github.com/AndreasVolkmann/spotify-reddit/blob/master/example_config.yml)
  and fill in your own information.
@@ -38,9 +54,9 @@ playlists:
     # can be either of: HOUR, DAY, WEEK, MONTH, YEAR, ALL
     # Only applies when sort is set to CONTROVERSIAL or TOP
     timePeriod: WEEK
-    
+
     # Minimum number of upvotes that a reddit post needs to have before being considered
-    minUpvotes: 13    
+    minUpvotes: 10
 
     # Second Playlist, based on the top tracks from all time
   - id: YOUR_OTHER_PLAYLIST_ID
@@ -48,13 +64,20 @@ playlists:
     subreddit: trance
     sort: TOP
     timePeriod: ALL
-    
-# You can also add a list of flairs which is used to exclude posts from Reddit
+    # Omit minUpvotes to allow any reddit post to be added
+
+# When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:
   - Mix
   - Liveset
   - Radio
-  
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+
 # minimum length of tracks in seconds in order to be added to the playlists
 minimumLength: 100
 ```
@@ -68,8 +91,14 @@ The last numerical part is your user ID.
 To find the ID of your playlist, right click it, select `Share` > `Copy Spotify URI`.
 The last part is your playlist's ID.
 
-Run the program with `-c ${PATH_TO_YOUR_CONFIG.YML}`.
 
+#### Deployment
+In order to run the jobs automatically, the application can be deployed to a server, using Heroku, for example.
+Steps:
+1. Obtain a refresh token locally.
+2. Deploy the jar and your `config.yml`
+3. Set the `REFRESH_TOKEN` environment variable to your obtained refresh token from step 1
+4. Run the app as usual
 
 ### Reference
 * [Reddit API](https://www.reddit.com/dev/api/)

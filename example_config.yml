@@ -28,7 +28,7 @@ playlists:
     subreddit: trance
     sort: TOP
     timePeriod: ALL
-    minUpvotes: 1
+    # Omit minUpvotes to allow any reddit post to be added
 
 # When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:
