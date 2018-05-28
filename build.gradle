@@ -9,15 +9,18 @@ buildscript {
 
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.17.0"
     }
 }
 
 group 'me.avo'
-version '0.3.1'
+version '0.4.0'
 
+apply plugin: "com.github.ben-manes.versions"
 apply plugin: 'kotlin'
 
 task stage(dependsOn: ['fatJar', 'clean'])
