@@ -33,7 +33,7 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
 
     private fun SpotifyApi.searchQuery(query: String): Pair<Int, Array<Track>> = query
         .also { logger.debug("Searching for $it") }
-        .let { searchTracks(it) }.limit(10).offset(0).build().execute()
+        .let { searchTracks(it) }.limit(10).offset(0).build().executeRequest()
         .also { Thread.sleep(100) }
         .let { it.total to trackFilter.applyFilters(it.items) }
 
