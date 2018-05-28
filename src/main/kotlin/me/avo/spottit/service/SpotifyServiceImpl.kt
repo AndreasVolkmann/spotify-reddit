@@ -22,13 +22,10 @@ class SpotifyServiceImpl(
                 .let { addTracks(it, userId, playlistId) }
         }
 
-    override fun findTracks(tracks: List<RedditTrack>, searchAlgorithm: SpotifySearchAlgorithm): List<Track> =
-        authService.getSpotifyApi().searchForTracks(tracks, searchAlgorithm)
-
-    private fun SpotifyApi.searchForTracks(
-        tracks: List<RedditTrack>,
-        searchAlgorithm: SpotifySearchAlgorithm
-    ): List<Track> = searchAlgorithm.searchForTracks(this, tracks)
+    override fun findTracks(tracks: List<RedditTrack>, searchAlgorithm: SpotifySearchAlgorithm): List<Track> {
+        val api = authService.getSpotifyApi()
+        return searchAlgorithm.searchForTracks(api, tracks)
+    }
 
     private fun SpotifyApi.clearPlaylist(
         tracksToAdd: List<Track>, userId: String, playlistId: String, maxSize: Int

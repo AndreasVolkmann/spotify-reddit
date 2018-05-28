@@ -7,5 +7,7 @@ data class Configuration(
     /**
      * Minimum length of tracks in seconds to get added to the playlists
      */
-    val minimumLength: Int = 0
+    val minimumLength: Int = 0,
+
+    val rateLimitInMs: Long
 )

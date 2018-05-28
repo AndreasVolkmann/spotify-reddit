@@ -40,13 +40,7 @@ class DynamicPlaylistController(
             .distinctBy { it.id } // TODO find out why there are duplicates
             .also { redditService.update(it.size) }
             .mapTo(foundTracks) { it }
-            .also { Thread.sleep(250) }
-
-        foundTracks
-            .groupBy { it.id }
-            .filterValues { it.size > 1 }
-            .also { println("Duplicate tracks:") }
-            .forEach { _, u -> println("${u.first().name}: ${u.size}") }
+            .also { logger.info("Status: ${foundTracks.size} / ${playlist.maxSize} tracks have been found") }
 
         spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id, playlist.maxSize)
     }

@@ -10,4 +10,8 @@ class TrackFilter(private val configuration: Configuration) {
     fun checkTrackLength(track: Track) =
         track.durationMs / 1000 > configuration.minimumLength
 
+    fun timeout() {
+        Thread.sleep(configuration.rateLimitInMs)
+    }
+
 }

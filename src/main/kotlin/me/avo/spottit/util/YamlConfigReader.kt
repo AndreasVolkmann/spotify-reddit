@@ -28,7 +28,8 @@ object YamlConfigReader {
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
-            minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0
+            minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0,
+            rateLimitInMs = (System.getenv("RATE_LIMIT") ?: data["rateLimit"]?.toString())?.toLong() ?: 500
         )
     }
 
