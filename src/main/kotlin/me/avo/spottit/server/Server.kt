@@ -16,7 +16,6 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.server.engine.ApplicationEngine
-import io.ktor.server.engine.ShutDownUrl
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import me.avo.spottit.config.Dependency
@@ -25,7 +24,9 @@ import me.avo.spottit.service.SpotifyAuthService
 import org.slf4j.event.Level
 
 fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
-    Netty, 5000, module = module(kodein)
+    factory = Netty,
+    port = System.getenv("PORT")?.toInt() ?: 5000,
+    module = module(kodein)
 )
 
 fun module(kodein: Kodein): Application.() -> Unit = {
@@ -51,13 +52,6 @@ fun module(kodein: Kodein): Application.() -> Unit = {
 
     install(FreeMarker) {
         setupFreemarker()
-    }
-
-    install(ShutDownUrl.ApplicationCallFeature) {
-        // The URL that will be intercepted
-        shutDownUrl = "/application/shutdown"
-        // A function that will be executed to get the exit code of the process
-        exitCodeSupplier = { 0 }
     }
 
     install(StatusPages) {
