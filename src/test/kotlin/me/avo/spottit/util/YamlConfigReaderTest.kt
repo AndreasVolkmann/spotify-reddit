@@ -36,7 +36,8 @@ internal class YamlConfigReaderTest {
                 )
             ),
             flairsToExclude = listOf("one", "Discussion"),
-            minimumLength = 100
+            minimumLength = 100,
+            rateLimitInMs = 1000
         )
 
         val actual = YamlConfigReader.read(yaml)

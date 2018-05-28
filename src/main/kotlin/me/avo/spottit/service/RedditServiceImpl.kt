@@ -89,7 +89,7 @@ class RedditServiceImpl(
         .timePeriod(timePeriod)
         .build()
 
-    private val maxPage = 20
+    private val maxPage = System.getenv("REDDIT_MAX_PAGE")?.toInt() ?: 25
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

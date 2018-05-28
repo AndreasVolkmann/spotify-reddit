@@ -16,7 +16,7 @@ buildscript {
 }
 
 group 'me.avo'
-version '0.3.0'
+version '0.3.1'
 
 apply plugin: 'kotlin'
 
