@@ -1,6 +1,7 @@
 package me.avo.spottit.service
 
 import com.wrapper.spotify.SpotifyApi
+import com.wrapper.spotify.exceptions.detailed.BadGatewayException
 import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException
 import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.Track
@@ -13,10 +14,15 @@ interface SpotifySearchAlgorithm {
 
     fun SearchTracksRequest.executeRequest(stack: Int = 0): Paging<Track> = try {
         execute()
-    } catch (ex: TooManyRequestsException) {
+    } catch (ex: Exception) {
+        val timeout = when (ex) {
+            is TooManyRequestsException -> ex.retryAfter
+            is BadGatewayException -> 1000
+            else -> throw ex
+        }
         when {
             stack < 5 -> {
-                val waitForSeconds = ex.retryAfter / 1000L
+                val waitForSeconds = timeout / 1000L
                 Thread.sleep(waitForSeconds)
                 executeRequest(stack + 1)
             }
