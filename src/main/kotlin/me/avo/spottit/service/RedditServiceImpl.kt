@@ -48,6 +48,7 @@ class RedditServiceImpl(
             page
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
+                .filter { it.title.contains("-") } // artist - track delimiter
                 .let {
                     if (playlist.minimumUpvotes != null) {
                         it.filter { it.score > playlist.minimumUpvotes }

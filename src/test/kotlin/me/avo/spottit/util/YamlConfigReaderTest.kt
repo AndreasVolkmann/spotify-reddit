@@ -23,7 +23,8 @@ internal class YamlConfigReaderTest {
                     userId = userId,
                     sort = SubredditSort.TOP,
                     timePeriod = TimePeriod.WEEK,
-                    minimumUpvotes = 5
+                    minimumUpvotes = 5,
+                    isStrictMix = false
                 ),
                 Playlist(
                     id = "someplid2",
@@ -32,7 +33,8 @@ internal class YamlConfigReaderTest {
                     userId = userId,
                     sort = SubredditSort.TOP,
                     timePeriod = TimePeriod.ALL,
-                    minimumUpvotes = 10
+                    minimumUpvotes = 10,
+                    isStrictMix = true
                 )
             ),
             flairsToExclude = listOf("one", "Discussion"),

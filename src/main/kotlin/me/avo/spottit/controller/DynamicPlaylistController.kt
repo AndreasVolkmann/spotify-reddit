@@ -31,7 +31,7 @@ class DynamicPlaylistController(
         val redditService = RedditServiceImpl(playlist, configuration.flairsToExclude, redditCredentials)
         val foundTracks = mutableListOf<Track>()
 
-        val searchAlgorithm = ElectronicSearchAlgorithm(TrackFilter(configuration))
+        val searchAlgorithm = ElectronicSearchAlgorithm(TrackFilter(configuration, playlist))
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()

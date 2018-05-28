@@ -1,6 +1,5 @@
 package me.avo.spottit.util
 
-import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
@@ -27,6 +26,18 @@ internal class SubmissionParserTest {
             "These Shoulders",
             "Oliver Smith Remix",
             listOf("Anjunabeats", "2008")
+        ),
+        "DJ Shadow - Midnight In A Perfect World [Hip Hop/Trip Hop] (1996) way ahead of its time." to track(
+            "DJ Shadow",
+            "Midnight In A Perfect World",
+            null,
+            listOf("Hip Hop/Trip Hop", "1996")
+        ),
+        "Lorde - Tennis Court [Flume Remix] [future bass]" to track(
+            "Lorde",
+            "Tennis Court",
+            "Flume Remix",
+            listOf("future bass")
         )
     )
 

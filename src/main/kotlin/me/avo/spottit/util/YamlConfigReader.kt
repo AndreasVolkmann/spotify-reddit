@@ -24,7 +24,8 @@ object YamlConfigReader {
                     subreddit = it["subreddit"].toString(),
                     sort = SubredditSort.valueOf(it["sort"].toString()),
                     timePeriod = TimePeriod.valueOf(it["timePeriod"].toString()),
-                    minimumUpvotes = it["minUpvotes"]?.toString()?.toInt()
+                    minimumUpvotes = it["minUpvotes"]?.toString()?.toInt(),
+                    isStrictMix = it["isStrictMix"]?.toString()?.toBoolean() ?: false
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),

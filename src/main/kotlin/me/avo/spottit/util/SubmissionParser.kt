@@ -7,16 +7,30 @@ object SubmissionParser {
     fun parse(title: String, flairText: String?): RedditTrack {
         val fixedTitle = title.fixChars()
         val extraInformation = fixedTitle.getExtraInformation()
-        val mix = fixedTitle.getMix()
-        val fullTitle = (extraInformation + mix).fold(fixedTitle) { acc, s -> acc.replace(s, "").trim() }
+        //val extraContainsMix = extraInformation.any { it.contains("remix", ignoreCase = true) }
+        val mixList = fixedTitle.getMix()
+        val mix = mixList.firstOrNull()?.removePrefixSuffix() ?: extraInformation.find {
+            it.contains("remix", ignoreCase = true)
+        }?.removePrefixSuffix()
+
+        val date = mix?.toIntOrNull()?.toString()
+
+        val fullTitle = (extraInformation + mixList)
+            .fold(fixedTitle) { acc, s -> acc.replace(s, "").trim() }
+            .let { if (it.contains("   ")) it.split("   ").first() else it } // remove additional text after mix / info
         return RedditTrack(
             artist = fullTitle.substringBefore("-").trim(),
-            title = fullTitle.substringAfter("-").trim(),
-            mix = mix.firstOrNull()?.removePrefixSuffix(),
-            extraInformation = (extraInformation + mix.drop(1)).map { it.removePrefixSuffix() },
+            title = fullTitle.substringAfter("-").cleanTitle(),
+            mix = if (date != null) null else mix,
+            extraInformation = (extraInformation + date + mixList.drop(1))
+                .filterNotNull()
+                .map { it.removePrefixSuffix() }
+                .filter { it != mix || it == date }, // filter mix out of extra info allow if date
             flair = flairText
         )
     }
+
+    private fun String.cleanTitle() = removePrefix("-").trim()
 
     private fun String.fixChars() = replace("&amp;", "&")
 
