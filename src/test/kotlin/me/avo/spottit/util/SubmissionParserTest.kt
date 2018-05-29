@@ -52,8 +52,38 @@ internal class SubmissionParserTest {
             listOf("2001")
         ),
         "Ellie Goulding and Madeon - \"Stay Awake\"" to redditTrack(
-            "Ellie Goulding and Madeon",
+            "Ellie Goulding & Madeon",
             "Stay Awake",
+            null,
+            listOf()
+        ),
+        "[NEW] Justice - Randy" to redditTrack(
+            "Justice",
+            "Randy",
+            null,
+            listOf("NEW")
+        ),
+        "Flume -- Holdin' On [Flume Step/Electronic] (2013) who else here is a Flume fan?" to redditTrack(
+            "Flume",
+            "Holdin' On",
+            null,
+            listOf("Flume Step/Electronic", "2013")
+        ),
+        "ODESZA - It's Only (feat. Zyra) [Chill] (2014)" to redditTrack(
+            "ODESZA",
+            "It's Only",
+            "feat. Zyra",
+            listOf("Chill", "2014")
+        ),
+        "VIRTUAL SELF - EON BREAK [Electronic] (2017) Porter Robinson's side project?" to redditTrack(
+            "VIRTUAL SELF",
+            "EON BREAK",
+            null,
+            listOf("Electronic", "2017")
+        ),
+        "Major Lazer feat. Amber -- \"Get Free\"" to redditTrack(
+            "Major Lazer & Amber",
+            "Get Free",
             null,
             listOf()
         )

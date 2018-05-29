@@ -5,10 +5,9 @@ import me.avo.spottit.model.RedditTrack
 object SubmissionParser {
 
     fun parse(title: String, flairText: String?): RedditTrack {
-        val fixedTitle = title.escapeChars()
-        val extraInformation = fixedTitle.getExtraInformation()
+        val extraInformation = title.getExtraInformation()
         //val extraContainsMix = extraInformation.any { it.contains("remix", ignoreCase = true) }
-        val mixList = fixedTitle.getMix()
+        val mixList = title.getMix()
         val mix = mixList.firstOrNull()?.removePrefixSuffix() ?: extraInformation.find {
             it.contains("remix", ignoreCase = true)
         }?.removePrefixSuffix()
@@ -16,8 +15,9 @@ object SubmissionParser {
         val date = mix?.toIntOrNull()?.toString()
 
         val fullTitle = (extraInformation + mixList)
-            .fold(fixedTitle) { acc, s -> acc.replace(s, "").trim() }
+            .fold(title) { acc, s -> acc.replace(s, "").trim() }
             .let { if (it.contains("   ")) it.split("   ").first() else it } // remove additional text after mix / info
+            .escapeChars()
         return RedditTrack(
             artist = fullTitle.substringBefore("-").trim(),
             title = fullTitle.substringAfter("-").cleanTitle(),
@@ -32,11 +32,13 @@ object SubmissionParser {
 
     private fun String.cleanTitle() = removePrefix("-").trim()
 
+    private val featuringSynonyms = listOf("ft.", "feat.", "&amp;")
+
     private val charsToFix = listOf(
-        "&amp;" to "&",
         "\"" to "",
-        "'" to ""
-    )
+        //"'" to "",
+        " and " to " & "
+    ) + featuringSynonyms.map { it to "&" }
 
     private fun String.escapeChars() = charsToFix.fold(this) { acc, (old, new) -> acc.replace(old, new) }
 
@@ -44,14 +46,11 @@ object SubmissionParser {
 
     private fun String.getExtraInformation(): List<String> = getEnclosedText("[", "]")
 
-    private fun String.getEnclosedText(start: String, end: String) = Regex("\\$start.*?\\$end")
-        .findAll(this)
-        .map(MatchResult::value)
-        .toList()
-
     private val prefixSuffixChars = listOf(
         "(" to ")",
-        "[" to "]"
+        "[" to "]",
+        "\"" to "\"",
+        "'" to "'"
     )
 
     private fun String.removePrefixSuffix(): String =

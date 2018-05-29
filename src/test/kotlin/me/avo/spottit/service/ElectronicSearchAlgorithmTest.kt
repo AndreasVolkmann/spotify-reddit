@@ -25,7 +25,8 @@ internal class ElectronicSearchAlgorithmTest {
         val results = alg.searchForTracks(
             spotifyApi = spotifyAuthService.getSpotifyApi(),
             tracks = listOf(
-                redditTrack("Daft Punk", "Face To Face")
+                //redditTrack("Daft Punk", "Face To Face")
+                redditTrack("Major Lazer & Amber", "Get Free")
             )
         )
 
