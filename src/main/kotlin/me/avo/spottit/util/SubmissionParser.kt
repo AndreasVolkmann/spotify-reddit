@@ -5,7 +5,7 @@ import me.avo.spottit.model.RedditTrack
 object SubmissionParser {
 
     fun parse(title: String, flairText: String?): RedditTrack {
-        val fixedTitle = title.fixChars()
+        val fixedTitle = title.escapeChars()
         val extraInformation = fixedTitle.getExtraInformation()
         //val extraContainsMix = extraInformation.any { it.contains("remix", ignoreCase = true) }
         val mixList = fixedTitle.getMix()
@@ -32,7 +32,13 @@ object SubmissionParser {
 
     private fun String.cleanTitle() = removePrefix("-").trim()
 
-    private fun String.fixChars() = replace("&amp;", "&")
+    private val charsToFix = listOf(
+        "&amp;" to "&",
+        "\"" to "",
+        "'" to ""
+    )
+
+    private fun String.escapeChars() = charsToFix.fold(this) { acc, (old, new) -> acc.replace(old, new) }
 
     private fun String.getMix() = getEnclosedText("(", ")")
 

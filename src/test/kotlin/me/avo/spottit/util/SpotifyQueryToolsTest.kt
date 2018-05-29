@@ -29,6 +29,14 @@ internal class SpotifyQueryToolsTest {
                 Candidate("These Shoulders (Oliver Smith Remix)", 411133, true),
                 Candidate("These Shoulders - Club Mix", 10)
             )
+        ),
+        TestCase(
+            "Face To Face", listOf(
+                Candidate("Face To Face", 400, true),
+                Candidate("Face To Face / Short Circuit", 455),
+                Candidate("Face To Face (Demon Remix)", 700),
+                Candidate("Face To Face (Cosmo Vltelli Remix)", 455)
+            )
         )
     )
 
