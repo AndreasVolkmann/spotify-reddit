@@ -21,7 +21,7 @@ object SpotifyQueryTools {
 
     fun makeComparator(title: String, artist: String): Comparator<Track> =
         compareBy<Track>(
-            { it.artistString().getLevenshteinDistance(artist) },
+            { it.firstArtistName.getLevenshteinDistance(artist) },
             { it.name.fixTitle().getLevenshteinDistance(title) })
             .thenByDescending { it.durationMs }
 

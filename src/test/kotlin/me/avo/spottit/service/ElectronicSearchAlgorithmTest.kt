@@ -26,7 +26,7 @@ internal class ElectronicSearchAlgorithmTest {
             spotifyApi = spotifyAuthService.getSpotifyApi(),
             tracks = listOf(
                 //redditTrack("Daft Punk", "Face To Face")
-                redditTrack("Major Lazer & Amber", "Get Free")
+                redditTrack("The Weeknd", "I Feel It Coming", "Daft Punk")
             )
         )
 

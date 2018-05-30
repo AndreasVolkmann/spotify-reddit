@@ -5,7 +5,6 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.SpotifyQueryTools
 import me.avo.spottit.util.TrackFilter
-import me.avo.spottit.util.format
 import org.slf4j.LoggerFactory
 
 class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifySearchAlgorithm {
@@ -35,7 +34,7 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
     private fun SpotifyApi.searchQuery(query: String): Pair<Int, Array<Track>> = query
         .also { logger.debug("Searching for $it") }
         .let { searchTracks(it) }.limit(10).offset(0).build().executeRequest()
-        .also { it.items.forEach { println(it.format()) } }
+        //.also { it.items.forEach { println(it.format()) } }
         .also { Thread.sleep(100) }
         .let { it.total to trackFilter.applyFilters(it.items) }
 
@@ -50,7 +49,7 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
         stack > 1 -> null
         track.artist.contains("&") -> alteredArtistSearch("&", track, stack)
         track.mix != null && !trackFilter.isStrictMix -> research(track, stack, track.artist, track.title)
-        stack == 0 ->  research(track, stack, track.artist, track.title, track.mix)
+        stack == 0 -> research(track, stack, track.artist, track.title, track.mix)
         else -> null
     }
 

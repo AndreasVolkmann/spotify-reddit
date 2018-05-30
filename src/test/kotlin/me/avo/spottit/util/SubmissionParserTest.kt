@@ -72,8 +72,8 @@ internal class SubmissionParserTest {
         "ODESZA - It's Only (feat. Zyra) [Chill] (2014)" to redditTrack(
             "ODESZA",
             "It's Only",
-            "feat. Zyra",
-            listOf("Chill", "2014")
+            null,
+            listOf("Chill", "feat. Zyra", "2014")
         ),
         "VIRTUAL SELF - EON BREAK [Electronic] (2017) Porter Robinson's side project?" to redditTrack(
             "VIRTUAL SELF",
@@ -86,6 +86,30 @@ internal class SubmissionParserTest {
             "Get Free",
             null,
             listOf()
+        ),
+        "Mat Zo & Porter Robinson - Easy [Progressive House] (2013)" to redditTrack(
+            "Mat Zo & Porter Robinson",
+            "Easy",
+            null,
+            listOf("Progressive House", "2013")
+        ),
+        "The Weeknd - I Feel It Coming(feat. Daft Punk) (2016)" to redditTrack(
+            "The Weeknd",
+            "I Feel It Coming",
+            null,
+            listOf("feat. Daft Punk", "2016")
+        ),
+        "Justice - Stress (Electro House)(2008) How I imagine a good number of people feel right now" to redditTrack(
+            "Justice",
+            "Stress",
+            null,
+            listOf("Electro House", "2008")
+        ),
+        "Boards of Canada -- Music Has the Right to Children (April 20, 1998) Happy 19th Birthday" to redditTrack(
+            "Boards of Canada",
+            "Music Has the Right to Children",
+            null,
+            listOf("April 20, 1998")
         )
     )
 

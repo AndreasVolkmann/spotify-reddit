@@ -6,26 +6,20 @@ object SubmissionParser {
 
     fun parse(title: String, flairText: String?): RedditTrack {
         val extraInformation = title.getExtraInformation()
-        //val extraContainsMix = extraInformation.any { it.contains("remix", ignoreCase = true) }
-        val mixList = title.getMix()
-        val mix = mixList.firstOrNull()?.removePrefixSuffix() ?: extraInformation.find {
-            it.contains("remix", ignoreCase = true)
-        }?.removePrefixSuffix()
+        val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
 
-        val date = mix?.toIntOrNull()?.toString()
-
-        val fullTitle = (extraInformation + mixList)
+        val fullTitle = (extraInformation)
             .fold(title) { acc, s -> acc.replace(s, "").trim() }
-            .let { if (it.contains("   ")) it.split("   ").first() else it } // remove additional text after mix / info
+            .split("  ").first() // remove additional text after mix / info
             .escapeChars()
+
         return RedditTrack(
             artist = fullTitle.substringBefore("-").trim(),
             title = fullTitle.substringAfter("-").cleanTitle(),
-            mix = if (date != null) null else mix,
-            extraInformation = (extraInformation + date + mixList.drop(1))
+            mix = mix?.removePrefixSuffix(),
+            extraInformation = (extraInformation - mix)
                 .filterNotNull()
-                .map { it.removePrefixSuffix() }
-                .filter { it != mix || it == date }, // filter mix out of extra info allow if date
+                .map { it.removePrefixSuffix() },
             flair = flairText
         )
     }
@@ -36,15 +30,12 @@ object SubmissionParser {
 
     private val charsToFix = listOf(
         "\"" to "",
-        //"'" to "",
-        " and " to " & "
+        " and " to " & " // only word occurrences of and, otherwise Randy -> R&y
     ) + featuringSynonyms.map { it to "&" }
 
     private fun String.escapeChars() = charsToFix.fold(this) { acc, (old, new) -> acc.replace(old, new) }
 
-    private fun String.getMix() = getEnclosedText("(", ")")
-
-    private fun String.getExtraInformation(): List<String> = getEnclosedText("[", "]")
+    private fun String.getExtraInformation(): List<String> = getEnclosedText("[", "]") + getEnclosedText("(", ")")
 
     private val prefixSuffixChars = listOf(
         "(" to ")",

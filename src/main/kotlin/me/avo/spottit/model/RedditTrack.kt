@@ -10,4 +10,8 @@ data class RedditTrack(
 
     val isRemix get() = mix?.contains("remix", ignoreCase = true)
 
+    val artists = artist.split("&")
+
+    val firstArtist get() = artists.first()
+
 }
