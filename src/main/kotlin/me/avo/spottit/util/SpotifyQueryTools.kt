@@ -17,13 +17,36 @@ object SpotifyQueryTools {
         .also(::println)
 
     fun sortItems(items: Array<Track>, track: RedditTrack): List<Track> = items
+        .filterNot { exceedsThreshold(it, track) }
         .sortedWith(makeComparator(track.title, track.artist))
 
-    fun makeComparator(title: String, artist: String): Comparator<Track> =
-        compareBy<Track>(
-            { it.firstArtistName.getLevenshteinDistance(artist) },
-            { it.name.fixTitle().getLevenshteinDistance(title) })
-            .thenByDescending { it.durationMs }
+
+    val editDistanceThreshold = 10
+
+    fun exceedsThreshold(track: Track, redditTrack: RedditTrack): Boolean {
+        val artistDistance = getArtistDistance(track, redditTrack)
+        val trackDistance = getTrackDistance(track, redditTrack).let {
+            if (redditTrack.mix != null && track.name.contains(redditTrack.mix, ignoreCase = true)) {
+                it - redditTrack.mix.length
+            } else it
+        }
+
+
+        return artistDistance + trackDistance > editDistanceThreshold
+    }
+
+    fun getArtistDistance(track: Track, artist: String) = track.firstArtistName.getLevenshteinDistance(artist)
+
+    fun getArtistDistance(track: Track, redditTrack: RedditTrack) = getArtistDistance(track, redditTrack.artist)
+
+    fun getTrackDistance(track: Track, trackName: String) = track.name.fixTitle().getLevenshteinDistance(trackName)
+
+    fun getTrackDistance(track: Track, redditTrack: RedditTrack) = getTrackDistance(track, redditTrack.title)
+
+    fun makeComparator(title: String, artist: String): Comparator<Track> = compareBy<Track>(
+        { getArtistDistance(it, artist) },
+        { getTrackDistance(it, title) }
+    ).thenByDescending { it.durationMs }
 
     private fun String.getLevenshteinDistance(other: String): Int =
         LevenshteinDistance.getDefaultInstance().apply(this, other)

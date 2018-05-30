@@ -42,7 +42,11 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
         when (items.size) {
             0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
             1 -> items.first() // only one result
-            else -> SpotifyQueryTools.sortItems(items, track).first() // there are multiple results, sort
+            else -> SpotifyQueryTools.sortItems(items, track).firstOrNull() ?: evaluateResults(
+                track,
+                emptyArray(),
+                stack + 1
+            ) // there are multiple results, sort
         }
 
     private fun SpotifyApi.adjustQuery(track: RedditTrack, stack: Int) = when {

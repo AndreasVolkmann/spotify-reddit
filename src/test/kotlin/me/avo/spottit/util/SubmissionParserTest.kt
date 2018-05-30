@@ -110,6 +110,12 @@ internal class SubmissionParserTest {
             "Music Has the Right to Children",
             null,
             listOf("April 20, 1998")
+        ),
+        "Aphex Twin - minipops 67 [120.2][source field mix]" to redditTrack(
+            "Aphex Twin",
+            "minipops 67",
+            "source field mix",
+            listOf("120.2")
         )
     )
 

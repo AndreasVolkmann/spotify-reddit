@@ -1,10 +1,14 @@
 package me.avo.spottit.util
 
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
+import me.avo.spottit.redditTrack
 import me.avo.spottit.track
+import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeEmpty
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.util.*
 
@@ -83,6 +87,44 @@ internal class SpotifyQueryToolsTest {
         }
     }
 
+    @Test fun `should filter out candidates exceeding the threshold`() {
+        val case = TestCase(
+            "Justice", "Cross", listOf(
+                Candidate("Justice", "DVNO - Live Version", 400)
+            )
+        )
+
+        val result = SpotifyQueryTools.sortItems(
+            case.candidates.map { it.toTrack() }.toTypedArray(),
+            redditTrack(case.artist, case.name)
+        )
+
+        result.shouldBeEmpty()
+    }
+
+    @Test fun `should not exceed threshold`() {
+        val reddit = redditTrack("Aphex Twin", "minipops 67", "source field mix", listOf("120.2"))
+        val spotify = track {
+            setArtists(ArtistSimplified.Builder().apply {
+              setName("Aphex Twin")
+            }.build())
+            setName("minipops 67 [120.2][source field mix]")
+        }
+
+
+        SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
+
+        SpotifyQueryTools.exceedsThreshold(spotify, reddit) shouldBe false
+
+    }
+
+    private fun Candidate.toTrack() = track {
+        setArtists(ArtistSimplified.Builder().apply {
+            setName(artist)
+        }.build())
+        setName(name)
+        setDurationMs(duration)
+    }
 
     @TestFactory fun `fixTitle should produce expected output`() =
         listOf("Get Free (feat. Amber of Dirty Projectors)" to "Get Free")
