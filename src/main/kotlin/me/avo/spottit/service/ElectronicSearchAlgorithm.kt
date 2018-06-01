@@ -23,7 +23,7 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
 
     private fun SpotifyApi.findTrack(
         track: RedditTrack
-    ): Triple<RedditTrack, Track?, Int> = SpotifyQueryTools.initialQuery(track)
+    ): Triple<RedditTrack, Track?, Int> = SpotifyQueryTools.initialQuery(track, true)
         .let { searchQuery(it) }
         .let { (total, items) ->
             val validTracks = trackFilter.applyFilters(items)
@@ -34,6 +34,7 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
     private fun SpotifyApi.searchQuery(query: String): Pair<Int, Array<Track>> = query
         .also { logger.debug("Searching for $it") }
         .let { searchTracks(it) }.limit(10).offset(0).build().executeRequest()
+        //.also { it.items.forEach { println(it.format()) } }
         .also { Thread.sleep(100) }
         .let { it.total to trackFilter.applyFilters(it.items) }
 
@@ -41,17 +42,24 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
         when (items.size) {
             0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
             1 -> items.first() // only one result
-            else -> SpotifyQueryTools.sortItems(items, track).first() // there are multiple results, sort
+            else -> SpotifyQueryTools.sortItems(items, track).firstOrNull() ?: evaluateResults(
+                track,
+                emptyArray(),
+                stack + 1
+            ) // there are multiple results, sort
         }
 
     private fun SpotifyApi.adjustQuery(track: RedditTrack, stack: Int) = when {
         stack > 1 -> null
-        track.artist.contains("&") -> {
-            val fixedArtist = track.artist.split("&").first().trim()
-            research(track.copy(artist = fixedArtist), stack, fixedArtist, track.title, track.mix)
-        }
-        track.mix != null -> research(track, stack, track.artist, track.title)
+        track.artist.contains("&") -> alteredArtistSearch("&", track, stack)
+        track.mix != null && !trackFilter.isStrictMix -> research(track, stack, track.artist, track.title)
+        stack == 0 -> research(track, stack, track.artist, track.title, track.mix)
         else -> null
+    }
+
+    private fun SpotifyApi.alteredArtistSearch(delimiter: String, track: RedditTrack, stack: Int): Track? {
+        val fixedArtist = track.artist.split(delimiter).first().trim()
+        return research(track.copy(artist = fixedArtist), stack, fixedArtist, track.title, track.mix)
     }
 
     private fun SpotifyApi.research(track: RedditTrack, stack: Int, vararg items: String?) =

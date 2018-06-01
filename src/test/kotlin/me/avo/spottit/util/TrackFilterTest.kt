@@ -2,6 +2,9 @@ package me.avo.spottit.util
 
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
+import me.avo.spottit.model.Playlist
+import net.dean.jraw.models.SubredditSort
+import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -17,7 +20,10 @@ internal class TrackFilterTest {
             setDurationMs(999)
         }.build()
 
-        val trackFilter = TrackFilter(configuration)
+        val trackFilter = TrackFilter(
+            configuration,
+            Playlist("", "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false)
+        )
 
         trackFilter.checkTrackLength(trackAbove) shouldBe true
         trackFilter.checkTrackLength(trackBelow) shouldBe false

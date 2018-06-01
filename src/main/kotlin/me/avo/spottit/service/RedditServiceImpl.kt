@@ -14,6 +14,7 @@ import net.dean.jraw.oauth.OAuthHelper
 import net.dean.jraw.pagination.Paginator
 import net.dean.jraw.references.SubredditReference
 import org.slf4j.LoggerFactory
+import java.net.URL
 import java.util.*
 
 class RedditServiceImpl(
@@ -48,6 +49,8 @@ class RedditServiceImpl(
             page
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
+                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
+                .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
                 .let {
                     if (playlist.minimumUpvotes != null) {
                         it.filter { it.score > playlist.minimumUpvotes }
@@ -94,6 +97,6 @@ class RedditServiceImpl(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private fun parse(submission: Submission): RedditTrack =
-        SubmissionParser.parse(submission.title, submission.linkFlairText)
+        SubmissionParser.parse(submission.title, submission.linkFlairText, submission.url)
 
 }

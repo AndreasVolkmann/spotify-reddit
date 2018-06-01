@@ -8,6 +8,7 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.model.TrackInPlaylist
 import me.avo.spottit.util.SpotifyPlaylistCalculator
+import me.avo.spottit.util.format
 import org.slf4j.LoggerFactory
 
 class SpotifyServiceImpl(
@@ -47,6 +48,7 @@ class SpotifyServiceImpl(
     }
 
     private fun SpotifyApi.removeTracksFromPlaylist(userId: String, playlistId: String, tracks: List<TrackInPlaylist>) {
+        tracks.forEach { logger.info("Removing ${it.track.format()}") }
         val jsonTracks = makeJsonTracksForRemoval(tracks)
         removeTracksFromPlaylist(userId, playlistId, jsonTracks).build().execute()
     }
@@ -60,6 +62,7 @@ class SpotifyServiceImpl(
             logger.warn("Did not find any tracks to add")
             return
         }
+        tracks.forEach { logger.info("Adding ${it.format()}") }
         addTracksToPlaylist(userId, playlistId, tracks.map { it.uri }.toTypedArray()).build().execute()
     }
 

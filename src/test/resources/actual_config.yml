@@ -1,0 +1,42 @@
+userId: 113258637
+
+playlists:
+#  - id: 7eoppWh6XjOIIp10DKpSAs
+#    maxSize: 25
+#    subreddit: trance
+#    sort: TOP
+#    timePeriod: WEEK
+#    minUpvotes: 5
+
+  - id: 6cQk28LM0k3ogiCNEH0d9e
+    maxSize: 65
+    subreddit: electronicmusic
+    sort: TOP
+    timePeriod: ALL
+    minUpvotes: 100
+    isStrictMix: true
+  
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Radio Show
+  # electronicmusic specific
+  - Photos
+  - Discussion
+  - News
+  - Article
+  - Satire
+  - Official AMA
+  - Misleading
+  - Twitter
+
+
+
+minimumLength: 100
