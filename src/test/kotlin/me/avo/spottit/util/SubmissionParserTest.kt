@@ -34,6 +34,17 @@ internal class SubmissionParserTest {
         SubmissionParser.isSpotifyTrack(trackUrl) shouldBe true
     }
 
+    @Test fun `should filter out titles without - in actual title`() {
+        val invalid = "Dancing to Justice (r/Gifsound x-post)"
+        val valid = pairs.map { it.first }
+
+        SubmissionParser.isValidTrackTitle(invalid) shouldBe false
+        valid.forEach {
+            SubmissionParser.isValidTrackTitle(it) shouldBe true
+        }
+    }
+
+
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         DynamicTest.dynamicTest(expected.artist) {
             SubmissionParser.parse(raw, null, "") shouldEqual expected

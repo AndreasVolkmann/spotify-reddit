@@ -50,8 +50,7 @@ class RedditServiceImpl(
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
                 .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
-                // TODO track delimiter needs to be in the title, not in extra info
-                .filter { it.title.contains("-") } // artist - track delimiter
+                .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
                 .let {
                     if (playlist.minimumUpvotes != null) {
                         it.filter { it.score > playlist.minimumUpvotes }

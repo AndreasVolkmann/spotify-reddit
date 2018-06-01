@@ -6,14 +6,7 @@ import java.net.URL
 object SubmissionParser {
 
     fun parse(title: String, flairText: String?, url: String): RedditTrack {
-        val extraInformation = title.getExtraInformation()
-        val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
-
-        val fullTitle = (extraInformation)
-            .fold(title) { acc, s -> acc.replace(s, "").trim() }
-            .split("  ").first() // remove additional text after mix / info
-            .escapeChars()
-
+        val (fullTitle, mix, extraInformation) = processTitle(title)
         return RedditTrack(
             artist = fullTitle.substringBefore("-").trim(),
             title = fullTitle.substringAfter("-").cleanTitle(),
@@ -25,6 +18,19 @@ object SubmissionParser {
             url = url
         )
     }
+
+    fun processTitle(title: String): Triple<String, String?, List<String>> {
+        val extraInformation = title.getExtraInformation()
+        val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
+
+        val fullTitle = (extraInformation)
+            .fold(title) { acc, s -> acc.replace(s, "").trim() }
+            .split("  ").first() // remove additional text after mix / info
+            .escapeChars()
+        return Triple(fullTitle, mix, extraInformation)
+    }
+
+    fun isValidTrackTitle(title: String): Boolean = processTitle(title).first.contains("-")
 
     private fun String.cleanTitle() = removePrefix("-").trim()
 
