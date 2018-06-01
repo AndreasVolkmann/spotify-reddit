@@ -1,10 +1,11 @@
 package me.avo.spottit.util
 
 import me.avo.spottit.model.RedditTrack
+import java.net.URL
 
 object SubmissionParser {
 
-    fun parse(title: String, flairText: String?): RedditTrack {
+    fun parse(title: String, flairText: String?, url: String): RedditTrack {
         val extraInformation = title.getExtraInformation()
         val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
 
@@ -20,7 +21,8 @@ object SubmissionParser {
             extraInformation = (extraInformation - mix)
                 .filterNotNull()
                 .map { it.removePrefixSuffix() },
-            flair = flairText
+            flair = flairText,
+            url = url
         )
     }
 
@@ -46,5 +48,11 @@ object SubmissionParser {
 
     private fun String.removePrefixSuffix(): String =
         prefixSuffixChars.fold(this) { acc, (prefix, suffix) -> acc.removeSurrounding(prefix, suffix) }
+
+    fun isSpotifyAlbum(url: URL): Boolean = isSpotifyUrl(url) && url.file.startsWith("/album", ignoreCase = true)
+
+    fun isSpotifyTrack(url: URL) = isSpotifyUrl(url) && url.file.startsWith("/track", ignoreCase = true)
+
+    fun isSpotifyUrl(url: URL): Boolean = url.host == "open.spotify.com"
 
 }

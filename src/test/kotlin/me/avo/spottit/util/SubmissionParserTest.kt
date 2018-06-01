@@ -1,15 +1,42 @@
 package me.avo.spottit.util
 
 import me.avo.spottit.redditTrack
+import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import java.net.URL
 
 internal class SubmissionParserTest {
 
+    @Test fun `should identify spotify urls`() {
+        val spotifyUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
+        val otherUrl = URL("https://github.com/AndreasVolkmann/spotify-reddit/issues/19")
+
+        SubmissionParser.isSpotifyUrl(spotifyUrl) shouldBe true
+        SubmissionParser.isSpotifyUrl(otherUrl) shouldBe false
+    }
+
+    @Test fun `should identify spotify albums`() {
+        val albumUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
+        val trackUrl = URL("https://open.spotify.com/track/2t5ePzdyeR5jG1nW65zxce?si=rQspA45BRM63pqAVOJ9FDA")
+
+        SubmissionParser.isSpotifyAlbum(albumUrl) shouldBe true
+        SubmissionParser.isSpotifyAlbum(trackUrl) shouldBe false
+    }
+
+    @Test fun `should identify spotify tracks`() {
+        val albumUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
+        val trackUrl = URL("https://open.spotify.com/track/2t5ePzdyeR5jG1nW65zxce?si=rQspA45BRM63pqAVOJ9FDA")
+
+        SubmissionParser.isSpotifyTrack(albumUrl) shouldBe false
+        SubmissionParser.isSpotifyTrack(trackUrl) shouldBe true
+    }
+
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         DynamicTest.dynamicTest(expected.artist) {
-            SubmissionParser.parse(raw, null) shouldEqual expected
+            SubmissionParser.parse(raw, null, "") shouldEqual expected
         }
     }
 

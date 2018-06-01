@@ -20,5 +20,6 @@ fun redditTrack(
     title: String,
     mix: String? = null,
     extraInformation: List<String> = listOf(),
-    flair: String? = null
-) = RedditTrack(artist, title, mix, extraInformation, flair)
+    flair: String? = null,
+    url: String = ""
+) = RedditTrack(artist, title, mix, extraInformation, flair, url)
