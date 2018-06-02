@@ -3,7 +3,7 @@ buildscript {
         kotlin_version = '1.2.41'
         ktor_version = '0.9.2'
         spotify_api_vesrion = '2.0.2'
-        jrawVersion = '1.0.0'
+        jrawVersion = '1.1.0'
         junit_version = '5.2.0'
     }
 
@@ -18,7 +18,7 @@ buildscript {
 }
 
 group 'me.avo'
-version '0.4.0'
+version '0.4.1'
 
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: 'kotlin'
