@@ -40,7 +40,7 @@ class RedditServiceImpl(
         initializePaginator()
 
         while (currentSize + validPosts.size < playlist.maxSize) {
-            val page = paginator.next() // TODO
+            val page = paginator.next()
             logger.info("Reading page ${paginator.pageNumber}")
             if (page.isEmpty() || paginator.pageNumber >= maxPage) {
                 stop()

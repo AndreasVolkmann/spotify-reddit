@@ -22,6 +22,9 @@ playlists:
     # Minimum number of upvotes that a reddit post needs to have before being considered
     minUpvotes: 10
 
+    # Whether to look for the exact mix or allow other versions
+    isStrictMix: true
+
     # Second Playlist, based on the top tracks from all time
   - id: YOUR_OTHER_PLAYLIST_ID
     maxSize: 10
