@@ -63,7 +63,8 @@ internal class TemplatesTest {
                     listOf(),
                     listOf(),
                     listOf()
-                )
+                ),
+                isPrivate = true
             ),
             Playlist(
                 id = "hjfh373hf29",
@@ -79,7 +80,8 @@ internal class TemplatesTest {
                     include = listOf("FRESH"),
                     excludeExact = listOf("Album"),
                     exclude = listOf("video")
-                )
+                ),
+                isPrivate = false
             )
         )
         render(FreeMarkerContent("test.ftl", mapOf("playlists" to playlists), "e"))

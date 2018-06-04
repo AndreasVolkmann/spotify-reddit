@@ -25,7 +25,7 @@ internal class TrackFilterTest {
             configuration,
             Playlist(
                 "", "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false,
-                TagFilter(listOf(), listOf(), listOf(), listOf())
+                TagFilter(listOf(), listOf(), listOf(), listOf()), false
             )
         )
 

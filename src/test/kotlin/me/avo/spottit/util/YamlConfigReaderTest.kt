@@ -31,7 +31,8 @@ internal class YamlConfigReaderTest {
                         listOf(),
                         listOf(),
                         listOf()
-                    )
+                    ),
+                    isPrivate = true
                 ),
                 Playlist(
                     id = "someplid2",
@@ -47,7 +48,8 @@ internal class YamlConfigReaderTest {
                         include = listOf("FRESH"),
                         excludeExact = listOf("Album"),
                         exclude = listOf("video")
-                    )
+                    ),
+                    isPrivate = false
                 )
             ),
             flairsToExclude = listOf("one", "Discussion"),
