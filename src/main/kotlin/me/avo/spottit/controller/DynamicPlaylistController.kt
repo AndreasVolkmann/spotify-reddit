@@ -8,9 +8,7 @@ import me.avo.spottit.service.ElectronicSearchAlgorithm
 import me.avo.spottit.service.RedditServiceImpl
 import me.avo.spottit.service.SpotifyService
 import me.avo.spottit.util.TrackFilter
-import me.avo.spottit.util.YamlConfigReader
 import org.slf4j.LoggerFactory
-import java.io.File
 
 class DynamicPlaylistController(
     private val refreshController: TokenRefreshController,
@@ -18,8 +16,7 @@ class DynamicPlaylistController(
     private val redditCredentials: RedditCredentials
 ) {
 
-    fun updatePlaylists(configPath: String) {
-        val configuration = YamlConfigReader.read(File(configPath).readText())
+    fun updatePlaylists(configuration: Configuration) {
         refreshController.refresh()
         configuration.playlists.forEach {
             processPlaylist(configuration, it)

@@ -33,9 +33,9 @@ interface SpotifyAuthService {
     fun getAccessToken(code: String): AuthorizationCodeCredentials =
         buildClientApi().authorizationCode(code).build().execute()
 
-    fun getRedirectUri(): URI = buildClientApi()
+    fun getRedirectUri(scopes: Iterable<String>): URI = buildClientApi()
         .authorizationCodeUri()
-        .scope("playlist-modify-public,playlist-read-collaborative,playlist-read-private") // comma separated String
+        .scope(scopes.joinToString(",")) // comma separated String
         .build()
         .execute()
 

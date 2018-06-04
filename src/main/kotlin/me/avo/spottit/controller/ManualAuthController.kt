@@ -1,6 +1,7 @@
 package me.avo.spottit.controller
 
 import me.avo.spottit.config.kodein
+import me.avo.spottit.model.Configuration
 import me.avo.spottit.server.prepareServer
 import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.util.openUrlInBrowser
@@ -8,8 +9,9 @@ import java.util.concurrent.TimeUnit
 
 class ManualAuthController(private val spotifyAuthService: SpotifyAuthService) : AuthorizationController {
 
-    override fun authorize() {
-        val uri = spotifyAuthService.getRedirectUri().toString()
+    override fun authorize(configuration: Configuration) {
+        val scopes = getRequiredScopes(configuration)
+        val uri = spotifyAuthService.getRedirectUri(scopes).toString()
         val server = prepareServer(kodein).start(wait = false)
 
         try {

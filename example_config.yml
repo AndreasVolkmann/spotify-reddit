@@ -33,6 +33,9 @@ playlists:
     timePeriod: ALL
     # Omit minUpvotes to allow any reddit post to be added
 
+    # set this to true, if the playlist is private
+    isPrivate: true
+
 # When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:
   - Mix

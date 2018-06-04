@@ -4,6 +4,7 @@ import me.avo.spottit.redditTrack
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.net.URL
@@ -44,6 +45,34 @@ internal class SubmissionParserTest {
         }
     }
 
+    @Nested
+    class HasValidTag {
+
+        @Test fun `should include`() {
+            val trackTags = listOf("test news", "one track")
+            SubmissionParser.includesTag(trackTags, listOf("one"), false) shouldBe true
+            SubmissionParser.includesTag(trackTags, listOf("two"), false) shouldBe false
+        }
+
+        @Test fun `should include exact`() {
+            val trackTags = listOf("test news", "one track")
+            SubmissionParser.includesTag(trackTags, listOf("one track"), true) shouldBe true
+            SubmissionParser.includesTag(trackTags, listOf("test"), true) shouldBe false
+        }
+
+        @Test fun `should exclude`() {
+            val trackTags = listOf("test news", "one track")
+            SubmissionParser.excludesTag(trackTags, listOf("one"), false) shouldBe false
+            SubmissionParser.excludesTag(trackTags, listOf("two"), false) shouldBe true
+        }
+
+        @Test fun `should exclude exact`() {
+            val trackTags = listOf("test news", "one track")
+            SubmissionParser.excludesTag(trackTags, listOf("one track"), true) shouldBe false
+            SubmissionParser.excludesTag(trackTags, listOf("test"), true) shouldBe true
+        }
+
+    }
 
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         DynamicTest.dynamicTest(expected.artist) {

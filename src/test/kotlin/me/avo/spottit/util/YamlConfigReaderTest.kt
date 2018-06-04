@@ -2,6 +2,7 @@ package me.avo.spottit.util
 
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
+import me.avo.spottit.model.TagFilter
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldEqual
@@ -24,7 +25,14 @@ internal class YamlConfigReaderTest {
                     sort = SubredditSort.TOP,
                     timePeriod = TimePeriod.WEEK,
                     minimumUpvotes = 5,
-                    isStrictMix = false
+                    isStrictMix = false,
+                    tagFilter = TagFilter(
+                        listOf(),
+                        listOf(),
+                        listOf(),
+                        listOf()
+                    ),
+                    isPrivate = true
                 ),
                 Playlist(
                     id = "someplid2",
@@ -34,7 +42,14 @@ internal class YamlConfigReaderTest {
                     sort = SubredditSort.TOP,
                     timePeriod = TimePeriod.ALL,
                     minimumUpvotes = 10,
-                    isStrictMix = true
+                    isStrictMix = true,
+                    tagFilter = TagFilter(
+                        includeExact = listOf("Edit", "Radio"),
+                        include = listOf("FRESH"),
+                        excludeExact = listOf("Album"),
+                        exclude = listOf("video")
+                    ),
+                    isPrivate = false
                 )
             ),
             flairsToExclude = listOf("one", "Discussion"),

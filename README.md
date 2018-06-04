@@ -57,7 +57,7 @@ playlists:
 
     # Minimum number of upvotes that a reddit post needs to have before being considered
     minUpvotes: 10
-    
+
     # Whether to look for the exact mix or allow other versions
     isStrictMix: true
 
@@ -68,6 +68,9 @@ playlists:
     sort: TOP
     timePeriod: ALL
     # Omit minUpvotes to allow any reddit post to be added
+    
+    # set this to true, if the playlist is private
+    isPrivate: true
 
 # When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:
@@ -93,6 +96,43 @@ The last numerical part is your user ID.
 ##### Spotify Playlist ID
 To find the ID of your playlist, right click it, select `Share` > `Copy Spotify URI`.
 The last part is your playlist's ID.
+
+
+#### Advanced Configuration
+
+
+##### Tag Filtering
+Some subreddits make extensive use of tags, which basically means anything that is captured in parenthesis `()` `[]`.
+
+The `tagFilter` can be declared at playlist level and is used to filter out reddit posts based on their tags. 
+
+Example config:
+```yaml
+playlists:
+  - id: xyz
+    ...
+    tagFilter:
+      # Tag must be equal
+      # Foghorns - All Glands on Deck (indie/folk/punk)
+      includeExact:
+        - punk
+        
+      # Tag contains
+      # Example post that would be included: [FRESH] Luca Brasi - Clothes I Slept In
+      include:
+        - FRESH
+        
+      # Tag must not be equal
+      # Example post that would be excluded: [Album] Maps & Atlases - Lightlessness Is Nothing New
+      excludeExact:
+        - Album
+        
+      # Tag must not include
+      # Example post that would be excluded: [FRESH VIDEO] Preoccupations - Decompose 
+      exclude: 
+        - video
+```
+
 
 
 #### Deployment

@@ -11,5 +11,7 @@ data class Playlist(
     val sort: SubredditSort,
     val timePeriod: TimePeriod,
     val minimumUpvotes: Int?,
-    val isStrictMix: Boolean
+    val isStrictMix: Boolean,
+    val tagFilter: TagFilter,
+    val isPrivate: Boolean
 )

@@ -1,6 +1,7 @@
 package me.avo.spottit.util
 
 import me.avo.spottit.model.RedditTrack
+import me.avo.spottit.model.TagFilter
 import java.net.URL
 
 object SubmissionParser {
@@ -60,5 +61,48 @@ object SubmissionParser {
     fun isSpotifyTrack(url: URL) = isSpotifyUrl(url) && url.file.startsWith("/track", ignoreCase = true)
 
     fun isSpotifyUrl(url: URL): Boolean = url.host == "open.spotify.com"
+
+    fun filterTags(track: RedditTrack, tagFilter: TagFilter): Boolean {
+        val tags = track.extraInformation
+        val (include, includeExact, exclude, excludeExact) = tagFilter
+        return includesTag(tags, includeExact, true)
+                && includesTag(tags, include, false)
+                && excludesTag(tags, excludeExact, true)
+                && excludesTag(tags, exclude, false)
+    }
+
+    /**
+     * Returns true when at least one of [matchTags] is included in [trackTags].
+     * Returns false when none of [matchTags] are included in [trackTags].
+     * When [isExact] is true, the tags have to match exactly.
+     */
+    fun includesTag(trackTags: List<String>, matchTags: List<String>, isExact: Boolean): Boolean = when {
+        matchTags.isEmpty() -> true
+        else -> matchTags.any { match ->
+            trackTags.any { tag ->
+                when {
+                    isExact -> tag == match
+                    else -> tag.contains(match, ignoreCase = true)
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns true when none of [matchTags] are included in [trackTags].
+     * Returns false when one or more of [matchTags] are included in [trackTags].
+     * When [isExact] is true, the tags have to match exactly.
+     */
+    fun excludesTag(trackTags: List<String>, matchTags: List<String>, isExact: Boolean): Boolean = when {
+        matchTags.isEmpty() -> true
+        else -> matchTags.none { match ->
+            trackTags.any { tag ->
+                when {
+                    isExact -> tag == match
+                    else -> tag.contains(match, ignoreCase = true)
+                }
+            }
+        }
+    }
 
 }
