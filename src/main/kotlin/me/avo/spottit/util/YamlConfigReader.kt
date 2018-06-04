@@ -33,7 +33,8 @@ object YamlConfigReader {
                         includeExact = tagFilter["includeExact"] ?: listOf(),
                         exclude = tagFilter["exclude"] ?: listOf(),
                         excludeExact = tagFilter["excludeExact"] ?: listOf()
-                    )
+                    ),
+                    isPrivate = it["isPrivate"]?.toString()?.toBoolean() ?: false
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
