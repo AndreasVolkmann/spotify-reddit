@@ -35,7 +35,7 @@ class RedditServiceImpl(
         private set
 
     override fun getTracks(): List<RedditTrack> {
-        val validPosts = mutableListOf<Submission>()
+        val validPosts = mutableListOf<RedditTrack>()
 
         initializePaginator()
 
@@ -49,21 +49,23 @@ class RedditServiceImpl(
             page
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
-                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
                 .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
                 .let {
                     if (playlist.minimumUpvotes != null) {
                         it.filter { it.score > playlist.minimumUpvotes }
                     } else it
                 }
-                .mapTo(validPosts) { it }
+                .map(::parse)
+                .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
+                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
+                .let(validPosts::addAll)
         }
 
         if (paginator.pageNumber >= maxPage || currentSize >= playlist.maxSize) {
             stop()
         }
 
-        return validPosts.map(::parse)
+        return validPosts
     }
 
     override fun update(amountTaken: Int) {

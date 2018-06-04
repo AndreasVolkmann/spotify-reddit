@@ -15,6 +15,16 @@ playlists:
     timePeriod: ALL
     minUpvotes: 10
     isStrictMix: true
+    tagFilter:
+      includeExact:
+        - Edit
+        - Radio
+      include:
+        - FRESH
+      excludeExact:
+        - Album
+      exclude:
+        - video
 
 flairsToExclude:
   - one

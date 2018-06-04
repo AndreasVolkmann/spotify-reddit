@@ -3,6 +3,7 @@ package me.avo.spottit.util
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
+import me.avo.spottit.model.TagFilter
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldBe
@@ -22,7 +23,10 @@ internal class TrackFilterTest {
 
         val trackFilter = TrackFilter(
             configuration,
-            Playlist("", "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false)
+            Playlist(
+                "", "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false,
+                TagFilter(listOf(), listOf(), listOf(), listOf())
+            )
         )
 
         trackFilter.checkTrackLength(trackAbove) shouldBe true

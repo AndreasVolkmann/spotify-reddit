@@ -2,6 +2,7 @@ package me.avo.spottit.util
 
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
+import me.avo.spottit.model.TagFilter
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.yaml.snakeyaml.Yaml
@@ -17,6 +18,7 @@ object YamlConfigReader {
         return Configuration(
             userId = userId,
             playlists = playlists.map {
+                val tagFilter = it["tagFilter"] as? Map<String, List<String>> ?: mapOf()
                 Playlist(
                     id = it["id"].toString(),
                     userId = userId,
@@ -25,7 +27,13 @@ object YamlConfigReader {
                     sort = SubredditSort.valueOf(it["sort"].toString()),
                     timePeriod = TimePeriod.valueOf(it["timePeriod"].toString()),
                     minimumUpvotes = it["minUpvotes"]?.toString()?.toInt(),
-                    isStrictMix = it["isStrictMix"]?.toString()?.toBoolean() ?: false
+                    isStrictMix = it["isStrictMix"]?.toString()?.toBoolean() ?: false,
+                    tagFilter = TagFilter(
+                        include = tagFilter["include"] ?: listOf(),
+                        includeExact = tagFilter["includeExact"] ?: listOf(),
+                        exclude = tagFilter["exclude"] ?: listOf(),
+                        excludeExact = tagFilter["excludeExact"] ?: listOf()
+                    )
                 )
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
