@@ -113,14 +113,14 @@ playlists:
     ...
     tagFilter:
       # Tag must be equal
-      # Foghorns - All Glands on Deck (indie/folk/punk)
+      # Example post that would be included: [FRESH] Luca Brasi - Clothes I Slept In
       includeExact:
-        - punk
+        - FRESH
         
       # Tag contains
-      # Example post that would be included: [FRESH] Luca Brasi - Clothes I Slept In
+      # Example post that would be included: Foghorns - All Glands on Deck (indie/folk/punk)
       include:
-        - FRESH
+        - punk
         
       # Tag must not be equal
       # Example post that would be excluded: [Album] Maps & Atlases - Lightlessness Is Nothing New
