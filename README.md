@@ -1,6 +1,7 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
+[![GitHub release](https://img.shields.io/badge/Version-0.4.1-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
 
 Dynamic Spotify playlists, based on Reddit.
   
