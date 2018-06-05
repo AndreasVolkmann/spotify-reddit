@@ -12,11 +12,9 @@ data class RedditTrack(
     val url: String
 ) {
 
-    val isRemix get() = mix?.contains("remix", ignoreCase = true)
-
     val artists = artist.split("&")
 
-    val firstArtist get() = artists.first()
+    //val firstArtist get() = artists.first()
 
     val isSpotifyUrl get() = SubmissionParser.isSpotifyUrl(URL(url))
 

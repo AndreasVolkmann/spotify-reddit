@@ -1,0 +1,56 @@
+userId: 113258637
+
+playlists:
+  - id: 6cQk28LM0k3ogiCNEH0d9e # reddit test
+    maxSize: 10
+    subreddit: indieheads
+    sort: TOP
+    timePeriod: MONTH
+    minUpvotes: 5
+    isStrictMix: true
+    tagFilter:
+      includeExact:
+        - FRESH
+
+  - id: 492vM7yqKZxqV32jb5UWHf # private spottit
+    maxSize: 10
+    subreddit: hardstyle
+    sort: TOP
+    timePeriod: MONTH
+    isStrictMix: true
+    isPrivate: true
+
+  - id: 5oCt1rrIqdJhvTzBN6LN2a # private spottit #2
+    maxSize: 10
+    subreddit: electronicmusic
+    sort: TOP
+    timePeriod: ALL
+    isStrictMix: true
+    isPrivate: true
+
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Discussion
+  - Meme
+  - Other
+  - News
+  - Video
+  - Photos
+  - Discussion
+  - News
+  - Article
+  - Satire
+  - Official AMA
+  - Misleading
+  - Twitter
+
+minimumLength: 100
+rateLimitInMs: 750

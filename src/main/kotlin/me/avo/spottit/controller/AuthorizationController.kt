@@ -10,7 +10,6 @@ interface AuthorizationController {
     fun authorize(configuration: Configuration)
 
     fun writeCredentials(credentials: AuthorizationCodeCredentials) {
-        TokenUtil.accessTokenFile.writeText(credentials.accessToken)
         TokenUtil.refreshTokenFile.writeText(credentials.refreshToken)
     }
 
