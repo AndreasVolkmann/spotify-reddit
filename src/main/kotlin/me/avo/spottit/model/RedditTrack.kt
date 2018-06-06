@@ -12,10 +12,8 @@ data class RedditTrack(
     val url: String
 ) {
 
-    val artists = artist.split("&")
+    //val artists = artist.split("&")
 
-    //val firstArtist get() = artists.first()
-
-    val isSpotifyUrl get() = SubmissionParser.isSpotifyUrl(URL(url))
+    val isSpotifyTrack get() = SubmissionParser.isSpotifyTrack(URL(url))
 
 }

@@ -23,13 +23,25 @@ class ElectronicSearchAlgorithm(private val trackFilter: TrackFilter) : SpotifyS
 
     private fun SpotifyApi.findTrack(
         track: RedditTrack
-    ): Triple<RedditTrack, Track?, Int> = SpotifyQueryTools.initialQuery(track, true)
-        .let { searchQuery(it) }
-        .let { (total, items) ->
-            val validTracks = trackFilter.applyFilters(items)
-            val chosenTrack = evaluateResults(track, validTracks, 0)
-            Triple(track, chosenTrack, total)
-        }
+    ): Triple<RedditTrack, Track?, Int> = when {
+        track.isSpotifyTrack -> getTrack(track)
+        else -> searchForTrack(track)
+    }
+
+    private fun SpotifyApi.getTrack(track: RedditTrack): Triple<RedditTrack, Track, Int> {
+        val id = track.url.substringAfter("/track/").substringBefore("?")
+        val spotifyTrack = getTrack(id).build().execute()
+        return Triple(track, spotifyTrack, if (spotifyTrack != null) 1 else 0)
+    }
+
+    private fun SpotifyApi.searchForTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> =
+        SpotifyQueryTools.initialQuery(track, true)
+            .let { searchQuery(it) }
+            .let { (total, items) ->
+                val validTracks = trackFilter.applyFilters(items)
+                val chosenTrack = evaluateResults(track, validTracks, 0)
+                Triple(track, chosenTrack, total)
+            }
 
     private fun SpotifyApi.searchQuery(query: String): Pair<Int, Array<Track>> = query
         .also { logger.debug("Searching for $it") }
