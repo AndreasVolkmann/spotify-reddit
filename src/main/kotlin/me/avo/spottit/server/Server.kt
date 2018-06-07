@@ -15,16 +15,16 @@ import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import me.avo.spottit.config.Dependency
 import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.service.SpotifyAuthService
 import org.slf4j.event.Level
 
 fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
-    factory = Netty,
+    factory = CIO,
     port = System.getenv("PORT")?.toInt() ?: 5000,
     module = module(kodein)
 )

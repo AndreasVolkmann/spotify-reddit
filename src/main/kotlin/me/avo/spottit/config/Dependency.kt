@@ -4,12 +4,14 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
-import me.avo.spottit.controller.AutomaticAuthController
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.controller.TokenRefreshController
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.*
+import me.avo.spottit.service.SpotifyAuthService
+import me.avo.spottit.service.SpotifyAuthServiceImpl
+import me.avo.spottit.service.SpotifyService
+import me.avo.spottit.service.SpotifyServiceImpl
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -38,13 +40,6 @@ val kodein = Kodein {
         ManualAuthController(spotifyAuthService = instance())
     }
 
-    bind<AutomaticAuthController>() with singleton {
-        AutomaticAuthController(
-            spotifyAuthService = instance(),
-            client = instance()
-        )
-    }
-
     bind<TokenRefreshController>() with singleton {
         TokenRefreshController(spotifyAuthService = instance())
     }
@@ -67,10 +62,6 @@ val kodein = Kodein {
             clientSecret = getEnvOrProp("reddit-clientSecret"),
             deviceName = getEnvOrProp("deviceName")
         )
-    }
-
-    bind<SpotifyHeadlessAuthService>() with singleton {
-        SpotifyHeadlessAuthService(serviceUrl = getEnvOrProp("SERVICE_URL"))
     }
 
 }

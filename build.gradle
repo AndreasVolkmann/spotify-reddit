@@ -53,13 +53,8 @@ dependencies {
 
     /* Server */
     compile group: "io.ktor", name: "ktor-server-core", version: ktor_version
-    compile group: "io.ktor", name: "ktor-server-netty", version: ktor_version
+    compile group: "io.ktor", name: "ktor-server-cio", version: ktor_version
     compile "io.ktor:ktor-freemarker:$ktor_version"
-
-    /* Http Client */
-    compile "io.ktor:ktor-client-core:$ktor_version"
-    compile "io.ktor:ktor-client-apache:$ktor_version"
-    compile "io.ktor:ktor-client-json:$ktor_version"
 
     /* Util */
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
