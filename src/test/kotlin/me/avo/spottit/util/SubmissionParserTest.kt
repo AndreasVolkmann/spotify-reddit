@@ -1,6 +1,7 @@
 package me.avo.spottit.util
 
 import me.avo.spottit.redditTrack
+import me.avo.spottit.tagFilter
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
@@ -73,6 +74,26 @@ internal class SubmissionParserTest {
         }
 
     }
+
+    @Nested
+    class FilterTags {
+
+        @Test fun `include`() {
+            SubmissionParser.filterTags(
+                redditTrack("", "", null, listOf("test news", "one track")),
+                tagFilter(include = listOf("one"))
+            ) shouldBe true
+        }
+
+        @Test fun `exclude`() {
+            SubmissionParser.filterTags(
+                redditTrack("", "", null, listOf("test news", "one track")),
+                tagFilter(exclude = listOf("one track"))
+            ) shouldBe false
+        }
+
+    }
+
 
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         DynamicTest.dynamicTest(expected.artist) {

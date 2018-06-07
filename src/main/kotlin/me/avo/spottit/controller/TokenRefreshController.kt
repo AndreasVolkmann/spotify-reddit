@@ -15,7 +15,6 @@ class TokenRefreshController(
 
         val newAccessToken = spotifyAuthService.refresh()
         spotifyAuthService.accessToken = newAccessToken
-        TokenUtil.accessTokenFile.writeText(newAccessToken)
         logger.info("The access token has been refreshed")
         return newAccessToken
     }

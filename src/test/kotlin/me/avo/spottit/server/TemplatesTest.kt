@@ -7,8 +7,8 @@ import io.ktor.freemarker.FreeMarkerContent
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.TagFilter
 import me.avo.spottit.util.openUrlInBrowser
@@ -24,7 +24,7 @@ internal class TemplatesTest {
     private fun render(content: FreeMarkerContent) {
         val port = 5001
         val url = "http://localhost:$port/"
-        val server = embeddedServer(Netty, port) {
+        val server = embeddedServer(CIO, port) {
             install(FreeMarker) {
                 setupFreemarker()
             }
