@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.net.URL
+import java.util.*
 
 internal class SubmissionParserTest {
 
@@ -97,7 +98,7 @@ internal class SubmissionParserTest {
 
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         DynamicTest.dynamicTest(expected.artist) {
-            SubmissionParser.parse(raw, null, "") shouldEqual expected
+            SubmissionParser.parse(raw, null, "", Date()) shouldEqual expected
         }
     }
 

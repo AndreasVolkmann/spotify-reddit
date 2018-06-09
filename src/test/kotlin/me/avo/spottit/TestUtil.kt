@@ -4,6 +4,7 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.model.TagFilter
 import me.avo.spottit.util.YamlConfigReader
+import java.util.*
 
 fun track(builder: Track.Builder.() -> Unit): Track = Track.Builder().apply(builder).build()
 
@@ -23,8 +24,9 @@ fun redditTrack(
     mix: String? = null,
     extraInformation: List<String> = listOf(),
     flair: String? = null,
-    url: String = ""
-) = RedditTrack(artist, title, mix, extraInformation, flair, url)
+    url: String = "",
+    created: Date = Date()
+) = RedditTrack(artist, title, mix, extraInformation, flair, url, created)
 
 fun getTestConfig() =
     TestUtil::class.java.classLoader.getResource("test_config.yml").readText().let(YamlConfigReader::read)

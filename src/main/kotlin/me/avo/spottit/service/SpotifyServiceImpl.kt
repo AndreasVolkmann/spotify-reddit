@@ -8,6 +8,7 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.model.TrackInPlaylist
 import me.avo.spottit.util.SpotifyPlaylistCalculator
+import me.avo.spottit.util.TrackFilter
 import me.avo.spottit.util.format
 import org.slf4j.LoggerFactory
 
@@ -15,18 +16,19 @@ class SpotifyServiceImpl(
     private val authService: SpotifyAuthService
 ) : SpotifyService {
 
-    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String, maxSize: Int) = authService
-        .also { logger.info("Updating Playlist with ${tracks.size} potential tracks") }
-        .getSpotifyApi().run {
-            clearPlaylist(tracks, userId, playlistId, maxSize)
-                .also { logger.info("Adding ${it.size} tracks to the playlist") }
-                .let { addTracks(it, userId, playlistId) }
-        }
-
-    override fun findTracks(tracks: List<RedditTrack>, searchAlgorithm: SpotifySearchAlgorithm): List<Track> {
+    override fun updatePlaylist(tracks: List<Track>, userId: String, playlistId: String, maxSize: Int) {
+        logger.info("Updating Playlist with ${tracks.size} potential tracks")
         val api = authService.getSpotifyApi()
-        return searchAlgorithm.searchForTracks(api, tracks)
+        val tracksToAdd = api.clearPlaylist(tracks, userId, playlistId, maxSize)
+        logger.info("Adding ${tracksToAdd.size} tracks to the playlist")
+        api.addTracks(tracksToAdd, userId, playlistId)
     }
+
+    override fun findTracks(tracks: List<RedditTrack>, trackFilter: TrackFilter): List<Track> =
+        ElectronicSearchAlgorithm(
+            authService.getSpotifyApi(),
+            trackFilter
+        ).searchForTracks(tracks)
 
     private fun SpotifyApi.clearPlaylist(
         tracksToAdd: List<Track>, userId: String, playlistId: String, maxSize: Int
@@ -36,13 +38,11 @@ class SpotifyServiceImpl(
         return when {
             tracksInPlaylist.isEmpty() -> SpotifyPlaylistCalculator.addMaxSizeTracks(tracksToAdd, maxSize)
             else -> {
-                val (remove, add) = SpotifyPlaylistCalculator.calculateTracksToRemoveAndAdd(
-                    tracksToAdd,
-                    maxSize,
-                    tracksInPlaylist
+                val (toRemove, toAdd) = SpotifyPlaylistCalculator.calculateTracksToRemoveAndAdd(
+                    tracksToAdd, maxSize, tracksInPlaylist
                 )
-                removeTracksFromPlaylist(userId, playlistId, remove)
-                add
+                removeTracksFromPlaylist(userId, playlistId, toRemove)
+                toAdd
             }
         }
     }

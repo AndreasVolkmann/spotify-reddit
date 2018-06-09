@@ -98,7 +98,8 @@ class RedditServiceImpl(
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private fun parse(submission: Submission): RedditTrack =
-        SubmissionParser.parse(submission.title, submission.linkFlairText, submission.url)
+    private fun parse(submission: Submission): RedditTrack = SubmissionParser.parse(
+        submission.title, submission.linkFlairText, submission.url, submission.created
+    )
 
 }

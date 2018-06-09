@@ -21,7 +21,7 @@ object SpotifyQueryTools {
         .sortedWith(makeComparator(track.title, track.artist))
 
 
-    val editDistanceThreshold = 10
+    val editDistanceThreshold = 10 // TODO make dynamic
 
     fun exceedsThreshold(track: Track, redditTrack: RedditTrack): Boolean {
         val artistDistance = getArtistDistance(track, redditTrack)

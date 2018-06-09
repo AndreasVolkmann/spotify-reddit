@@ -3,10 +3,11 @@ package me.avo.spottit.util
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.model.TagFilter
 import java.net.URL
+import java.util.*
 
 object SubmissionParser {
 
-    fun parse(title: String, flairText: String?, url: String): RedditTrack {
+    fun parse(title: String, flairText: String?, url: String, created: Date): RedditTrack {
         val (fullTitle, mix, extraInformation) = processTitle(title)
         return RedditTrack(
             artist = fullTitle.substringBefore("-").trim(),
@@ -16,7 +17,8 @@ object SubmissionParser {
                 .filterNotNull()
                 .map { it.removePrefixSuffix() },
             flair = flairText,
-            url = url
+            url = url,
+            created = created
         )
     }
 
