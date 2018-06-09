@@ -97,8 +97,9 @@ internal class SubmissionParserTest {
 
 
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
+        val staticDate = Date()
         DynamicTest.dynamicTest(expected.artist) {
-            SubmissionParser.parse(raw, null, "", Date()) shouldEqual expected
+            SubmissionParser.parse(raw, null, "", staticDate) shouldEqual expected.copy(created = staticDate)
         }
     }
 
