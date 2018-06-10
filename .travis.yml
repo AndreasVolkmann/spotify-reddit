@@ -14,3 +14,16 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+
+before_deploy: "./gradlew fatJar"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: build/libs/*
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master

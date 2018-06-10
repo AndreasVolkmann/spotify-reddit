@@ -18,7 +18,7 @@ buildscript {
 }
 
 group 'me.avo'
-version '0.5.0'
+version '0.6.0'
 
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: 'kotlin'
@@ -35,6 +35,18 @@ task fatJar(type: Jar) {
     baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    with jar
+}
+
+task headlessJar(type: Jar) {
+    manifest {
+        attributes 'Compile-Title': 'spottit-headless',
+                'Compile-Version': version,
+                'Main-Class': 'me.avo.spottit.MainKt'
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA', 'me/avo/spottit/server', '**/io/ktor/**'
     with jar
 }
 
