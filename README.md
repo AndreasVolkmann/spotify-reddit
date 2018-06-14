@@ -1,7 +1,8 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](./spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
-[![GitHub release](https://img.shields.io/badge/Version-0.5.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![GitHub release](https://img.shields.io/badge/Version-0.6.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 Dynamic Spotify playlists, based on Reddit.
   
@@ -143,6 +144,9 @@ Steps:
 2. Deploy the jar and your `config.yml`
 3. Set the `REFRESH_TOKEN` environment variable to your obtained refresh token from step 1
 4. Run the app as usual
+
+##### Scheduling
+TODO
 
 ### Reference
 * [Reddit API](https://www.reddit.com/dev/api/)
