@@ -9,7 +9,7 @@
   "logo": "https://raw.githubusercontent.com/AndreasVolkmann/spotify-reddit/master/spottit-logo-drawn-cropped.png",
   
   "scripts": {
-    "postdeploy": "bundle exec rake bootstrap"
+    
   },
   "addons": [
     "scheduler"
