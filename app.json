@@ -7,15 +7,11 @@
   ],
   "repository": "https://github.com/AndreasVolkmann/spotify-reddit",
   "logo": "https://raw.githubusercontent.com/AndreasVolkmann/spotify-reddit/master/spottit-logo-drawn-cropped.png",
-  //"success_url": "/welcome",
+  
   "scripts": {
     "postdeploy": "bundle exec rake bootstrap"
   },
   "addons": [
-    "scheduler",
-    {
-      "plan": "scheduler:shared-single-small",
-      "as": "scheduler"
-    }
+    "scheduler"
   ]
 }
