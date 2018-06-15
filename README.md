@@ -135,8 +135,6 @@ playlists:
         - video
 ```
 
-
-
 #### Deployment
 In order to run the jobs automatically, the application can be deployed to a server, using Heroku, for example.
 Steps:
@@ -145,10 +143,29 @@ Steps:
 3. Set the `REFRESH_TOKEN` environment variable to your obtained refresh token from step 1
 4. Run the app as usual
 
-##### Scheduling
-TODO
+More details about deploying to Heroku below.
 
-### Reference
-* [Reddit API](https://www.reddit.com/dev/api/)
-* [Spotify Java SDK](https://github.com/thelinmichael/spotify-web-api-java)
+##### Deploy to Heroku
+* Use the `Deploy to Heroku` button or do it manually from Heroku.
+* Give your app a name and choose a region
+* Click the `Deploy app` button
+* Once the app is deployed, click the `Manage App` button
+* Click the `Deploy` tab
+* In the `Deployment method` section, select `Heroku Git` and follow the instructions
+* After cloning from Heroku, add this repository as a remote using `git remote add origin https://github.com/AndreasVolkmann/spotify-reddit`
+* Then use `git pull origin master` to fetch the code
+
+
+##### Configuration
+* Add your `config.yml` files, commit and `git push heroku`.  You should be able to see Heroku building the project.
+* In Heroku, navigate to your app's settings and add a config var: Key = `REFRESH_TOKEN`, Value should be your refresh token obtained from the manual auth step.
+
+
+##### Scheduling
+* In either `Overview` or `Resources`, click on `Heroku Scheduler`, and then click on `Add new job`
+* Start by verifying that the program can be found and executed. In the command field enter `java -jar build/libs/spottit-0.6.0.jar --help`
+* Set the frequency to `Every 10 minutes` and save
+* In order to see the output, use `heroku logs --ps scheduler` from your local project. See more [here](https://devcenter.heroku.com/articles/scheduler#inspecting-output)
+
+
 
