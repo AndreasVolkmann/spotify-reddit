@@ -10,9 +10,9 @@ Follow [Reddit Electronic Music's Spotify](https://open.spotify.com/user/8j1md7p
  to see some of the generated playlists.
 
 ### Table of Contents  
-* [How to use](#How-to-use) 
-* [Configuration](#Configuration) 
-* [Deployment](#Deployment) 
+* [How to use](#how-to-use) 
+* [Configuration](#configuration) 
+* [Deployment](#deployment) 
 
 ### How to use
 To use the program, define your own `config.yml` and run the program with `-c ${PATH_TO_YOUR_CONFIG.YML}`.
