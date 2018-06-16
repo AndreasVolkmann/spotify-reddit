@@ -1,18 +1,18 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](./spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
-[![GitHub release](https://img.shields.io/badge/Version-0.5.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![GitHub release](https://img.shields.io/badge/Version-0.6.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-Dynamic Spotify playlists, based on Reddit.
-  
-Easily set up your own subreddit playlist. 
+Dynamic Spotify playlists, based on Reddit. Easily set up your own subreddit playlist.  
 
-Originally this was made for /r/trance but it can be used for any subreddit. 
+Follow [Reddit Electronic Music's Spotify](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi?si=qj_fqiZYTYeXKUzN9mUxCA)
+ to see some of the generated playlists.
 
-Current test playlists can be found here: 
-* [Top Monthly /r/Trance](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi/playlist/4nY3CWQHuROmtsVXsw4N10?si=geNzarxpQCy0M2SRN1BgQA)
-* [Top Songs /r/Trance](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi/playlist/67pOXwIa0C4n9ZMpQubc0s?si=NCAkwMniRae9rMohzVIVQg)
-
+### Table of Contents  
+* [How to use](#How-to-use) 
+* [Configuration](#Configuration) 
+* [Deployment](#Deployment) 
 
 ### How to use
 To use the program, define your own `config.yml` and run the program with `-c ${PATH_TO_YOUR_CONFIG.YML}`.
@@ -29,7 +29,7 @@ Once this is done, you can omit the `-ma`. The application should now update the
 It is also possible to specify the refresh token via an environment variable called `REFRESH_TOKEN`. 
 
 
-#### Configuration
+### Configuration
 To customize the application, edit the 
 [example_config.yml](https://github.com/AndreasVolkmann/spotify-reddit/blob/master/example_config.yml)
  and fill in your own information.
@@ -134,9 +134,29 @@ playlists:
         - video
 ```
 
+##### Date Filtering
+Sometimes you want to only add tracks that match a certain date criteria. 
 
+The `dateFilter` can be declared at playlist level and supports different ways of checking a track's release date.
 
-#### Deployment
+Example config:
+```yaml
+playlists:
+  - id: xyz
+    ...
+    dateFilter:
+      # Tracks that have been released since the beginning of 2018
+      startingFrom: 2018-01-01
+    
+      # The release date can not exceed the current date minus the specified distance
+      # Given a maxDistance of 1 month and 1 year, a track may not be older than 1 month and 1 year
+      # Given the current date of 2018-06-16, include only tracks that are released since 2017-05-16
+      maxDistance:
+        month: 1
+        year: 1
+```
+
+### Deployment
 In order to run the jobs automatically, the application can be deployed to a server, using Heroku, for example.
 Steps:
 1. Obtain a refresh token locally.
@@ -144,7 +164,32 @@ Steps:
 3. Set the `REFRESH_TOKEN` environment variable to your obtained refresh token from step 1
 4. Run the app as usual
 
-### Reference
-* [Reddit API](https://www.reddit.com/dev/api/)
-* [Spotify Java SDK](https://github.com/thelinmichael/spotify-web-api-java)
+More details about deploying to Heroku below.
+
+##### Deploy to Heroku
+* Use the `Deploy to Heroku` button or do it manually from Heroku.
+* Give your app a name and choose a region
+* Click the `Deploy app` button
+* Once the app is deployed, click the `Manage App` button
+* Click the `Deploy` tab
+* In the `Deployment method` section, select `Heroku Git` and follow the instructions
+* After cloning from Heroku, add this repository as a remote using `git remote add origin https://github.com/AndreasVolkmann/spotify-reddit`
+* Then use `git pull origin master` to fetch the code
+
+
+##### Yaml Configuration
+* Add your `config.yml` files, commit and `git push heroku`.  You should be able to see Heroku building the project.
+* In Heroku, navigate to your app's settings and add a config var: Key = `REFRESH_TOKEN`, Value should be your refresh token obtained from the manual auth step.
+
+
+##### Scheduling
+* In either `Overview` or `Resources`, click on `Heroku Scheduler`, and then click on `Add new job`
+* Start by verifying that the program can be found and executed. In the command field enter `java -jar build/libs/spottit-0.6.0.jar --help`
+* Set the frequency to `Every 10 minutes` and save
+* In order to see the output, use `heroku logs --ps scheduler` from your local project. See more [here](https://devcenter.heroku.com/articles/scheduler#inspecting-output)
+* Currently, the Heroku Scheduler has limited frequency options. I am working on a custom solution to this.
+* Once everything works, edit your job and pass your config `java -jar build/libs/spottit-0.6.0.jar -c config.yml`
+
+
+
 

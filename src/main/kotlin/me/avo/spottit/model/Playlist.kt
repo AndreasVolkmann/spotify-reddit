@@ -13,5 +13,6 @@ data class Playlist(
     val minimumUpvotes: Int?,
     val isStrictMix: Boolean,
     val tagFilter: TagFilter,
+    val dateFilter: DateFilter,
     val isPrivate: Boolean
 )

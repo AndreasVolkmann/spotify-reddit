@@ -1,12 +1,14 @@
 package me.avo.spottit.util
 
 import me.avo.spottit.model.Configuration
+import me.avo.spottit.model.DateFilter
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.TagFilter
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.Test
+import java.util.*
 
 internal class YamlConfigReaderTest {
 
@@ -32,6 +34,10 @@ internal class YamlConfigReaderTest {
                         listOf(),
                         listOf()
                     ),
+                    dateFilter = DateFilter(
+                        startingFrom = parseDateString("2018-02-03"),
+                        maxDistance = null
+                    ),
                     isPrivate = true
                 ),
                 Playlist(
@@ -49,6 +55,17 @@ internal class YamlConfigReaderTest {
                         excludeExact = listOf("Album"),
                         exclude = listOf("video")
                     ),
+                    dateFilter = DateFilter(
+                        startingFrom = null,
+                        maxDistance = Calendar.getInstance().apply {
+                            add(Calendar.YEAR, -2)
+                            add(Calendar.MONTH, -3)
+                            set(Calendar.HOUR, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }.time
+                    ),
                     isPrivate = false
                 )
             ),
@@ -58,6 +75,22 @@ internal class YamlConfigReaderTest {
         )
 
         val actual = YamlConfigReader.read(yaml)
+
+        actual shouldEqual expected
+    }
+
+    @Test fun `parseMaxDistance should produce correct date`() {
+        val year = 2
+        val month = 4
+        val expected = Calendar.getInstance().apply {
+            add(Calendar.YEAR, -year)
+            add(Calendar.MONTH, -month)
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+        val actual = YamlConfigReader.parseMaxDistance(month, year)
 
         actual shouldEqual expected
     }

@@ -8,6 +8,8 @@ playlists:
     timePeriod: WEEK
     minUpvotes: 5
     isPrivate: true
+    dateFilter:
+      startingFrom: "2018-02-03"
 
   - id: someplid2
     maxSize: 30
@@ -26,6 +28,10 @@ playlists:
         - Album
       exclude:
         - video
+    dateFilter:
+      maxDistance:
+        month: 3
+        year: 2
 
 flairsToExclude:
   - one

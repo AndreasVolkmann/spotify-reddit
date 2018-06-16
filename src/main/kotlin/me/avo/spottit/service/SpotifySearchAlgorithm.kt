@@ -10,7 +10,9 @@ import me.avo.spottit.model.RedditTrack
 
 interface SpotifySearchAlgorithm {
 
-    fun searchForTracks(spotifyApi: SpotifyApi, tracks: List<RedditTrack>): List<Track>
+    val spotifyApi: SpotifyApi
+
+    fun searchForTracks(tracks: List<RedditTrack>): List<Track>
 
     fun SearchTracksRequest.executeRequest(stack: Int = 0): Paging<Track> = try {
         execute()

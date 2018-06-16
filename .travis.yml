@@ -2,7 +2,28 @@ language: java
 
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 before_install:
   - chmod +x gradlew
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+
+before_deploy: "./gradlew fatJar"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: build/libs/*
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master

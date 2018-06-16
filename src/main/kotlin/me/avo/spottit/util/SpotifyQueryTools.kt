@@ -16,21 +16,17 @@ object SpotifyQueryTools {
     fun makeQuery(vararg items: String?): String = items.filterNotNull().joinToString(" ")
         .also(::println)
 
-    fun sortItems(items: Array<Track>, track: RedditTrack): List<Track> = items
-        .filterNot { exceedsThreshold(it, track) }
+    fun sortItems(items: Array<Track>, track: RedditTrack, editDistanceThreshold: Int): List<Track> = items
+        .filterNot { exceedsThreshold(it, track, editDistanceThreshold) }
         .sortedWith(makeComparator(track.title, track.artist))
 
-
-    val editDistanceThreshold = 10
-
-    fun exceedsThreshold(track: Track, redditTrack: RedditTrack): Boolean {
+    fun exceedsThreshold(track: Track, redditTrack: RedditTrack, editDistanceThreshold: Int): Boolean {
         val artistDistance = getArtistDistance(track, redditTrack)
         val trackDistance = getTrackDistance(track, redditTrack).let {
             if (redditTrack.mix != null && track.name.contains(redditTrack.mix, ignoreCase = true)) {
                 it - redditTrack.mix.length
             } else it
         }
-
 
         return artistDistance + trackDistance > editDistanceThreshold
     }

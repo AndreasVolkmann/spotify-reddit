@@ -27,12 +27,11 @@ class DynamicPlaylistController(
         logger.info("Processing playlist ${playlist.id}")
         val redditService = RedditServiceImpl(playlist, configuration.flairsToExclude, redditCredentials)
         val foundTracks = mutableListOf<Track>()
-
-        val searchAlgorithm = ElectronicSearchAlgorithm(TrackFilter(configuration, playlist))
+        val trackFilter = TrackFilter(configuration, playlist)
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()
-            .let { spotifyService.findTracks(it, searchAlgorithm) }
+            .let { spotifyService.findTracks(it, trackFilter) }
             .filterNot { it.id in foundTracks.map { it.id } }
             .distinctBy { it.id } // TODO find out why there are duplicates
             .also { redditService.update(it.size) }

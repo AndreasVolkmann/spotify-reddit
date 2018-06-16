@@ -96,7 +96,8 @@ internal class SpotifyQueryToolsTest {
 
         val result = SpotifyQueryTools.sortItems(
             case.candidates.map { it.toTrack() }.toTypedArray(),
-            redditTrack(case.artist, case.name)
+            redditTrack(case.artist, case.name),
+            10
         )
 
         result.shouldBeEmpty()
@@ -114,8 +115,7 @@ internal class SpotifyQueryToolsTest {
 
         SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
 
-        SpotifyQueryTools.exceedsThreshold(spotify, reddit) shouldBe false
-
+        SpotifyQueryTools.exceedsThreshold(spotify, reddit, 10) shouldBe false
     }
 
     private fun Candidate.toTrack() = track {

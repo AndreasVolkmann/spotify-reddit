@@ -3,63 +3,58 @@ package me.avo.spottit.service
 import com.github.salomonbrys.kodein.instance
 import me.avo.spottit.RequiresToken
 import me.avo.spottit.config.kodein
-import me.avo.spottit.controller.TokenRefreshController
-import me.avo.spottit.getTestConfig
+import me.avo.spottit.makeConfig
+import me.avo.spottit.model.DateFilter
 import me.avo.spottit.redditTrack
 import me.avo.spottit.util.*
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
-import org.junit.jupiter.api.Disabled
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ElectronicSearchAlgorithmTest : RequiresToken {
 
+    private val spotifyAuthService: SpotifyAuthService = kodein.instance()
+
     @Test fun `getTrack by id`() {
-        val title = "[FRESH] Joy Again - Nobody Knows"
+        val api = spotifyAuthService.getSpotifyApi()
         val id = "7ICUbPlGOPSBA1oLgudcV4"
         val url = "https://open.spotify.com/track/$id?si=FKQkuYhkQii1g_TTsHPI8g"
-        val track = SubmissionParser.parse(title, null, url)
+        val urls = listOf(
+            "https://open.spotify.com/track/4lFxQyVeTYkM010VUtCp6o?si=SrEvWeOzRtK02n5bVL8Slw",
+            "https://open.spotify.com/track/63pvV3o0aeVrwRWdtx4wOX?si=x9klrbFJRkWfZl7o2VB3vw",
+            "https://open.spotify.com/track/3DPFmwFtV5ElQaTniLOdgk?si=NScDaJS4RpGzoFn2pzdoGQ"
+        )
+        val track = SubmissionParser.parse("[FRESH] Joy Again - Nobody Knows", null, url, Date())
         track.isSpotifyTrack shouldBe true
 
-        val config = getTestConfig()
-        val alg = ElectronicSearchAlgorithm(TrackFilter(config, config.playlists.first()))
+        val tracks = urls.map { redditTrack("", "", url = it) } + track
 
-        val spotifyAuthService: SpotifyAuthService = kodein.instance()
-        val results = alg.searchForTracks(
-            spotifyApi = spotifyAuthService.getSpotifyApi(),
-            tracks = listOf(track)
-        )
-
-        results.first().let {
-            println(it.format())
-            it.artistString() shouldBeEqualTo "Joy Again"
-            it.name shouldBeEqualTo "Nobody Knows (2018)"
-            it.id shouldBeEqualTo id
-        }
-    }
-
-    @Disabled
-    @Test fun findTrack() {
-        val yaml = this::class.java.classLoader.getResource("actual_config.yml").readText()
-        val config = YamlConfigReader.read(yaml)
-        val playlist = config.playlists.first()
-        val alg = ElectronicSearchAlgorithm(TrackFilter(config, playlist))
-
-        kodein.instance<TokenRefreshController>().refresh()
-        val spotifyAuthService: SpotifyAuthService = kodein.instance()
-
-        val results = alg.searchForTracks(
-            spotifyApi = spotifyAuthService.getSpotifyApi(),
-            tracks = listOf(
-                //redditTrack("Daft Punk", "Face To Face")
-                redditTrack("The Weeknd", "I Feel It Coming", "Daft Punk")
+        val config = makeConfig(
+            DateFilter(
+                startingFrom = parseDateString("2012-04-04"), maxDistance = null
             )
         )
+        val trackFilter = TrackFilter(config, config.playlists.first())
+        val alg = ElectronicSearchAlgorithm(api, trackFilter)
 
-        results.forEach { println(it.format()) }
+        val results = alg.searchForTracks(tracks)
 
+        results
+            .find { it.name == "Nobody Knows (2018)" }
+            .shouldNotBeNull()
+            .also {
+                it.artistString() shouldBeEqualTo "Joy Again"
+                it.id shouldBeEqualTo id
+            }
+
+        results.forEach {
+            println(it.format())
+            alg.getAlbumForTrack(it).let(trackFilter::checkTrackAgeByAlbum).let(::println)
+        }
     }
 
 }
