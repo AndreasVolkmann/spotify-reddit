@@ -1,6 +1,7 @@
 package me.avo.spottit.service
 
 import com.wrapper.spotify.SpotifyApi
+import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.SpotifyQueryTools
@@ -22,6 +23,8 @@ class ElectronicSearchAlgorithm(
         .onEach { trackFilter.timeout() }
         .toList()
 
+    fun getAlbumForTrack(track: Track): Album = spotifyApi.getAlbum(track.album.id).build().execute()
+
     private fun findTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> = when {
         track.isSpotifyTrack -> getTrack(track)
         else -> searchForTrack(track)
@@ -38,7 +41,12 @@ class ElectronicSearchAlgorithm(
             .let(::searchQuery)
             .let { (total, items) ->
                 val validTracks = trackFilter.applyFilters(items)
-                val chosenTrack = evaluateResults(track, validTracks, 0)
+                val chosenTrack = evaluateResults(track, validTracks, 0)?.let {
+                    if (trackFilter.doCheckReleaseDate) {
+                        val album = getAlbumForTrack(it)
+                        if (trackFilter.checkTrackAgeByAlbum(album)) it else null
+                    } else it
+                }
                 Triple(track, chosenTrack, total)
             }
 
@@ -52,11 +60,8 @@ class ElectronicSearchAlgorithm(
     private fun evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? = when (items.size) {
         0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
         1 -> items.first() // only one result
-        else -> SpotifyQueryTools.sortItems(items, track).firstOrNull() ?: evaluateResults(
-            track,
-            emptyArray(),
-            stack + 1
-        ) // there are multiple results, sort
+        else -> SpotifyQueryTools.sortItems(items, track, trackFilter.editDistanceThreshold).firstOrNull()
+                ?: evaluateResults(track, emptyArray(), stack + 1) // there are multiple results, sort
     }
 
     private fun adjustQuery(track: RedditTrack, stack: Int) = when {
