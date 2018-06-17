@@ -5,6 +5,7 @@ import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.yaml.snakeyaml.Yaml
 import java.util.*
+import java.util.Calendar.*
 
 @Suppress("UNCHECKED_CAST")
 object YamlConfigReader {
@@ -50,19 +51,30 @@ object YamlConfigReader {
             minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0,
             rateLimitInMs = (System.getenv("RATE_LIMIT") ?: data["rateLimit"]?.toString())?.toLong() ?: 500,
             schedule = Schedule(
-                weekday = schedule["dayOfWeek"]?.toString(),
+                dayOfWeek = schedule["dayOfWeek"]?.toString()?.let(::getWeekDay),
                 dayOfMonth = schedule["dayOfMonth"]?.toString()?.toInt()
             )
         )
     }
 
-    fun parseMaxDistance(month: Int, year: Int): Date = Calendar.getInstance().apply {
-        add(Calendar.YEAR, -year)
-        add(Calendar.MONTH, -month)
-        set(Calendar.HOUR, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
+    fun parseMaxDistance(month: Int, year: Int): Date = getInstance().apply {
+        add(YEAR, -year)
+        add(MONTH, -month)
+        set(HOUR, 0)
+        set(MINUTE, 0)
+        set(SECOND, 0)
+        set(MILLISECOND, 0)
     }.time
+
+    private fun getWeekDay(name: String) = when (name) {
+        "MONDAY", "MON", "2" -> MONDAY
+        "TUESDAY", "TUE", "3" -> TUESDAY
+        "WEDNESDAY", "WED", "4" -> WEDNESDAY
+        "THURSDAY", "THU", "5" -> THURSDAY
+        "FRIDAY", "FRI", "6" -> FRIDAY
+        "SATURDAY", "SAT", "7" -> SATURDAY
+        "SUNDAY", "SUN", "1" -> SUNDAY
+        else -> throw IllegalArgumentException("Unrecognized week day '$name'")
+    }
 
 }

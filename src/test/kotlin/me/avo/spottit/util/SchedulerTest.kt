@@ -20,6 +20,6 @@ internal class SchedulerTest {
         shouldExecute(schedule(null, dayOfMonth + 1)) shouldBe false
     }
 
-    private fun schedule(dayOfWeek: Int? = null, dayOfMonth: Int? = null) = Schedule(dayOfWeek?.toString(), dayOfMonth)
+    private fun schedule(dayOfWeek: Int? = null, dayOfMonth: Int? = null) = Schedule(dayOfWeek, dayOfMonth)
 
 }

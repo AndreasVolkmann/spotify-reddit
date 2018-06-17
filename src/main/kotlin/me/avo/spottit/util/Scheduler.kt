@@ -2,12 +2,13 @@ package me.avo.spottit.util
 
 import me.avo.spottit.model.Schedule
 import org.slf4j.LoggerFactory
-import java.util.Calendar.*
+import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.DAY_OF_WEEK
 
 object Scheduler {
 
     fun shouldExecute(schedule: Schedule): Boolean {
-        val (weekday, dayOfMonth) = schedule
+        val (dayOfWeek, dayOfMonth) = schedule
         dayOfMonth?.let {
             val current = getCalendar(DAY_OF_MONTH)
             if (dayOfMonth != current) {
@@ -16,10 +17,10 @@ object Scheduler {
             }
         }
 
-        weekday?.let {
+        dayOfWeek?.let {
             val current = getCalendar(DAY_OF_WEEK)
-            if (getWeekDay(weekday) != current) {
-                log("Day of week should be $weekday, is $current")
+            if (dayOfWeek != current) {
+                log("Day of week should be $dayOfWeek, is $current")
                 return false
             }
         }
@@ -27,16 +28,6 @@ object Scheduler {
         return true
     }
 
-    private fun getWeekDay(name: String) = when (name) {
-        "MONDAY", "MON", "2" -> MONDAY
-        "TUESDAY", "TUE", "3" -> TUESDAY
-        "WEDNESDAY", "WED", "4" -> WEDNESDAY
-        "THURSDAY", "THU", "5" -> THURSDAY
-        "FRIDAY", "FRI", "6" -> FRIDAY
-        "SATURDAY", "SAT", "7" -> SATURDAY
-        "SUNDAY", "SUN", "1" -> SUNDAY
-        else -> throw IllegalArgumentException("Unrecognized week day '$name'")
-    }
 
     private fun log(reason: String) = logger.info(
         "According to the specified schedule, this configuration should not be executed. $reason"

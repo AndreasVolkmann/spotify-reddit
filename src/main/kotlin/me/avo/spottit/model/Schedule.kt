@@ -1,6 +1,6 @@
 package me.avo.spottit.model
 
 data class Schedule(
-    val weekday: String?,
+    val dayOfWeek: Int?,
     val dayOfMonth: Int?
 )

@@ -70,7 +70,7 @@ internal class YamlConfigReaderTest {
             minimumLength = 100,
             rateLimitInMs = 1000,
             schedule = Schedule(
-                weekday = "MON",
+                dayOfWeek = 2,
                 dayOfMonth = 1
             )
         )
