@@ -1,5 +1,9 @@
 userId: 110022034
 
+schedule:
+  dayOfWeek: MONDAY
+  dayOfMonth: 1
+
 playlists:
   - id: someplid1
     maxSize: 20

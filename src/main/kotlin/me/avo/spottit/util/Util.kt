@@ -19,3 +19,5 @@ fun String.getEnclosedText(start: String, end: String) = Regex("\\$start.*?\\$en
     .toList()
 
 fun parseDateString(source: String, format: String = "yyyy-MM-dd"): Date = SimpleDateFormat(format).parse(source)
+
+fun getCalendar(field: Int) = Calendar.getInstance()[field]

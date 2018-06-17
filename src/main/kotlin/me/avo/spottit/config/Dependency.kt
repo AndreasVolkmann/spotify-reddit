@@ -1,9 +1,5 @@
 package me.avo.spottit.config
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.singleton
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.controller.TokenRefreshController
@@ -12,10 +8,14 @@ import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.service.SpotifyAuthServiceImpl
 import me.avo.spottit.service.SpotifyService
 import me.avo.spottit.service.SpotifyServiceImpl
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
 import org.slf4j.LoggerFactory
 import java.util.*
 
-val kodein = Kodein {
+val prodKodein = Kodein {
     val logger = LoggerFactory.getLogger(Dependency::class.java)
     val props = Properties().apply {
         try {

@@ -1,8 +1,7 @@
 package me.avo.spottit.service
 
-import com.github.salomonbrys.kodein.instance
 import me.avo.spottit.RequiresToken
-import me.avo.spottit.config.kodein
+import me.avo.spottit.TestKodeinAware
 import me.avo.spottit.makeConfig
 import me.avo.spottit.model.DateFilter
 import me.avo.spottit.redditTrack
@@ -12,12 +11,13 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.kodein.di.generic.instance
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class ElectronicSearchAlgorithmTest : RequiresToken {
+internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
 
-    private val spotifyAuthService: SpotifyAuthService = kodein.instance()
+    private val spotifyAuthService: SpotifyAuthService by instance()
 
     @Test fun `getTrack by id`() {
         val api = spotifyAuthService.getSpotifyApi()

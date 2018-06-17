@@ -1,7 +1,5 @@
 package me.avo.spottit.server
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.instance
 import freemarker.cache.ClassTemplateLoader
 import freemarker.template.Configuration
 import io.ktor.application.Application
@@ -21,6 +19,8 @@ import io.ktor.server.engine.embeddedServer
 import me.avo.spottit.config.Dependency
 import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.service.SpotifyAuthService
+import org.kodein.di.Kodein
+import org.kodein.di.generic.instance
 import org.slf4j.event.Level
 
 fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
@@ -32,8 +32,8 @@ fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
 fun module(kodein: Kodein): Application.() -> Unit = {
     install(Routing) {
 
-        val spotifyAuthService: SpotifyAuthService = kodein.instance()
-        val manualAuthController: ManualAuthController = kodein.instance()
+        val spotifyAuthService: SpotifyAuthService by kodein.instance()
+        val manualAuthController: ManualAuthController by kodein.instance()
 
         get("spotify/auth/{...}") {
             val code = call.parameters["code"]

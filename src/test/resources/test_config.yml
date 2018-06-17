@@ -53,4 +53,4 @@ flairsToExclude:
   - Twitter
 
 minimumLength: 100
-rateLimitInMs: 750
+rateLimitInMs: 800

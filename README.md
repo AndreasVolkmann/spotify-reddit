@@ -1,7 +1,7 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](./spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
-[![GitHub release](https://img.shields.io/badge/Version-0.6.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![GitHub release](https://img.shields.io/badge/Version-0.7.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 Dynamic Spotify playlists, based on Reddit. Easily set up your own subreddit playlist.  
@@ -156,6 +156,25 @@ playlists:
         year: 1
 ```
 
+##### Scheduling
+As a solution to the limited Heroku Scheduler frequency options, one can specify an execution schedule in the config. 
+
+Use `schedule` to define when the lists should be updated. If the current date doesn't match, the program won't run.
+
+Example config:
+```yaml
+userId: xyz
+
+...
+
+schedule:
+  # Only execute on Mondays
+  dayOfWeek: MONDAY
+  
+  # Only execute on the first day of the month, for example 2018-06-01
+  dayOfMonth: 1
+```
+
 ### Deployment
 In order to run the jobs automatically, the application can be deployed to a server, using Heroku, for example.
 Steps:
@@ -182,14 +201,12 @@ More details about deploying to Heroku below.
 * In Heroku, navigate to your app's settings and add a config var: Key = `REFRESH_TOKEN`, Value should be your refresh token obtained from the manual auth step.
 
 
-##### Scheduling
+##### Heroku Schheduler
 * In either `Overview` or `Resources`, click on `Heroku Scheduler`, and then click on `Add new job`
-* Start by verifying that the program can be found and executed. In the command field enter `java -jar build/libs/spottit-0.6.0.jar --help`
+* Start by verifying that the program can be found and executed. In the command field enter `java -jar build/libs/spottit-0.7.0.jar --help`
 * Set the frequency to `Every 10 minutes` and save
 * In order to see the output, use `heroku logs --ps scheduler` from your local project. See more [here](https://devcenter.heroku.com/articles/scheduler#inspecting-output)
-* Currently, the Heroku Scheduler has limited frequency options. I am working on a custom solution to this.
-* Once everything works, edit your job and pass your config `java -jar build/libs/spottit-0.6.0.jar -c config.yml`
-
-
-
+* Once everything works, edit your job and pass your config `java -jar build/libs/spottit-0.7.0.jar -c config.yml`
+* Currently, the Heroku Scheduler has limited frequency options. Use a daily frequency and specify details in your `config.yml`. 
+See [the Scheduling section](#scheduling)
 
