@@ -1,5 +1,5 @@
 # Spotify + Reddit = Spottit
-![Spottit Logo](./spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
+![Spottit Logo](resources/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
 [![GitHub release](https://img.shields.io/badge/Version-0.7.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
@@ -210,3 +210,4 @@ More details about deploying to Heroku below.
 * Currently, the Heroku Scheduler has limited frequency options. Use a daily frequency and specify details in your `config.yml`. 
 See [the Scheduling section](#scheduling)
 
+![Spottit Heroku Scheduler](resources/spottit-heroku-scheduler.PNG?raw=true "Spottit Heroku Scheduler")
