@@ -6,6 +6,7 @@ import me.avo.spottit.config.kodein
 import me.avo.spottit.controller.DynamicPlaylistController
 import me.avo.spottit.controller.ManualAuthController
 import me.avo.spottit.controller.TokenRefreshController
+import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.YamlConfigReader
 import java.io.File
 

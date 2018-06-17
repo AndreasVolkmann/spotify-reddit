@@ -1,9 +1,6 @@
 package me.avo.spottit.util
 
-import me.avo.spottit.model.Configuration
-import me.avo.spottit.model.DateFilter
-import me.avo.spottit.model.Playlist
-import me.avo.spottit.model.TagFilter
+import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldEqual
@@ -71,7 +68,11 @@ internal class YamlConfigReaderTest {
             ),
             flairsToExclude = listOf("one", "Discussion"),
             minimumLength = 100,
-            rateLimitInMs = 1000
+            rateLimitInMs = 1000,
+            schedule = Schedule(
+                weekday = "MON",
+                dayOfMonth = 1
+            )
         )
 
         val actual = YamlConfigReader.read(yaml)

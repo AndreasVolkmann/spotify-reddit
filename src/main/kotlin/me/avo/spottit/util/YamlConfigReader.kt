@@ -1,9 +1,6 @@
 package me.avo.spottit.util
 
-import me.avo.spottit.model.Configuration
-import me.avo.spottit.model.DateFilter
-import me.avo.spottit.model.Playlist
-import me.avo.spottit.model.TagFilter
+import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.yaml.snakeyaml.Yaml
@@ -16,6 +13,7 @@ object YamlConfigReader {
         val data = Yaml().load<Map<String, Any?>>(yaml)
         val playlists = data["playlists"] as? List<Map<String, Any>> ?: listOf()
         val userId = data["userId"].toString()
+        val schedule = data["schedule"] as? Map<String, Any> ?: mapOf()
 
         return Configuration(
             userId = userId,
@@ -50,7 +48,11 @@ object YamlConfigReader {
             },
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
             minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0,
-            rateLimitInMs = (System.getenv("RATE_LIMIT") ?: data["rateLimit"]?.toString())?.toLong() ?: 500
+            rateLimitInMs = (System.getenv("RATE_LIMIT") ?: data["rateLimit"]?.toString())?.toLong() ?: 500,
+            schedule = Schedule(
+                weekday = schedule["dayOfWeek"]?.toString(),
+                dayOfMonth = schedule["dayOfMonth"]?.toString()?.toInt()
+            )
         )
     }
 

@@ -6,10 +6,7 @@ import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.album
 import me.avo.spottit.makeConfig
-import me.avo.spottit.model.Configuration
-import me.avo.spottit.model.DateFilter
-import me.avo.spottit.model.Playlist
-import me.avo.spottit.model.TagFilter
+import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldBe
@@ -20,7 +17,7 @@ import org.junit.jupiter.api.TestFactory
 internal class TrackFilterTest {
 
     @Test fun `checkTrackLength should calculate correctly`() {
-        val configuration = Configuration("", listOf(), listOf(), 1, 500)
+        val configuration = Configuration("", listOf(), listOf(), 1, 500, Schedule(null, null))
         val trackAbove = Track.Builder().apply {
             setDurationMs(2000)
         }.build()

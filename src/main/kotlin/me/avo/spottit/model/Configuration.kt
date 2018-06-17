@@ -9,5 +9,6 @@ data class Configuration(
      */
     val minimumLength: Int = 0,
 
-    val rateLimitInMs: Long
+    val rateLimitInMs: Long,
+    val schedule: Schedule
 )

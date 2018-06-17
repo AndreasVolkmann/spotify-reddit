@@ -4,9 +4,9 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.ElectronicSearchAlgorithm
 import me.avo.spottit.service.RedditServiceImpl
 import me.avo.spottit.service.SpotifyService
+import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.TrackFilter
 import org.slf4j.LoggerFactory
 
@@ -16,11 +16,14 @@ class DynamicPlaylistController(
     private val redditCredentials: RedditCredentials
 ) {
 
-    fun updatePlaylists(configuration: Configuration) {
-        refreshController.refresh()
-        configuration.playlists.forEach {
-            processPlaylist(configuration, it)
+    fun updatePlaylists(configuration: Configuration) = when {
+        Scheduler.shouldExecute(configuration.schedule) -> {
+            refreshController.refresh()
+            configuration.playlists.forEach {
+                processPlaylist(configuration, it)
+            }
         }
+        else -> Unit
     }
 
     private fun processPlaylist(configuration: Configuration, playlist: Playlist) {

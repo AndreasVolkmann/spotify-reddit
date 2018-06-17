@@ -18,7 +18,7 @@ buildscript {
 }
 
 group 'me.avo'
-version '0.6.0'
+version '0.7.0'
 
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: 'kotlin'
