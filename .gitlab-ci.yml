@@ -29,7 +29,7 @@ test:
 
 
 run:
-  stage: run
+  stage: deploy
   script:
     - java -jar ./build/libs/spottit-0.7.0.jar --help
   only:
