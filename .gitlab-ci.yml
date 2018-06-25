@@ -9,6 +9,10 @@ before_script:
 build:
   stage: build
   script: gradle --build-cache assemble
+  artifacts:
+    expire_in: '7 day'
+    paths:
+    - build/libs/*.jar
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
@@ -31,6 +35,7 @@ test:
 run:
   stage: deploy
   script:
+    - ls
     - java -jar ./build/libs/spottit-0.7.0.jar --help
   only:
     - schedules
