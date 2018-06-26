@@ -1,0 +1,43 @@
+image: gradle:alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  REFRESH_TOKEN: "AQCdVKUgJ1UU3Bp3DnRqCINHlpgDoFF-cmmv3izxcwsVNCDSYfB5WGikAX_Jx2X7-qJpJiy5IjZVlCY3lZz8fvTOLdA_tAfvsSSKV5PmGMMsosSSZF7Cj445th6syr4sQdQ"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+build:
+  stage: build
+  script: gradle --build-cache assemble
+  artifacts:
+    expire_in: '7 day'
+    paths:
+    - build/libs/*.jar
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+
+test:
+  stage: test
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+
+run:
+  stage: deploy
+  script:
+    - ls
+    - java -jar ./build/libs/spottit-0.7.0.jar --help
+  only:
+    - schedules
+
