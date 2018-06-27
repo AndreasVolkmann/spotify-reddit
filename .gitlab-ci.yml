@@ -8,7 +8,7 @@ before_script:
 
 build:
   stage: build
-  script: gradle --build-cache assemble
+  script: gradle --build-cache fatJar
   artifacts:
     expire_in: '7 day'
     paths:
