@@ -23,7 +23,7 @@ build:
 
 test:
   stage: test
-  script: [ -n "$RUN_TEST" ] && gradle check;
+  script: if [ -n "$RUN_TEST" ]; then gradle check; fi;
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
