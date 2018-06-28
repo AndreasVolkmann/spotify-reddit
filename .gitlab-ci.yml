@@ -23,7 +23,8 @@ build:
 
 test:
   stage: test
-  script: gradle check
+  script: 
+    - [ -n "$NIGHTLY_TEST" ] && gradle check;
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
