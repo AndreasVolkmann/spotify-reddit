@@ -10,7 +10,7 @@ build:
   stage: build
   script: gradle --build-cache fatJar
   artifacts:
-    expire_in: '7 day'
+    expire_in: '14 day'
     paths:
     - build/libs/*.jar
   cache:
@@ -32,11 +32,16 @@ test:
       - .gradle
 
 
+verify:
+  stage: deploy
+  script:
+    - java -jar ./build/libs/spottit-0.7.0.jar --help
+  except:
+    - schedules
+    
 run:
   stage: deploy
   script:
-    - ls
-    - java -jar ./build/libs/spottit-0.7.0.jar --help
+    - java -jar ./build/libs/spottit-0.7.0.jar -c "${CONFIG_NAME}"
   only:
     - schedules
-
