@@ -32,16 +32,11 @@ test:
       - .gradle
 
 
-verify:
-  stage: deploy
-  script:
-    - java -jar ./build/libs/spottit-0.7.0.jar --help
-  except:
-    - schedules
-    
 run:
   stage: deploy
   script:
-    - java -jar ./build/libs/spottit-0.7.0.jar -c "${CONFIG_NAME}"
-  only:
-    - schedules
+    - if [ -n "$CONFIG_FILE" ]; then CONFIG_FILE="-c ${CONFIG_FILE}"; fi
+    - ARGS=${CONFIG_FILE:-"--help"}
+    - java -jar ./build/libs/spottit-0.7.0.jar ${ARGS}
+    
+
