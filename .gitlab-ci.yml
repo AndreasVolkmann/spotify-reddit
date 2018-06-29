@@ -8,7 +8,7 @@ before_script:
 
 build:
   stage: build
-  script: gradle --build-cache fatJar
+  script: gradle --build-cache --no-daemon fatJar
   artifacts:
     expire_in: '14 day'
     paths:
@@ -23,20 +23,33 @@ build:
 
 test:
   stage: test
-  script: if [ -n "$RUN_TEST" ]; then gradle check; fi;
+  script: gradle check --no-daemon
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
       - build
       - .gradle
+  only:
+    variables:
+      - $RUN_TEST
 
 
 run:
   stage: deploy
   script:
-    - if [ -n "$CONFIG_FILE" ]; then CONFIG_FILE="-c ${CONFIG_FILE}"; fi
-    - ARGS=${CONFIG_FILE:-"--help"}
-    - java -jar ./build/libs/spottit-0.7.0.jar ${ARGS}
+    - java -jar ./build/libs/spottit-0.7.0.jar -c "${CONFIG_FILE}"
+  only:
+    variables:
+      - $CONFIG_FILE
     
+verify:
+  stage: deploy
+  script: java -jar ./build/libs/spottit-0.7.0.jar --help
+  except:
+    variables:
+      - $CONFIG_FILE
+
+
+  
 
