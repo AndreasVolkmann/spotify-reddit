@@ -1,0 +1,32 @@
+userId: 113258637
+
+playlists:
+  - id: 3kH92W5xasb0XEgclSTmH4
+    maxSize: 20
+    subreddit: dnb
+    sort: TOP
+    timePeriod: MONTH
+    minUpvotes: 25
+    isStrictMix: true
+
+
+# When a reddit post has any of the following flairs, it will be excluded
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Discussion
+  - Meme
+  - Other
+  - News
+  - Video
+
+# minimum length of tracks in seconds in order to be added to the playlists
+minimumLength: 100
+rateLimitInMs: 600
