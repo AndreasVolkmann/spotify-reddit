@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.ben-manes:gradle-versions-plugin:0.19.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.20.0"
     }
 }
 
@@ -41,6 +41,7 @@ task fatJar(type: Jar) {
 repositories {
     mavenCentral()
     maven { url "http://dl.bintray.com/kotlin/ktor" }
+    maven { url "https://dl.bintray.com/avo/arkenv" }
     jcenter()
 }
 
@@ -61,7 +62,7 @@ dependencies {
     compile 'org.kodein.di:kodein-di-generic-jvm:5.0.0'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
     compile 'org.yaml:snakeyaml:1.21'
-    compile 'com.beust:jcommander:1.72'
+    compile 'com.apurebase:arkenv:1.0.2'
     compile 'org.apache.commons:commons-text:1.4'
 
     testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.38'
