@@ -1,0 +1,62 @@
+# This is my own weekly configuration
+# It includes playlists for the following subreddits:
+# dnb, indieheads, hardstyle (private), trance
+
+userId: 113258637
+
+playlists:
+- id: 3kH92W5xasb0XEgclSTmH4
+  subreddit: dnb
+  maxSize: 20
+  sort: TOP
+  timePeriod: MONTH
+  minUpvotes: 25
+  isStrictMix: true
+
+- id: 6cQk28LM0k3ogiCNEH0d9e
+  subreddit: indieheads
+  maxSize: 20
+  sort: TOP
+  timePeriod: MONTH
+  minUpvotes: 25
+  isStrictMix: true
+  tagFilter:
+    includeExact:
+    - FRESH
+
+- id: 492vM7yqKZxqV32jb5UWHf
+  subreddit: hardstyle
+  maxSize: 10
+  sort: TOP
+  timePeriod: MONTH
+  isPrivate: true
+
+- id: 7eoppWh6XjOIIp10DKpSAs
+  subreddit: trance
+  maxSize: 10
+  sort: TOP
+  timePeriod: MONTH
+  minUpvotes: 25
+  isStrictMix: true
+
+
+# When a reddit post has any of the following flairs, it will be excluded
+flairsToExclude:
+- Mix
+- Liveset
+- Radio
+- Show
+- Album
+- Upcoming
+- AMA
+- Concluded
+- RIP
+- Discussion
+- Meme
+- Other
+- News
+- Video
+
+# minimum length of tracks in seconds in order to be added to the playlists
+minimumLength: 100
+rateLimitInMs: 600
