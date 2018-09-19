@@ -26,14 +26,22 @@ playlists:
 
 - id: 492vM7yqKZxqV32jb5UWHf
   subreddit: hardstyle
-  maxSize: 10
+  maxSize: 15
   sort: TOP
   timePeriod: MONTH
   isPrivate: true
 
 - id: 7eoppWh6XjOIIp10DKpSAs
   subreddit: trance
-  maxSize: 10
+  maxSize: 15
+  sort: TOP
+  timePeriod: MONTH
+  minUpvotes: 25
+  isStrictMix: true
+  
+- id: 6S1zmQzU2sjlcu7cUEo9e8
+  subreddit: techno
+  maxSize: 15
   sort: TOP
   timePeriod: MONTH
   minUpvotes: 25
