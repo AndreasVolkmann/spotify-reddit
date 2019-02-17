@@ -35,9 +35,6 @@ To customize the application, edit the
  and fill in your own information.
 
 ```yaml
-#Spotify user ID
-userId: YOUR_USER_ID
-
 # Add an entry for each playlist you want to update
 playlists:
     # First Playlist, based on the top tracks from last week
@@ -88,11 +85,6 @@ flairsToExclude:
 # minimum length of tracks in seconds in order to be added to the playlists
 minimumLength: 100
 ```
-
-
-##### Spotify User ID
-To find your Spotify user ID, click your profile, click the `...` and select `Share` > `Copy Spotify URI`.
-The last numerical part is your user ID.
 
 ##### Spotify Playlist ID
 To find the ID of your playlist, right click it, select `Share` > `Copy Spotify URI`.
@@ -163,8 +155,7 @@ Use `schedule` to define when the lists should be updated. If the current date d
 
 Example config:
 ```yaml
-userId: xyz
-
+playlists:
 ...
 
 schedule:

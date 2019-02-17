@@ -31,11 +31,12 @@ object SpotifyQueryTools {
         return artistDistance + trackDistance > editDistanceThreshold
     }
 
-    fun getArtistDistance(track: Track, artist: String) = track.firstArtistName.getLevenshteinDistance(artist)
+    private fun getArtistDistance(track: Track, artist: String) = track.firstArtistName.getLevenshteinDistance(artist)
 
-    fun getArtistDistance(track: Track, redditTrack: RedditTrack) = getArtistDistance(track, redditTrack.artist)
+    private fun getArtistDistance(track: Track, redditTrack: RedditTrack) = getArtistDistance(track, redditTrack.artist)
 
-    fun getTrackDistance(track: Track, trackName: String) = track.name.fixTitle().getLevenshteinDistance(trackName)
+    private fun getTrackDistance(track: Track, trackName: String) =
+        track.name.fixTitle().getLevenshteinDistance(trackName)
 
     fun getTrackDistance(track: Track, redditTrack: RedditTrack) = getTrackDistance(track, redditTrack.title)
 
@@ -50,5 +51,4 @@ object SpotifyQueryTools {
     fun String.fixTitle(): String = getEnclosedText("(", ")")
         .filter { it.startsWith("(feat.") }
         .fold(this) { acc, old -> acc.replace(old, "").trim() }
-
 }

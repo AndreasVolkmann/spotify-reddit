@@ -1,8 +1,13 @@
 package me.avo.spottit.config
 
 import com.apurebase.arkenv.Arkenv
+import com.apurebase.arkenv.argument
+import com.apurebase.arkenv.parse
 
-class Arkuments(args: Array<String>) : Arkenv(args) {
+class Arguments(args: Array<String>) : Arkenv() {
+    init {
+        parse(args)
+    }
 
     val configPath: String by argument("-c", "--config") {
         description = "The path to your config.yml"
@@ -16,4 +21,8 @@ class Arkuments(args: Array<String>) : Arkenv(args) {
         description = "Refresh the Spotify access token"
     }
 
+    val port: Int by argument("-p", "--port") {
+        description = "The port that the authentication server will be exposed on"
+        defaultValue = 5000
+    }
 }

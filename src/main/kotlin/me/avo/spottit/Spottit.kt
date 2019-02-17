@@ -1,32 +1,31 @@
 package me.avo.spottit
 
-import me.avo.spottit.config.Arkuments
-import me.avo.spottit.controller.DynamicPlaylistController
-import me.avo.spottit.controller.ManualAuthController
-import me.avo.spottit.controller.TokenRefreshController
+import me.avo.spottit.config.Arguments
+import me.avo.spottit.service.DynamicPlaylistService
+import me.avo.spottit.service.ManualAuthService
+import me.avo.spottit.service.TokenRefreshService
 import me.avo.spottit.util.YamlConfigReader
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.instance
 import java.io.File
 
-class Spottit(private val arkuments: Arkuments, kodein: Kodein) : KodeinAware by kodein {
+class Spottit(private val arguments: Arguments, kodein: Kodein) : KodeinAware by kodein {
 
-    private val configuration by lazy { YamlConfigReader.read(File(arkuments.configPath).readText()) }
-    private val manualAuthController: ManualAuthController by instance()
-    private val tokenRefreshController: TokenRefreshController by instance()
-    private val dynamicPlaylistController: DynamicPlaylistController by instance()
+    private val configuration by lazy { YamlConfigReader.read(File(arguments.configPath).readText()) }
+    private val manualAuthService: ManualAuthService by instance()
+    private val tokenRefreshService: TokenRefreshService by instance()
+    private val dynamicPlaylistService: DynamicPlaylistService by instance()
 
-    fun run() = with(arkuments) {
+    fun run() = with(arguments) {
         when {
             help -> return@with
 
-            manualAuth -> manualAuthController.authorize(configuration)
+            manualAuth -> manualAuthService.authorize(configuration, arguments)
 
-            doRefresh -> tokenRefreshController.refresh()
+            doRefresh -> tokenRefreshService.refresh()
 
-            else -> dynamicPlaylistController.updatePlaylists(configuration)
+            else -> dynamicPlaylistService.updatePlaylists(configuration)
         }
     }
-
 }

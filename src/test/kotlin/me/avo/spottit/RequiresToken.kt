@@ -1,16 +1,16 @@
 package me.avo.spottit
 
 import me.avo.spottit.config.prodKodein
-import me.avo.spottit.controller.TokenRefreshController
+import me.avo.spottit.service.TokenRefreshService
 import org.junit.jupiter.api.BeforeAll
 import org.kodein.di.generic.instance
 
 interface RequiresToken {
 
     @BeforeAll fun beforeAll() {
-        val tokenRefreshController: TokenRefreshController by prodKodein.instance()
+        val tokenRefreshService: TokenRefreshService by prodKodein.instance()
         if (!isRefreshed) {
-            tokenRefreshController.refresh()
+            tokenRefreshService.refresh()
             isRefreshed = true
         }
     }

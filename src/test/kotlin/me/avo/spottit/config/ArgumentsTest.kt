@@ -8,7 +8,7 @@ internal class ArgumentsTest {
 
     @Test fun `parse args correctly`() {
         val configPath = "config.yml"
-        val args = Arkuments(arrayOf("-c", configPath, "-ma", "-r", "-h"))
+        val args = Arguments(arrayOf("-c", configPath, "-ma", "-r", "-h"))
         with(args) {
             this.configPath shouldBeEqualTo configPath
             manualAuth shouldBe true
@@ -16,5 +16,4 @@ internal class ArgumentsTest {
             help shouldBe true
         }
     }
-
 }

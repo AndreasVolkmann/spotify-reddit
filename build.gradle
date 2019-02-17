@@ -1,17 +1,17 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.61'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     id "com.github.ben-manes.versions" version "0.20.0"
 }
 
 ext {
-    ktor_version = '0.9.3'
-    spotify_api_vesrion = '2.0.4'
+    ktor_version = '1.1.2'
+    spotify_api_vesrion = '2.1.2'
     jrawVersion = '1.1.0'
-    junit_version = '5.2.0'
+    junit_version = '5.4.0'
 }
 
 group 'me.avo'
-version '0.7.0'
+version '0.7.1'
 
 task stage(dependsOn: ['fatJar', 'clean'])
 build.mustRunAfter clean
@@ -29,8 +29,6 @@ task fatJar(type: Jar) {
 }
 
 repositories {
-    maven { url "http://dl.bintray.com/kotlin/ktor" }
-    maven { url "https://dl.bintray.com/avo/arkenv" }
     jcenter()
 }
 
@@ -50,11 +48,11 @@ dependencies {
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile 'org.kodein.di:kodein-di-generic-jvm:5.0.0'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
-    compile 'org.yaml:snakeyaml:1.22'
-    compile 'com.apurebase:arkenv:1.0.2'
-    compile 'org.apache.commons:commons-text:1.4'
+    compile 'org.yaml:snakeyaml:1.23'
+    compile 'com.apurebase:arkenv:1.4.1'
+    compile 'org.apache.commons:commons-text:1.6'
 
-    testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.41'
+    testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.47'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
@@ -78,9 +76,4 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }

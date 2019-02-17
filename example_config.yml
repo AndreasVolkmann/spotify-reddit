@@ -1,6 +1,3 @@
-#Spotify user ID
-userId: YOUR_USER_ID
-
 # Add an entry for each playlist you want to update
 playlists:
     # First Playlist, based on the top tracks from last week

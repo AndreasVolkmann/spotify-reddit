@@ -1,8 +1,8 @@
 package me.avo.spottit.config
 
-import me.avo.spottit.controller.DynamicPlaylistController
-import me.avo.spottit.controller.ManualAuthController
-import me.avo.spottit.controller.TokenRefreshController
+import me.avo.spottit.service.DynamicPlaylistService
+import me.avo.spottit.service.ManualAuthService
+import me.avo.spottit.service.TokenRefreshService
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.service.SpotifyAuthService
 import me.avo.spottit.service.SpotifyAuthServiceImpl
@@ -28,20 +28,20 @@ val prodKodein = Kodein {
     fun getProperty(key: String) = props.getProperty(key)
     fun getEnvOrProp(key: String) = System.getenv(key) ?: getProperty(key)
 
-    bind<DynamicPlaylistController>() with singleton {
-        DynamicPlaylistController(
-            refreshController = instance(),
+    bind<DynamicPlaylistService>() with singleton {
+        DynamicPlaylistService(
+            refreshService = instance(),
             spotifyService = instance(),
             redditCredentials = instance()
         )
     }
 
-    bind<ManualAuthController>() with singleton {
-        ManualAuthController(spotifyAuthService = instance())
+    bind<ManualAuthService>() with singleton {
+        ManualAuthService(spotifyAuthService = instance())
     }
 
-    bind<TokenRefreshController>() with singleton {
-        TokenRefreshController(spotifyAuthService = instance())
+    bind<TokenRefreshService>() with singleton {
+        TokenRefreshService(spotifyAuthService = instance())
     }
 
     bind<SpotifyService>() with singleton {

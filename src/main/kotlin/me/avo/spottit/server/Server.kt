@@ -1,3 +1,5 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package me.avo.spottit.server
 
 import freemarker.cache.ClassTemplateLoader
@@ -17,23 +19,20 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import me.avo.spottit.config.Dependency
-import me.avo.spottit.controller.ManualAuthController
+import me.avo.spottit.service.ManualAuthService
 import me.avo.spottit.service.SpotifyAuthService
 import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
 import org.slf4j.event.Level
 
-fun prepareServer(kodein: Kodein): ApplicationEngine = embeddedServer(
-    factory = CIO,
-    port = System.getenv("PORT")?.toInt() ?: 5000,
-    module = module(kodein)
+fun prepareServer(kodein: Kodein, port: Int): ApplicationEngine = embeddedServer(
+    factory = CIO, port = port, module = module(kodein)
 )
 
 fun module(kodein: Kodein): Application.() -> Unit = {
     install(Routing) {
-
         val spotifyAuthService: SpotifyAuthService by kodein.instance()
-        val manualAuthController: ManualAuthController by kodein.instance()
+        val manualAuthService: ManualAuthService by kodein.instance()
 
         get("spotify/auth/{...}") {
             val code = call.parameters["code"]
@@ -44,16 +43,13 @@ fun module(kodein: Kodein): Application.() -> Unit = {
                 else -> {
                     val credentials = spotifyAuthService.grantAccess(code)
                     call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
-                    manualAuthController.writeCredentials(credentials)
+                    manualAuthService.writeCredentials(credentials)
                 }
             }
         }
     }
-
-    install(FreeMarker) {
-        setupFreemarker()
-    }
-
+    install(CallLogging) { level = Level.INFO }
+    install(FreeMarker) { setupFreemarker() }
     install(StatusPages) {
         exception<Throwable> {
             val status = when (it) {
@@ -63,13 +59,8 @@ fun module(kodein: Kodein): Application.() -> Unit = {
             call.respond(status, "${it::class.simpleName}: ${it.message ?: "An error occurred"}")
         }
     }
-
-    install(CallLogging) {
-        level = Level.INFO
-    }
 }
 
 fun Configuration.setupFreemarker() {
     templateLoader = ClassTemplateLoader(Dependency::class.java.classLoader, "templates")
 }
-
