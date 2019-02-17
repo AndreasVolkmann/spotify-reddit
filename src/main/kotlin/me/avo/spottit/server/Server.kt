@@ -1,6 +1,7 @@
 package me.avo.spottit.server
 
 import freemarker.cache.ClassTemplateLoader
+import freemarker.cache.TemplateLoader
 import freemarker.template.Configuration
 import io.ktor.application.Application
 import io.ktor.application.call

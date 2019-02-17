@@ -29,7 +29,7 @@ internal class TrackFilterTest {
         val trackFilter = TrackFilter(
             configuration,
             Playlist(
-                "", "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false,
+                "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false,
                 TagFilter(listOf(), listOf(), listOf(), listOf()), DateFilter(null, null), false
             )
         )

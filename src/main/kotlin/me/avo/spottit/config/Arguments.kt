@@ -1,8 +1,9 @@
 package me.avo.spottit.config
 
 import com.apurebase.arkenv.Arkenv
+import com.apurebase.arkenv.argument
 
-class Arkuments(args: Array<String>) : Arkenv(args) {
+class Arguments : Arkenv() {
 
     val configPath: String by argument("-c", "--config") {
         description = "The path to your config.yml"
@@ -15,5 +16,4 @@ class Arkuments(args: Array<String>) : Arkenv(args) {
     val doRefresh: Boolean by argument("-r", "--refresh") {
         description = "Refresh the Spotify access token"
     }
-
 }

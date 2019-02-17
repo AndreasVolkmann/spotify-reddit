@@ -41,7 +41,7 @@ class DynamicPlaylistController(
             .mapTo(foundTracks) { it }
             .also { logger.info("Status: ${foundTracks.size} / ${playlist.maxSize} tracks have been found") }
 
-        spotifyService.updatePlaylist(foundTracks, playlist.userId, playlist.id, playlist.maxSize)
+        spotifyService.updatePlaylist(foundTracks, playlist.id, playlist.maxSize)
     }
 
     private val logger = LoggerFactory.getLogger(this::class.java)

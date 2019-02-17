@@ -23,7 +23,6 @@ object YamlConfigReader {
                 val dateFilter = it["dateFilter"] as? Map<String, Any> ?: mapOf()
                 Playlist(
                     id = it["id"].toString(),
-                    userId = userId,
                     maxSize = it["maxSize"]?.toString()?.toInt() ?: 50,
                     subreddit = it["subreddit"].toString(),
                     sort = SubredditSort.valueOf(it["sort"].toString()),
