@@ -1,9 +1,6 @@
 # This is my own weekly configuration
 # It includes playlists for the following subreddits:
 # dnb, indieheads, hardstyle (private), trance
-
-userId: 113258637
-
 playlists:
 - id: 3kH92W5xasb0XEgclSTmH4
   subreddit: dnb
