@@ -1,0 +1,30 @@
+# Electronic music weekly
+playlists:
+  - id: 0tyQqXme7xAPQaI1EWPCfV
+    maxSize: 20
+    subreddit: electronicmusic
+    sort: TOP
+    timePeriod: WEEK
+    minUpvotes: 10
+    isStrictMix: true
+
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Discussion
+  - Photos
+  - News
+  - Article
+  - Satire
+  - Official AMA
+  - Misleading
+  - Twitter
+
+minimumLength: 100
