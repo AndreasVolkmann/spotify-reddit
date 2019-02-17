@@ -22,7 +22,7 @@ object SubmissionParser {
         )
     }
 
-    fun processTitle(title: String): Triple<String, String?, List<String>> {
+    private fun processTitle(title: String): Triple<String, String?, List<String>> {
         val extraInformation = title.getExtraInformation()
         val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
 

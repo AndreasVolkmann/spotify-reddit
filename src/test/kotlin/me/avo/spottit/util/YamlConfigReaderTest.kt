@@ -11,10 +11,8 @@ internal class YamlConfigReaderTest {
 
     @Test fun `should parse config`() {
         val yaml = this::class.java.classLoader.getResource("config.yml").readText()
-        val userId = "110022034"
 
         val expected = Configuration(
-            userId = userId,
             playlists = listOf(
                 Playlist(
                     id = "someplid1",

@@ -1,24 +1,22 @@
-package me.avo.spottit.controller
+package me.avo.spottit.service
 
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.RedditServiceImpl
-import me.avo.spottit.service.SpotifyService
 import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.TrackFilter
 import org.slf4j.LoggerFactory
 
-class DynamicPlaylistController(
-    private val refreshController: TokenRefreshController,
+class DynamicPlaylistService(
+    private val refreshService: TokenRefreshService,
     private val spotifyService: SpotifyService,
     private val redditCredentials: RedditCredentials
 ) {
 
     fun updatePlaylists(configuration: Configuration) = when {
         Scheduler.shouldExecute(configuration.schedule) -> {
-            refreshController.refresh()
+            refreshService.refresh()
             configuration.playlists.forEach {
                 processPlaylist(configuration, it)
             }

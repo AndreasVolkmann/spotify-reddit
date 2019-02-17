@@ -2,6 +2,7 @@ image: gradle:alpine
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  VERSION: "0.7.1"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -38,14 +39,14 @@ test:
 run:
   stage: deploy
   script:
-    - java -jar ./build/libs/spottit-0.7.0.jar -c "${CONFIG_FILE}"
+    - java -jar ./build/libs/spottit-${VERSION}.jar -c "${CONFIG_FILE}"
   only:
     variables:
       - $CONFIG_FILE
     
 verify:
   stage: deploy
-  script: java -jar ./build/libs/spottit-0.7.0.jar --help
+  script: java -jar ./build/libs/spottit-${VERSION}.jar --help
   except:
     variables:
       - $CONFIG_FILE

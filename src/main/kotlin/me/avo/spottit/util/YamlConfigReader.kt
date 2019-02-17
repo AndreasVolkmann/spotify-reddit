@@ -13,11 +13,9 @@ object YamlConfigReader {
     fun read(yaml: String): Configuration {
         val data = Yaml().load<Map<String, Any?>>(yaml)
         val playlists = data["playlists"] as? List<Map<String, Any>> ?: listOf()
-        val userId = data["userId"].toString()
         val schedule = data["schedule"] as? Map<String, Any> ?: mapOf()
 
         return Configuration(
-            userId = userId,
             playlists = playlists.map {
                 val tagFilter = it["tagFilter"] as? Map<String, List<String>> ?: mapOf()
                 val dateFilter = it["dateFilter"] as? Map<String, Any> ?: mapOf()
@@ -75,5 +73,4 @@ object YamlConfigReader {
         "SUNDAY", "SUN", "1" -> SUNDAY
         else -> throw IllegalArgumentException("Unrecognized week day '$name'")
     }
-
 }
