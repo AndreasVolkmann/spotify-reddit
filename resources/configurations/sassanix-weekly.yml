@@ -1,12 +1,38 @@
 # Electronic music weekly
+config_anchor: &config
+  maxSize: 20
+  sort: TOP
+  minUpvotes: 10
+  isStrictMix: true
+  timePeriod: MONTH
+
 playlists:
   - id: 0tyQqXme7xAPQaI1EWPCfV
-    maxSize: 20
+    <<: *config
     subreddit: electronicmusic
-    sort: TOP
     timePeriod: WEEK
-    minUpvotes: 10
-    isStrictMix: true
+    
+  - id: 7j7DTBrSTdffxbGeu83X1T
+    <<: *config
+    subreddit: electronicmusic
+    
+  - id: 4nY3CWQHuROmtsVXsw4N10
+    <<: *config
+    subreddit: trance
+
+  - id: 7KrteOLz4BKmEF5WTzywvu
+    <<: *config
+    subreddit: hardstyle
+    
+  - id: 2vJ2QtR6mnUbvGJYhz9gd5
+    <<: *config
+    subreddit: idm
+    
+  - id: 10Nm0B0VKyM0WFXdjmnCBF
+    <<: *config
+    subreddit: RealProghouse
+    
+  
 
 flairsToExclude:
   - Mix
