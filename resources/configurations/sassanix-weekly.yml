@@ -1,12 +1,17 @@
-# Electronic music weekly
+# Reddit Electronic Music
 config_anchor: &config
   maxSize: 20
   sort: TOP
   minUpvotes: 10
   isStrictMix: true
-  timePeriod: MONTH
+  timePeriod: ALL
 
 playlists:
+    # Electronic music
+  - id: 1DxnWm4nLKAGGLxfb8QiKc
+    <<: *config
+    subreddit: electronicmusic
+    
   - id: 0tyQqXme7xAPQaI1EWPCfV
     <<: *config
     subreddit: electronicmusic
@@ -15,23 +20,79 @@ playlists:
   - id: 7j7DTBrSTdffxbGeu83X1T
     <<: *config
     subreddit: electronicmusic
+    timePeriod: MONTH
+    
+    # Trance
+  - id: 67pOXwIa0C4n9ZMpQubc0s
+    <<: *config
+    subreddit: trance
     
   - id: 4nY3CWQHuROmtsVXsw4N10
     <<: *config
     subreddit: trance
-
+    timePeriod: MONTH
+    
+  - id: 0gBLnxeDJsoMUOcJZQxhHR
+    <<: *config
+    subreddit: trance
+    timePeriod: WEEK
+    
+    # Classic Trance
+  - id: 5vK21h3SFZQ1QmfyWHjPTB
+    <<: *config
+    subreddit: ClassicTrance
+    
+    # Hardstyle
   - id: 7KrteOLz4BKmEF5WTzywvu
     <<: *config
     subreddit: hardstyle
+  
+  - id: 6qXM9dkQLkQbzDuiIUdMM0
+    <<: *config
+    subreddit: hardstyle
+    timePeriod: MONTH
     
+  - id: 4hYsCOAYuJLzoRWj6TxdA4
+    <<: *config
+    subreddit: hardstyle
+    timePeriod: WEEK
+    
+    # IDM
   - id: 2vJ2QtR6mnUbvGJYhz9gd5
     <<: *config
     subreddit: idm
     
+    # Real Prog House
   - id: 10Nm0B0VKyM0WFXdjmnCBF
     <<: *config
     subreddit: RealProghouse
     
+  - id: 6JeAZCZQMMEtY7hgdtPmal
+    <<: *config
+    subreddit: RealProghouse
+    timePeriod: WEEK
+    
+  - id: 3hJqG1q7xW3YUFyQPqk77U
+    <<: *config
+    subreddit: RealProghouse
+    timePeriod: MONTH
+    
+    #Nu Disco
+  - id: 1FR6ZcDkVHZGYyB5P7VtWQ
+    <<: *config
+    subreddit: NuDisco
+    
+    # Triphop
+  - id: 78mc0hXzE1ItTuma2XgynC
+    <<: *config
+    subreddit: Triphop
+    
+    # Ambient Music
+  - id: 5R5cevrZNHuimNe98dmg7O
+    <<: *config
+    subreddit: Ambientmusic
+    
+
   
 
 flairsToExclude:
