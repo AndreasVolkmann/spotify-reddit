@@ -22,12 +22,7 @@ object SpotifyQueryTools {
 
     fun exceedsThreshold(track: Track, redditTrack: RedditTrack, editDistanceThreshold: Int): Boolean {
         val artistDistance = getArtistDistance(track, redditTrack)
-        val trackDistance = getTrackDistance(track, redditTrack).let {
-            if (redditTrack.mix != null && track.name.contains(redditTrack.mix, ignoreCase = true)) {
-                it - redditTrack.mix.length
-            } else it
-        }
-
+        val trackDistance = getTrackDistance(track, redditTrack)
         return artistDistance + trackDistance > editDistanceThreshold
     }
 
@@ -38,7 +33,8 @@ object SpotifyQueryTools {
     private fun getTrackDistance(track: Track, trackName: String) =
         track.name.fixTitle().getLevenshteinDistance(trackName)
 
-    fun getTrackDistance(track: Track, redditTrack: RedditTrack) = getTrackDistance(track, redditTrack.title)
+    fun getTrackDistance(track: Track, redditTrack: RedditTrack) =
+        getTrackDistance(track, "${redditTrack.title} ${redditTrack.mix}".trim())
 
     fun makeComparator(title: String, artist: String): Comparator<Track> = compareBy<Track>(
         { getArtistDistance(it, artist) },

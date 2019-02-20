@@ -24,7 +24,7 @@ object SubmissionParser {
 
     private fun processTitle(title: String): Triple<String, String?, List<String>> {
         val extraInformation = title.getExtraInformation()
-        val mix = extraInformation.find { it.contains("mix", ignoreCase = true) }
+        val mix = extraInformation.find { it.containsAny("mix", "bootleg", "edit") }
 
         val fullTitle = (extraInformation)
             .fold(title) { acc, s -> acc.replace(s, "").trim() }
@@ -32,6 +32,8 @@ object SubmissionParser {
             .escapeChars()
         return Triple(fullTitle, mix, extraInformation)
     }
+
+    private fun String.containsAny(vararg items: String): Boolean = items.any { this.contains(it, true) }
 
     fun isValidTrackTitle(title: String): Boolean = processTitle(title).first.contains("-")
 

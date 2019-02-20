@@ -1,12 +1,11 @@
 package me.avo.spottit.util
 
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
+import me.avo.spottit.artist
 import me.avo.spottit.redditTrack
 import me.avo.spottit.track
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeEmpty
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldEqual
+import me.avo.spottit.util.SubmissionParser.parse
+import org.amshove.kluent.*
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -106,34 +105,53 @@ internal class SpotifyQueryToolsTest {
     @Test fun `should not exceed threshold`() {
         val reddit = redditTrack("Aphex Twin", "minipops 67", "source field mix", listOf("120.2"))
         val spotify = track {
-            setArtists(ArtistSimplified.Builder().apply {
-              setName("Aphex Twin")
-            }.build())
+            setArtists(artist("Aphex Twin"))
             setName("minipops 67 [120.2][source field mix]")
         }
 
-
         SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
-
         SpotifyQueryTools.exceedsThreshold(spotify, reddit, 10) shouldBe false
     }
 
+    @Test fun `bootleg should be more difficult to match`() {
+        val redditTrack = redditTrack(
+            artist = "Dynoro & Gigi D'Agostino",
+            title = "In My Mind",
+            extraInformation = listOf("2018", "Adaro & The Machine Bootleg"),
+            flair = "Track",
+            mix = "Adaro & The Machine Bootleg",
+            url = "https://m.youtube.com/watch?v=saCXuNkfw1E"
+        )
+        val spotify = track {
+            setArtists(artist("Dynoro"), artist("Gigi D'Agostino"))
+            setName("In My Mind")
+        }
+        SpotifyQueryTools.getTrackDistance(spotify, redditTrack).also(::println)
+        val isExceeded = SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, 10)
+        isExceeded.shouldBeTrue()
+    }
+
+    @Test fun `edit should not match original`() {
+        val redditTrack = parse("Tiësto - Adagio For Strings (Sub Zero Project Edit)", null, "", Date())
+        val spotify = track {
+            setArtists(artist("Tiësto"))
+            setName("Adagio For Strings")
+        }
+        SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, 10).shouldBeTrue()
+    }
+
     private fun Candidate.toTrack() = track {
-        setArtists(ArtistSimplified.Builder().apply {
-            setName(artist)
-        }.build())
+        setArtists(artist(artist))
         setName(name)
         setDurationMs(duration)
     }
 
     @TestFactory fun `fixTitle should produce expected output`() =
-        listOf("Get Free (feat. Amber of Dirty Projectors)" to "Get Free")
-            .map { (input, expected) ->
-                DynamicTest.dynamicTest(input) {
-                    with(SpotifyQueryTools) {
-                        input.fixTitle() shouldEqual expected
-                    }
+        listOf("Get Free (feat. Amber of Dirty Projectors)" to "Get Free").map { (input, expected) ->
+            DynamicTest.dynamicTest(input) {
+                with(SpotifyQueryTools) {
+                    input.fixTitle() shouldEqual expected
                 }
             }
-
+        }
 }

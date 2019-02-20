@@ -47,8 +47,7 @@ internal class SubmissionParserTest {
         }
     }
 
-    @Nested
-    class HasValidTag {
+    @Nested inner class HasValidTag {
 
         @Test fun `should include`() {
             val trackTags = listOf("test news", "one track")
@@ -76,8 +75,7 @@ internal class SubmissionParserTest {
 
     }
 
-    @Nested
-    class FilterTags {
+    @Nested inner class FilterTags {
 
         @Test fun `include`() {
             SubmissionParser.filterTags(

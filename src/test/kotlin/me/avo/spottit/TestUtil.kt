@@ -1,6 +1,7 @@
 package me.avo.spottit
 
 import com.wrapper.spotify.model_objects.specification.Album
+import com.wrapper.spotify.model_objects.specification.ArtistSimplified
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
@@ -48,5 +49,7 @@ fun makeConfig(dateFilter: DateFilter): Configuration = getTestConfig().let {
     val pl = it.playlists.first().copy(dateFilter = dateFilter)
     it.copy(playlists = listOf(pl))
 }
+
+fun artist(name: String): ArtistSimplified = ArtistSimplified.Builder().setName(name).build()
 
 object TestUtil

@@ -1,4 +1,4 @@
-package me.avo.spottit.controller
+package me.avo.spottit.service
 
 import me.avo.spottit.config.prodKodein
 import me.avo.spottit.getTestConfig

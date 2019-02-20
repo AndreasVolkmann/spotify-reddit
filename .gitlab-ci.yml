@@ -31,9 +31,9 @@ test:
     paths:
       - build
       - .gradle
-  only:
+  except:
     variables:
-      - $RUN_TEST
+      - $CONFIG_FILE
 
 
 run:
