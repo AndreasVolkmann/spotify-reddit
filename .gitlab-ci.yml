@@ -9,7 +9,7 @@ before_script:
 
 build:
   stage: build
-  script: gradle --build-cache --no-daemon fatJar
+  script: gradle --build-cache --no-daemon bootJar
   artifacts:
     expire_in: '14 day'
     paths:
