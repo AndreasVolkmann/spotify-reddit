@@ -34,7 +34,7 @@ object SpotifyQueryTools {
         track.name.fixTitle().getLevenshteinDistance(trackName)
 
     fun getTrackDistance(track: Track, redditTrack: RedditTrack) =
-        getTrackDistance(track, "${redditTrack.title} ${redditTrack.mix}".trim())
+        getTrackDistance(track, "${redditTrack.title} ${redditTrack.mix ?: ""}".trim())
 
     fun makeComparator(title: String, artist: String): Comparator<Track> = compareBy<Track>(
         { getArtistDistance(it, artist) },
@@ -45,6 +45,6 @@ object SpotifyQueryTools {
         LevenshteinDistance.getDefaultInstance().apply(this, other)
 
     fun String.fixTitle(): String = getEnclosedText("(", ")")
-        .filter { it.startsWith("(feat.") }
+        .filter { it.startsWith("(feat.") || it.startsWith("(ft.") }
         .fold(this) { acc, old -> acc.replace(old, "").trim() }
 }

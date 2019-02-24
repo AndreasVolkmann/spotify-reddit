@@ -41,5 +41,4 @@ class SpotifyAuthServiceImpl(
             refreshToken = auth.refreshToken
         }
     }
-
 }

@@ -2,7 +2,7 @@ image: gradle:alpine
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  VERSION: "0.7.1"
+  VERSION: "0.8.0"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle

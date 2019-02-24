@@ -38,5 +38,4 @@ interface SpotifyAuthService {
         .scope(scopes.joinToString(",")) // comma separated String
         .build()
         .execute()
-
 }

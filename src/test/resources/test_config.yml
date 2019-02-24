@@ -11,7 +11,7 @@ playlists:
         - FRESH
 
   - id: 492vM7yqKZxqV32jb5UWHf # private spottit
-    maxSize: 10
+    maxSize: 20
     subreddit: hardstyle
     sort: TOP
     timePeriod: MONTH

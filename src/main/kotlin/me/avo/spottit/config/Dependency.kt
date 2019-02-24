@@ -37,7 +37,7 @@ val prodKodein = Kodein {
     }
 
     bind<ManualAuthService>() with singleton {
-        ManualAuthService(spotifyAuthService = instance())
+        ManualAuthService(instance(), kodein)
     }
 
     bind<TokenRefreshService>() with singleton {

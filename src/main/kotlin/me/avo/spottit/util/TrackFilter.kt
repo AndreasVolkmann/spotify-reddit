@@ -44,7 +44,7 @@ class TrackFilter(private val configuration: Configuration, playlist: Playlist) 
     private val datesToCheck = listOfNotNull(dateFilter.startingFrom, dateFilter.maxDistance)
     val doCheckReleaseDate = datesToCheck.isNotEmpty()
 
-    val editDistanceThreshold = 10
+    val editDistanceThreshold = 15
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

@@ -86,6 +86,8 @@ internal class SpotifyQueryToolsTest {
         }
     }
 
+    private val threshold = 15 // TODO this should be more generally available
+
     @Test fun `should filter out candidates exceeding the threshold`() {
         val case = TestCase(
             "Justice", "Cross", listOf(
@@ -96,10 +98,25 @@ internal class SpotifyQueryToolsTest {
         val result = SpotifyQueryTools.sortItems(
             case.candidates.map { it.toTrack() }.toTypedArray(),
             redditTrack(case.artist, case.name),
-            10
+            threshold
         )
 
         result.shouldBeEmpty()
+    }
+
+    private val shouldPass = listOf(
+        "Sound Rush ft. Michael Jo - Breakaway (Official Videoclip)" to
+                Candidate("Sound Rush", "Breakaway (ft. Michael Jo)", 1000)
+    )
+
+    @TestFactory fun `should pass`() = shouldPass.map { (raw, candidate) ->
+        DynamicTest.dynamicTest(raw) {
+            val reddit = SubmissionParser.parse(raw, null, "", Date())
+            println(reddit)
+            val spotify = candidate.toTrack()
+            SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
+            SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold) shouldBe false
+        }
     }
 
     @Test fun `should not exceed threshold`() {
@@ -110,7 +127,7 @@ internal class SpotifyQueryToolsTest {
         }
 
         SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
-        SpotifyQueryTools.exceedsThreshold(spotify, reddit, 10) shouldBe false
+        SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold) shouldBe false
     }
 
     @Test fun `bootleg should be more difficult to match`() {
@@ -127,7 +144,7 @@ internal class SpotifyQueryToolsTest {
             setName("In My Mind")
         }
         SpotifyQueryTools.getTrackDistance(spotify, redditTrack).also(::println)
-        val isExceeded = SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, 10)
+        val isExceeded = SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, threshold)
         isExceeded.shouldBeTrue()
     }
 
@@ -137,7 +154,8 @@ internal class SpotifyQueryToolsTest {
             setArtists(artist("Tiësto"))
             setName("Adagio For Strings")
         }
-        SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, 10).shouldBeTrue()
+        SpotifyQueryTools.getTrackDistance(spotify, redditTrack).also(::println)
+        SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, threshold).shouldBeTrue()
     }
 
     private fun Candidate.toTrack() = track {

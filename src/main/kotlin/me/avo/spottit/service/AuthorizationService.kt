@@ -4,14 +4,13 @@ import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredential
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
-import me.avo.spottit.util.TokenUtil
 
 interface AuthorizationService {
 
     fun authorize(configuration: Configuration, arguments: Arguments)
 
     fun writeCredentials(credentials: AuthorizationCodeCredentials) {
-        TokenUtil.refreshTokenFile.writeText(credentials.refreshToken)
+        Arguments.refreshTokenFile.writeText(credentials.refreshToken)
     }
 
     fun getRequiredScopes(configuration: Configuration): Iterable<String> {

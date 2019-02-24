@@ -101,5 +101,4 @@ class RedditServiceImpl(
     private fun parse(submission: Submission): RedditTrack = SubmissionParser.parse(
         submission.title, submission.linkFlairText, submission.url, submission.created
     )
-
 }
