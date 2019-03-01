@@ -3,6 +3,7 @@ package me.avo.spottit.config
 import com.apurebase.arkenv.parse
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
+import org.amshove.kluent.shouldEqualTo
 import org.junit.jupiter.api.Test
 
 internal class ArgumentsTest {
@@ -15,6 +16,7 @@ internal class ArgumentsTest {
             manualAuth shouldBe true
             doRefresh shouldBe true
             help shouldBe true
+            editDistance shouldEqualTo 15
         }
     }
 }

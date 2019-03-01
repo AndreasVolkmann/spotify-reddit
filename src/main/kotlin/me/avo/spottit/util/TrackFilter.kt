@@ -4,6 +4,7 @@ import com.wrapper.spotify.enums.ReleaseDatePrecision
 import com.wrapper.spotify.enums.ReleaseDatePrecision.*
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Track
+import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import org.slf4j.LoggerFactory
@@ -44,7 +45,7 @@ class TrackFilter(private val configuration: Configuration, playlist: Playlist) 
     private val datesToCheck = listOfNotNull(dateFilter.startingFrom, dateFilter.maxDistance)
     val doCheckReleaseDate = datesToCheck.isNotEmpty()
 
-    val editDistanceThreshold = 15
+    val editDistanceThreshold = Arguments.editDistance
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

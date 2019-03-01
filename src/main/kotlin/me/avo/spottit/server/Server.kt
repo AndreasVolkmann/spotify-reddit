@@ -18,7 +18,7 @@ import io.ktor.routing.get
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
-import me.avo.spottit.config.Dependency
+import me.avo.spottit.Spottit
 import me.avo.spottit.service.ManualAuthService
 import me.avo.spottit.service.SpotifyAuthService
 import org.kodein.di.Kodein
@@ -62,5 +62,5 @@ fun module(kodein: Kodein): Application.() -> Unit = {
 }
 
 fun Configuration.setupFreemarker() {
-    templateLoader = ClassTemplateLoader(Dependency::class.java.classLoader, "templates")
+    templateLoader = ClassTemplateLoader(Spottit::class.java.classLoader, "templates")
 }

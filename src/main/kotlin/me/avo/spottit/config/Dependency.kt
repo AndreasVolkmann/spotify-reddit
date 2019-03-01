@@ -1,33 +1,13 @@
 package me.avo.spottit.config
 
-import me.avo.spottit.service.DynamicPlaylistService
-import me.avo.spottit.service.ManualAuthService
-import me.avo.spottit.service.TokenRefreshService
 import me.avo.spottit.model.RedditCredentials
-import me.avo.spottit.service.SpotifyAuthService
-import me.avo.spottit.service.SpotifyAuthServiceImpl
-import me.avo.spottit.service.SpotifyService
-import me.avo.spottit.service.SpotifyServiceImpl
+import me.avo.spottit.service.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
-import org.slf4j.LoggerFactory
-import java.util.*
 
 val prodKodein = Kodein {
-    val logger = LoggerFactory.getLogger(Dependency::class.java)
-    val props = Properties().apply {
-        try {
-            load(Dependency::class.java.classLoader.getResourceAsStream("application.properties"))
-        } catch (ex: NullPointerException) {
-            logger.warn("Could not find application.properties")
-        }
-    }
-
-    fun getProperty(key: String) = props.getProperty(key)
-    fun getEnvOrProp(key: String) = System.getenv(key) ?: getProperty(key)
-
     bind<DynamicPlaylistService>() with singleton {
         DynamicPlaylistService(
             refreshService = instance(),
@@ -50,20 +30,17 @@ val prodKodein = Kodein {
 
     bind<SpotifyAuthService>() with singleton {
         SpotifyAuthServiceImpl(
-            clientId = getEnvOrProp("clientId"),
-            clientSecret = getEnvOrProp("clientSecret"),
-            redirectUri = getEnvOrProp("redirectUri")
+            clientId = Arguments.spotifyClientId,
+            clientSecret = Arguments.spotifyClientSecret,
+            redirectUri = Arguments.redirectUri
         )
     }
 
     bind<RedditCredentials>() with singleton {
         RedditCredentials(
-            clientId = getEnvOrProp("reddit-clientId"),
-            clientSecret = getEnvOrProp("reddit-clientSecret"),
-            deviceName = getEnvOrProp("deviceName")
+            clientId = Arguments.redditClientId,
+            clientSecret = Arguments.redditClientSecret,
+            deviceName = Arguments.deviceName
         )
     }
-
 }
-
-object Dependency

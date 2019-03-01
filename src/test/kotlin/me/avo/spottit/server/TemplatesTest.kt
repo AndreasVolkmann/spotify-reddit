@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @Disabled
 internal class TemplatesTest {
 
