@@ -2,14 +2,14 @@ image: gradle:alpine
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  VERSION: "0.7.1"
+  VERSION: "0.8.0"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
   stage: build
-  script: gradle --build-cache --no-daemon fatJar
+  script: gradle --build-cache --no-daemon bootJar
   artifacts:
     expire_in: '14 day'
     paths:
@@ -31,9 +31,9 @@ test:
     paths:
       - build
       - .gradle
-  only:
+  except:
     variables:
-      - $RUN_TEST
+      - $CONFIG_FILE
 
 
 run:

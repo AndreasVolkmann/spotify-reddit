@@ -31,5 +31,4 @@ interface SpotifySearchAlgorithm {
             else -> throw ex
         }
     }
-
 }

@@ -14,8 +14,6 @@ data class RedditTrack(
     val created: Date
 ) {
 
-    //val artists = artist.split("&")
-
     val isSpotifyTrack get() = SubmissionParser.isSpotifyTrack(URL(url))
 
 }

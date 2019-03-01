@@ -1,6 +1,6 @@
 package me.avo.spottit.service
 
-import me.avo.spottit.util.TokenUtil
+import me.avo.spottit.config.Arguments
 import org.slf4j.LoggerFactory
 
 class TokenRefreshService(
@@ -9,7 +9,7 @@ class TokenRefreshService(
 
     fun refresh(): String {
         logger.info("Refreshing Spotify access token")
-        val refreshToken = TokenUtil.getRefreshToken()
+        val refreshToken = Arguments.refreshToken
         spotifyAuthService.refreshToken = refreshToken
 
         val newAccessToken = spotifyAuthService.refresh()
