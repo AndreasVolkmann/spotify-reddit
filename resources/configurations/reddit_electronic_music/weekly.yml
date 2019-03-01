@@ -1,0 +1,69 @@
+# Reddit Electronic Music
+config_anchor: &config
+  maxSize: 20
+  sort: TOP
+  minUpvotes: 10
+  isStrictMix: true
+  timePeriod: MONTH
+
+playlists:
+    # Electronic music
+  - id: 0tyQqXme7xAPQaI1EWPCfV
+    <<: *config
+    subreddit: electronicmusic
+    timePeriod: WEEK
+
+  - id: 7j7DTBrSTdffxbGeu83X1T
+    <<: *config
+    subreddit: electronicmusic
+
+    # Trance
+  - id: 4nY3CWQHuROmtsVXsw4N10
+    <<: *config
+    subreddit: trance
+
+  - id: 0gBLnxeDJsoMUOcJZQxhHR
+    <<: *config
+    subreddit: trance
+    timePeriod: WEEK
+
+    # Hardstyle
+  - id: 6qXM9dkQLkQbzDuiIUdMM0
+    <<: *config
+    subreddit: hardstyle
+
+  - id: 4hYsCOAYuJLzoRWj6TxdA4
+    <<: *config
+    subreddit: hardstyle
+    timePeriod: WEEK
+
+    # Real Prog House
+  - id: 6JeAZCZQMMEtY7hgdtPmal
+    <<: *config
+    subreddit: RealProghouse
+    timePeriod: WEEK
+
+  - id: 3hJqG1q7xW3YUFyQPqk77U
+    <<: *config
+    subreddit: RealProghouse
+
+flairsToExclude:
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Discussion
+  - Photos
+  - News
+  - Article
+  - Satire
+  - Official AMA
+  - Misleading
+  - Twitter
+
+minimumLength: 100
