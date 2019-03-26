@@ -2,9 +2,15 @@ package me.avo.spottit.config
 
 import com.apurebase.arkenv.Arkenv
 import com.apurebase.arkenv.argument
+import com.apurebase.arkenv.feature.ProfileFeature
+import com.apurebase.arkenv.install
 import java.io.File
 
-object Arguments : Arkenv("Spottit", propertiesFile = "application.properties") {
+object Arguments : Arkenv() {
+    init {
+        programName = "Spottit"
+        install(ProfileFeature())
+    }
 
     val configPath: String by argument("-c", "--config") {
         description = "The path to your config.yml"
@@ -20,7 +26,6 @@ object Arguments : Arkenv("Spottit", propertiesFile = "application.properties") 
 
     val port: Int by argument("-p", "--port") {
         description = "The port that the authentication server will be exposed on"
-        defaultValue = { 5000 }
     }
 
     val refreshTokenFile: File by argument("--refresh-token-file") {
@@ -32,9 +37,7 @@ object Arguments : Arkenv("Spottit", propertiesFile = "application.properties") 
         defaultValue = { refreshTokenFile.readText().trim() }
     }
 
-    val editDistance: Int by argument("--edit-distance") {
-        defaultValue = { 15 }
-    }
+    val editDistance: Int by argument("--edit-distance")
 
     val spotifyClientId: String by argument("--spotify-client-id")
     val spotifyClientSecret: String by argument("--spotify-client-secret")
@@ -43,4 +46,5 @@ object Arguments : Arkenv("Spottit", propertiesFile = "application.properties") 
     val redditClientId: String by argument("--reddit-client-id")
     val redditClientSecret: String by argument("--reddit-client-secret")
     val deviceName: String by argument("--device-name")
+    val redditMaxPage: Int by argument("--reddit-max-page")
 }
