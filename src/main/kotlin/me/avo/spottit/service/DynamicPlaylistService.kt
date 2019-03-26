@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory
 class DynamicPlaylistService(
     private val refreshService: TokenRefreshService,
     private val spotifyService: SpotifyService,
-    private val getRedditService: (Playlist, List<String>) -> RedditService
+    private val getRedditService: (Playlist, List<String>) -> RedditService,
+    private val getTrackFilter: (Configuration, Playlist) -> TrackFilter
 ) {
 
     fun updatePlaylists(configuration: Configuration) = when {
@@ -27,7 +28,7 @@ class DynamicPlaylistService(
         logger.info("Processing playlist ${playlist.id}")
         val redditService = getRedditService(playlist, configuration.flairsToExclude)
         val foundTracks = mutableListOf<Track>()
-        val trackFilter = TrackFilter(configuration, playlist)
+        val trackFilter = getTrackFilter(configuration, playlist)
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()

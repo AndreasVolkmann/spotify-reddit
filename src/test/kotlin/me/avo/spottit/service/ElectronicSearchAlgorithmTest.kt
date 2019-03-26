@@ -3,7 +3,9 @@ package me.avo.spottit.service
 import me.avo.spottit.RequiresToken
 import me.avo.spottit.TestKodeinAware
 import me.avo.spottit.makeConfig
+import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
+import me.avo.spottit.model.Playlist
 import me.avo.spottit.redditTrack
 import me.avo.spottit.util.*
 import org.amshove.kluent.shouldBe
@@ -11,6 +13,7 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.kodein.di.generic.factory2
 import org.kodein.di.generic.instance
 import java.util.*
 
@@ -18,6 +21,7 @@ import java.util.*
 internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
+    private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()
 
     @Test fun `getTrack by id`() {
         val api = spotifyAuthService.getSpotifyApi()
@@ -38,7 +42,7 @@ internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
                 startingFrom = parseDateString("2012-04-04"), maxDistance = null
             )
         )
-        val trackFilter = TrackFilter(config, config.playlists.first())
+        val trackFilter = getTrackFilter(config, config.playlists.first())
         val alg = ElectronicSearchAlgorithm(api, trackFilter)
 
         val results = alg.searchForTracks(tracks)
