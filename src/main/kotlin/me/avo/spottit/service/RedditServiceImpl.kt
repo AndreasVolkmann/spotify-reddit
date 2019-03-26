@@ -98,9 +98,7 @@ class RedditServiceImpl(
 
     override val stackSize = 5
 
-    override fun mapTimeout(ex: Exception): Int {
-        return 1000
-    }
+    override fun mapTimeout(ex: Exception): Int = 2000
 
     private fun parse(submission: Submission): RedditTrack = SubmissionParser.parse(
         submission.title, submission.linkFlairText, submission.url, submission.created
