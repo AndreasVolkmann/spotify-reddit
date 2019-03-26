@@ -46,4 +46,5 @@ object Arguments : Arkenv() {
     val redditClientId: String by argument("--reddit-client-id")
     val redditClientSecret: String by argument("--reddit-client-secret")
     val deviceName: String by argument("--device-name")
+    val redditMaxPage: Int by argument("--reddit-max-page")
 }

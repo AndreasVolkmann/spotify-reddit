@@ -3,7 +3,6 @@ package me.avo.spottit.service
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
-import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.TrackFilter
 import org.slf4j.LoggerFactory
@@ -11,7 +10,7 @@ import org.slf4j.LoggerFactory
 class DynamicPlaylistService(
     private val refreshService: TokenRefreshService,
     private val spotifyService: SpotifyService,
-    private val redditCredentials: RedditCredentials
+    private val getRedditService: (Playlist, List<String>) -> RedditService
 ) {
 
     fun updatePlaylists(configuration: Configuration) = when {
@@ -26,7 +25,7 @@ class DynamicPlaylistService(
 
     private fun processPlaylist(configuration: Configuration, playlist: Playlist) {
         logger.info("Processing playlist ${playlist.id}")
-        val redditService = RedditServiceImpl(playlist, configuration.flairsToExclude, redditCredentials)
+        val redditService = getRedditService(playlist, configuration.flairsToExclude)
         val foundTracks = mutableListOf<Track>()
         val trackFilter = TrackFilter(configuration, playlist)
 

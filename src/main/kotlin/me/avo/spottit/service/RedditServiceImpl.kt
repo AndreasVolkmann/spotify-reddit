@@ -3,6 +3,7 @@ package me.avo.spottit.service
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.model.RedditTrack
+import me.avo.spottit.util.RetrySupport
 import me.avo.spottit.util.SubmissionParser
 import net.dean.jraw.http.OkHttpNetworkAdapter
 import net.dean.jraw.http.UserAgent
@@ -20,8 +21,9 @@ import java.util.*
 class RedditServiceImpl(
     private val playlist: Playlist,
     private val flairsToExclude: List<String>,
+    private val maxPage: Int,
     redditCredentials: RedditCredentials
-) : RedditService {
+) : RedditService, RetrySupport {
 
     private val reddit by lazy {
         val (clientId, clientSecret, deviceName) = redditCredentials
@@ -40,7 +42,7 @@ class RedditServiceImpl(
         initializePaginator()
 
         while (currentSize + validPosts.size < playlist.maxSize) {
-            val page = paginator.next()
+            val page = retry(paginator::next)
             logger.info("Reading page ${paginator.pageNumber}")
             if (page.isEmpty() || paginator.pageNumber >= maxPage) {
                 stop()
@@ -84,7 +86,7 @@ class RedditServiceImpl(
 
     private fun initializePaginator() {
         if (!::paginator.isInitialized) {
-            val subreddit = reddit.subreddit(playlist.subreddit)
+            val subreddit = retry { reddit.subreddit(playlist.subreddit) }
             paginator = subreddit.getTracks(playlist.sort, playlist.timePeriod)
         }
     }
@@ -94,11 +96,15 @@ class RedditServiceImpl(
         .timePeriod(timePeriod)
         .build()
 
-    private val maxPage = System.getenv("REDDIT_MAX_PAGE")?.toInt() ?: 25
+    override val stackSize = 5
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    override fun mapTimeout(ex: Exception): Int {
+        return 1000
+    }
 
     private fun parse(submission: Submission): RedditTrack = SubmissionParser.parse(
         submission.title, submission.linkFlairText, submission.url, submission.created
     )
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 }

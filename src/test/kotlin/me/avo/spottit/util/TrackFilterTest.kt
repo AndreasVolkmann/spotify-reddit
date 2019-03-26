@@ -1,20 +1,25 @@
 package me.avo.spottit.util
 
+import com.apurebase.arkenv.parse
 import com.wrapper.spotify.enums.ReleaseDatePrecision
 import com.wrapper.spotify.enums.ReleaseDatePrecision.*
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.album
+import me.avo.spottit.config.Arguments
 import me.avo.spottit.makeConfig
 import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldBe
-import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class TrackFilterTest {
+
+    @BeforeAll fun beforeAll() {
+        Arguments.parse(arrayOf("-c", "", "--refresh_token", ""))
+    }
 
     @Test fun `checkTrackLength should calculate correctly`() {
         val configuration = Configuration(listOf(), listOf(), 1, 500, Schedule(null, null))
