@@ -1,7 +1,7 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](resources/img/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
-[![GitHub release](https://img.shields.io/badge/Version-0.8.0-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![GitHub release](https://img.shields.io/badge/Version-0.8.1-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 Dynamic Spotify playlists, based on Reddit. Easily set up your own subreddit playlist.  
