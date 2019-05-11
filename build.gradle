@@ -19,6 +19,7 @@ build.mustRunAfter clean
 
 repositories {
     jcenter()
+    maven { url 'https://dl.bintray.com/kodein-framework/Kodein-DI' }
 }
 
 dependencies {
