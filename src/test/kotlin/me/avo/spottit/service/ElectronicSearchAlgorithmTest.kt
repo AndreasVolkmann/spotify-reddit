@@ -1,7 +1,6 @@
 package me.avo.spottit.service
 
 import me.avo.spottit.RequiresToken
-import me.avo.spottit.TestKodeinAware
 import me.avo.spottit.makeConfig
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
@@ -20,7 +19,7 @@ import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisabledIfEnvironmentVariable(named = "DISABLE_NETWORK_TESTS", matches = "1")
-internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
+internal class ElectronicSearchAlgorithmTest : RequiresToken {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
     private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()

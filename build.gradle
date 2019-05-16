@@ -41,6 +41,7 @@ dependencies {
     compile 'com.apurebase:arkenv:2.0.0'
     compile 'org.apache.commons:commons-text:1.6'
 
+    testImplementation "io.strikt:strikt-core:0.20.1"
     testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.49'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"

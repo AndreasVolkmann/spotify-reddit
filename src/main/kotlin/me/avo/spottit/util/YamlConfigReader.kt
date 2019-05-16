@@ -1,5 +1,6 @@
 package me.avo.spottit.util
 
+import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
@@ -16,34 +17,7 @@ object YamlConfigReader {
         val schedule = data["schedule"] as? Map<String, Any> ?: mapOf()
 
         return Configuration(
-            playlists = playlists.map {
-                val tagFilter = it["tagFilter"] as? Map<String, List<String>> ?: mapOf()
-                val dateFilter = it["dateFilter"] as? Map<String, Any> ?: mapOf()
-                Playlist(
-                    id = it["id"].toString(),
-                    maxSize = it["maxSize"]?.toString()?.toInt() ?: 50,
-                    subreddit = it["subreddit"].toString(),
-                    sort = SubredditSort.valueOf(it["sort"].toString()),
-                    timePeriod = TimePeriod.valueOf(it["timePeriod"].toString()),
-                    minimumUpvotes = it["minUpvotes"]?.toString()?.toInt(),
-                    isStrictMix = it["isStrictMix"]?.toString()?.toBoolean() ?: false,
-                    tagFilter = TagFilter(
-                        include = tagFilter["include"] ?: listOf(),
-                        includeExact = tagFilter["includeExact"] ?: listOf(),
-                        exclude = tagFilter["exclude"] ?: listOf(),
-                        excludeExact = tagFilter["excludeExact"] ?: listOf()
-                    ),
-                    dateFilter = DateFilter(
-                        startingFrom = dateFilter["startingFrom"]?.toString()?.let { parseDateString(it) },
-                        maxDistance = (dateFilter["maxDistance"] as? Map<String, Int>)?.let {
-                            val month = it["month"] ?: 0
-                            val year = it["year"] ?: 0
-                            parseMaxDistance(month, year)
-                        }
-                    ),
-                    isPrivate = it["isPrivate"]?.toString()?.toBoolean() ?: false
-                )
-            },
+            playlists = mapPlaylists(playlists),
             flairsToExclude = data["flairsToExclude"] as? List<String> ?: listOf(),
             minimumLength = data["minimumLength"]?.toString()?.toInt() ?: 0,
             rateLimitInMs = (System.getenv("RATE_LIMIT") ?: data["rateLimit"]?.toString())?.toLong() ?: 500,
@@ -53,6 +27,37 @@ object YamlConfigReader {
             )
         )
     }
+
+    private fun mapPlaylists(data: List<Map<String, Any?>>) = data
+        .map {
+            val tagFilter = it["tagFilter"] as? Map<String, List<String>> ?: mapOf()
+            val dateFilter = it["dateFilter"] as? Map<String, Any> ?: mapOf()
+            Playlist(
+                id = it["id"].toString(),
+                maxSize = it["maxSize"]?.toString()?.toInt() ?: 50,
+                subreddit = it["subreddit"].toString(),
+                sort = SubredditSort.valueOf(it["sort"].toString()),
+                timePeriod = TimePeriod.valueOf(it["timePeriod"].toString()),
+                minimumUpvotes = it["minUpvotes"]?.toString()?.toInt(),
+                isStrictMix = it["isStrictMix"]?.toString()?.toBoolean() ?: false,
+                tagFilter = TagFilter(
+                    include = tagFilter["include"] ?: listOf(),
+                    includeExact = tagFilter["includeExact"] ?: listOf(),
+                    exclude = tagFilter["exclude"] ?: listOf(),
+                    excludeExact = tagFilter["excludeExact"] ?: listOf()
+                ),
+                dateFilter = DateFilter(
+                    startingFrom = dateFilter["startingFrom"]?.toString()?.let { parseDateString(it) },
+                    maxDistance = (dateFilter["maxDistance"] as? Map<String, Int>)?.let {
+                        val month = it["month"] ?: 0
+                        val year = it["year"] ?: 0
+                        parseMaxDistance(month, year)
+                    }
+                ),
+                isPrivate = it["isPrivate"]?.toString()?.toBoolean() ?: false
+            )
+        }
+        .filter { Arguments.useLists.isEmpty() || it.id in Arguments.useLists }
 
     fun parseMaxDistance(month: Int, year: Int): Date = getInstance().apply {
         add(YEAR, -year)

@@ -13,6 +13,12 @@ object Arguments : Arkenv(programName = "Spottit", configuration = {
         description = "The path to your config.yml"
     }
 
+    val useLists: List<String> by argument {
+        description = "When defined will only update lists with the provided comma-separated ids"
+        mapping = { it.split(',') }
+        defaultValue = ::emptyList
+    }
+
     val manualAuth: Boolean by argument("-ma") {
         description = "Manually authorize the app to Spotify"
     }
