@@ -42,10 +42,12 @@ playlists:
     <<: *config
     subreddit: RealProghouse
     timePeriod: WEEK
+    minUpvotes: 5
 
   - id: 3hJqG1q7xW3YUFyQPqk77U
     <<: *config
     subreddit: RealProghouse
+    minUpvotes: 8
 
 flairsToExclude:
   - Mix
