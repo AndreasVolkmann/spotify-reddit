@@ -26,8 +26,9 @@ object SubmissionParser {
         val extraInformation = title.getExtraInformation()
         val mix = extraInformation.find { it.containsAny("mix", "bootleg", "edit") }
 
-        val fullTitle = (extraInformation)
+        val fullTitle = extraInformation
             .fold(title) { acc, s -> acc.replace(s, "").trim() }
+            .replace('—', '-')
             .split("  ").first() // remove additional text after mix / info
             .escapeChars()
         return Triple(fullTitle, mix, extraInformation)

@@ -13,11 +13,13 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import org.kodein.di.generic.factory2
 import org.kodein.di.generic.instance
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DisabledIfEnvironmentVariable(named = "DISABLE_NETWORK_TESTS", matches = "1")
 internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
