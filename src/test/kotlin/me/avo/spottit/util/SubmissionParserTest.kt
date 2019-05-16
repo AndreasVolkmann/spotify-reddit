@@ -204,6 +204,12 @@ internal class SubmissionParserTest {
             "minipops 67",
             "source field mix",
             listOf("120.2")
+        ),
+        "Journeyman— just a man (such great momentum!!)" to redditTrack(
+            "Journeyman",
+            "just a man",
+            null,
+            listOf("such great momentum!!")
         )
     )
 

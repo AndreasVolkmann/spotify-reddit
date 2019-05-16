@@ -21,7 +21,7 @@ object Arguments : Arkenv(programName = "Spottit", configuration = {
         description = "Refresh the Spotify access token"
     }
 
-    val port: Int by argument("-p") {
+    val port: Int by argument {
         description = "The port that the authentication server will be exposed on"
     }
 
