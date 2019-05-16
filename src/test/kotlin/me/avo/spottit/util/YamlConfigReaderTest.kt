@@ -1,17 +1,22 @@
 package me.avo.spottit.util
 
+import com.apurebase.arkenv.parse
+import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
+import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotContain
 import org.junit.jupiter.api.Test
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
 import java.util.*
 
 internal class YamlConfigReaderTest {
 
     @Test fun `should parse config`() {
-        val yaml = this::class.java.classLoader.getResource("config.yml").readText()
-
+        val yaml = readYaml()
         val expected = Configuration(
             playlists = listOf(
                 Playlist(
@@ -73,6 +78,7 @@ internal class YamlConfigReaderTest {
 
         val actual = YamlConfigReader.read(yaml)
 
+        expectThat(actual).isEqualTo(expected)
         actual shouldEqual expected
     }
 
@@ -92,4 +98,14 @@ internal class YamlConfigReaderTest {
         actual shouldEqual expected
     }
 
+    @Test fun `should only include playlists in useLists when defined`() {
+        Arguments.parse(arrayOf("-c", "", "--use-lists", "someplid2"))
+        val config = YamlConfigReader.read(readYaml())
+        val ids = config.playlists.map(Playlist::id)
+        ids shouldContain "someplid2"
+        ids shouldNotContain "someplid1"
+        Arguments.parse(arrayOf("-c", ""))
+    }
+
+    private fun readYaml() = this::class.java.classLoader.getResource("config.yml").readText()
 }
