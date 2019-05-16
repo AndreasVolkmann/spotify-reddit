@@ -41,23 +41,28 @@ class RedditServiceImpl(
 
         initializePaginator()
 
-        while (currentSize + validPosts.size < playlist.maxSize) {
+        loop@ while (currentSize + validPosts.size < playlist.maxSize) {
             val page = retry(paginator::next)
             logger.info("Reading page ${paginator.pageNumber}")
+
             if (page.isEmpty() || paginator.pageNumber >= maxPage) {
                 stop()
-                break
+                break@loop
             }
-            page
+
+            val redditTracks = page
                 .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
                 .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
-                .let {
-                    if (playlist.minimumUpvotes != null) {
-                        it.filter { it.score > playlist.minimumUpvotes }
-                    } else it
-                }
+                .let(::filterMinimumUpvotes)
                 .map(::parse)
+
+            if (redditTracks.isEmpty()) {
+                stop() // if there are no submissions left after upvote filtering, stop looking
+                break@loop
+            }
+
+            redditTracks
                 .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
                 .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
                 .let(validPosts::addAll)
@@ -95,6 +100,9 @@ class RedditServiceImpl(
         .sorting(sort)
         .timePeriod(timePeriod)
         .build()
+
+    private fun filterMinimumUpvotes(submissions: List<Submission>): List<Submission> =
+        playlist.minimumUpvotes?.let { submissions.filter { it.score > playlist.minimumUpvotes } } ?: submissions
 
     override val stackSize = 5
 
