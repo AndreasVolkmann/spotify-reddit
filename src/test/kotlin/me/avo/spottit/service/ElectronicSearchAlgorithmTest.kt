@@ -1,7 +1,6 @@
 package me.avo.spottit.service
 
 import me.avo.spottit.RequiresToken
-import me.avo.spottit.TestKodeinAware
 import me.avo.spottit.makeConfig
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
@@ -13,12 +12,14 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import org.kodein.di.generic.factory2
 import org.kodein.di.generic.instance
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class ElectronicSearchAlgorithmTest : RequiresToken, TestKodeinAware {
+@DisabledIfEnvironmentVariable(named = "DISABLE_NETWORK_TESTS", matches = "1")
+internal class ElectronicSearchAlgorithmTest : RequiresToken {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
     private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()
