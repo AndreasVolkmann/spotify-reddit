@@ -40,8 +40,7 @@ class ElectronicSearchAlgorithm(
         SpotifyQueryTools.initialQuery(track, useTags = true)
             .let(::searchQuery)
             .let { (total, items) ->
-                val validTracks = trackFilter.applyFilters(items)
-                val chosenTrack = evaluateResults(track, validTracks, 0)?.let {
+                val chosenTrack = evaluateResults(track, items, 0)?.let {
                     if (trackFilter.doCheckReleaseDate) {
                         val album = getAlbumForTrack(it)
                         if (trackFilter.checkTrackAgeByAlbum(album)) it else null
@@ -57,11 +56,14 @@ class ElectronicSearchAlgorithm(
         return paging.total to trackFilter.applyFilters(paging.items)
     }
 
-    private fun evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? = when (items.size) {
+    fun evaluateResults(track: RedditTrack, items: Array<Track>, stack: Int): Track? = when (items.size) {
         0 -> adjustQuery(track, stack) // couldn't find anything, adjust query
         1 -> items.first() // only one result
         else -> SpotifyQueryTools.sortItems(items, track, trackFilter.editDistanceThreshold).firstOrNull()
                 ?: evaluateResults(track, emptyArray(), stack + 1) // there are multiple results, sort
+    }?.let {
+        // Hotfix, needs refactoring
+        SpotifyQueryTools.sortItems(arrayOf(it), track, trackFilter.editDistanceThreshold).firstOrNull()
     }
 
     private fun adjustQuery(track: RedditTrack, stack: Int) = when {

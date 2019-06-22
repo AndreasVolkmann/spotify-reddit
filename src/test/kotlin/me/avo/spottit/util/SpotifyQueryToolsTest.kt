@@ -1,6 +1,5 @@
 package me.avo.spottit.util
 
-import com.wrapper.spotify.model_objects.specification.ArtistSimplified
 import me.avo.spottit.artist
 import me.avo.spottit.redditTrack
 import me.avo.spottit.track
@@ -69,9 +68,7 @@ internal class SpotifyQueryToolsTest {
         DynamicTest.dynamicTest(expectedName) {
             val tracks = candidates.map { (artist, name, duration) ->
                 track {
-                    setArtists(ArtistSimplified.Builder().apply {
-                        setName(artist)
-                    }.build())
+                    setArtists(artist(artist))
                     setName(name)
                     setDurationMs(duration)
                 }
@@ -111,10 +108,9 @@ internal class SpotifyQueryToolsTest {
 
     @TestFactory fun `should pass`() = shouldPass.map { (raw, candidate) ->
         DynamicTest.dynamicTest(raw) {
-            val reddit = SubmissionParser.parse(raw, null, "", Date())
-            println(reddit)
+            val reddit = parse(raw, null, "", Date())
             val spotify = candidate.toTrack()
-            SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
+            SpotifyQueryTools.getTrackDistance(spotify, reddit)
             SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold) shouldBe false
         }
     }

@@ -3,11 +3,11 @@ package me.avo.spottit.util
 import com.wrapper.spotify.enums.ReleaseDatePrecision
 import com.wrapper.spotify.enums.ReleaseDatePrecision.*
 import com.wrapper.spotify.model_objects.specification.Album
-import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.TestKodeinAware
 import me.avo.spottit.album
 import me.avo.spottit.makeConfig
 import me.avo.spottit.model.*
+import me.avo.spottit.track
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
 import org.amshove.kluent.shouldBe
@@ -24,13 +24,12 @@ internal class TrackFilterTest : TestKodeinAware {
 
     @Test fun `checkTrackLength should calculate correctly`() {
         val configuration = Configuration(listOf(), listOf(), 1, 500, Schedule(null, null))
-        val trackAbove = Track.Builder().apply {
+        val trackAbove = track {
             setDurationMs(2000)
-        }.build()
-
-        val trackBelow = Track.Builder().apply {
+        }
+        val trackBelow = track {
             setDurationMs(999)
-        }.build()
+        }
 
         val trackFilter = getTrackFilter(
             configuration,
