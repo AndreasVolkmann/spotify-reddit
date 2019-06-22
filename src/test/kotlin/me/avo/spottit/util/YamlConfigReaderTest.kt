@@ -11,7 +11,7 @@ import org.amshove.kluent.shouldNotContain
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
-import java.util.*
+import java.util.Calendar.*
 
 internal class YamlConfigReaderTest {
 
@@ -55,13 +55,13 @@ internal class YamlConfigReaderTest {
                     ),
                     dateFilter = DateFilter(
                         startingFrom = null,
-                        maxDistance = Calendar.getInstance().apply {
-                            add(Calendar.YEAR, -2)
-                            add(Calendar.MONTH, -3)
-                            set(Calendar.HOUR, 0)
-                            set(Calendar.MINUTE, 0)
-                            set(Calendar.SECOND, 0)
-                            set(Calendar.MILLISECOND, 0)
+                        maxDistance = getInstance().apply {
+                            add(YEAR, -2)
+                            add(MONTH, -3)
+                            set(HOUR, 0)
+                            set(MINUTE, 0)
+                            set(SECOND, 0)
+                            set(MILLISECOND, 0)
                         }.time
                     ),
                     isPrivate = false
@@ -85,13 +85,13 @@ internal class YamlConfigReaderTest {
     @Test fun `parseMaxDistance should produce correct date`() {
         val year = 2
         val month = 4
-        val expected = Calendar.getInstance().apply {
-            add(Calendar.YEAR, -year)
-            add(Calendar.MONTH, -month)
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+        val expected = getInstance().apply {
+            add(YEAR, -year)
+            add(MONTH, -month)
+            set(HOUR, 0)
+            set(MINUTE, 0)
+            set(SECOND, 0)
+            set(MILLISECOND, 0)
         }.time
         val actual = YamlConfigReader.parseMaxDistance(month, year)
 
