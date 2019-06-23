@@ -49,10 +49,7 @@ class RedditServiceImpl(
                 break@loop
             }
 
-            val redditTracks = page
-                .filterNot { it.isSelfPost }
-                .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
-                .let(::filterMinimumUpvotes)
+            val redditTracks = page.let(::filterMinimumUpvotes)
 
             if (redditTracks.isEmpty()) {
                 stop("RedditTracks empty") // if there are no submissions left after upvote filtering, stop looking
@@ -60,10 +57,14 @@ class RedditServiceImpl(
             }
 
             redditTracks
+                .asSequence()
+                .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
+                .filterNot { it.isSelfPost }
                 .filterNot { it.linkFlairText in flairsToExclude }
                 .map(::parse)
                 .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
-                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
+                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) }
+                .toList() // filter out albums
                 .let(validPosts::addAll)
         }
 

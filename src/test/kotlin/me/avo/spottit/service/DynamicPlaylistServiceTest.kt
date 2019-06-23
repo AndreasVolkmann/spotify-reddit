@@ -14,9 +14,18 @@ import java.io.File
 internal class DynamicPlaylistServiceTest : TestKodeinAware {
 
     private val dynamicPlaylistService: DynamicPlaylistService by instance()
+    private val testConfig = getTestConfig()
 
-    @Test fun update() {
-        dynamicPlaylistService.updatePlaylists(getTestConfig())
+    @Test fun indieheads() {
+        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("indieheads"))
+    }
+
+    @Test fun hardstyle() {
+        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("hardstyle"))
+    }
+
+    @Test fun electronicmusic() {
+        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("electronicmusic"))
     }
 
     @Test fun `top all time list`() {
@@ -30,4 +39,7 @@ internal class DynamicPlaylistServiceTest : TestKodeinAware {
         }
         dynamicPlaylistService.updatePlaylists(config)
     }
+
+    private fun getSinglePlaylist(name: String) =
+        testConfig.copy(playlists = listOf(testConfig.playlists.single { it.subreddit == name }))
 }
