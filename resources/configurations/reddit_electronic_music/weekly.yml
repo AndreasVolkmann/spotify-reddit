@@ -67,5 +67,7 @@ flairsToExclude:
   - Official AMA
   - Misleading
   - Twitter
+  - Meme
+  - Other
 
 minimumLength: 100

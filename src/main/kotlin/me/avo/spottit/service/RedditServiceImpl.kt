@@ -38,7 +38,6 @@ class RedditServiceImpl(
 
     override fun getTracks(): List<RedditTrack> {
         val validPosts = mutableListOf<RedditTrack>()
-
         initializePaginator()
 
         loop@ while (currentSize + validPosts.size < playlist.maxSize) {
@@ -46,30 +45,30 @@ class RedditServiceImpl(
             logger.info("Reading page ${paginator.pageNumber}")
 
             if (page.isEmpty() || paginator.pageNumber >= maxPage) {
-                stop()
+                stop("Page empty, or max page ($maxPage)")
                 break@loop
             }
 
             val redditTracks = page
                 .filterNot { it.isSelfPost }
-                .filterNot { it.linkFlairText in flairsToExclude }
                 .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
                 .let(::filterMinimumUpvotes)
-                .map(::parse)
 
             if (redditTracks.isEmpty()) {
-                stop() // if there are no submissions left after upvote filtering, stop looking
+                stop("RedditTracks empty") // if there are no submissions left after upvote filtering, stop looking
                 break@loop
             }
 
             redditTracks
+                .filterNot { it.linkFlairText in flairsToExclude }
+                .map(::parse)
                 .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
                 .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) } // filter out albums
                 .let(validPosts::addAll)
         }
 
         if (paginator.pageNumber >= maxPage || currentSize >= playlist.maxSize) {
-            stop()
+            stop("Max page ($maxPage) or max size (${playlist.maxSize})")
         }
 
         return validPosts
@@ -84,8 +83,8 @@ class RedditServiceImpl(
 
     private var currentSize = 0
 
-    private fun stop() {
-        logger.info("Reddit pagination done")
+    private fun stop(reason: String) {
+        logger.info("Reddit pagination done. Reason: $reason")
         isDone = true
     }
 
