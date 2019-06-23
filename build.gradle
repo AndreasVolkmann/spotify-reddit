@@ -12,7 +12,7 @@ ext {
 }
 
 group 'me.avo'
-version '0.9.1'
+version '0.9.2'
 
 task stage(dependsOn: ['bootJar', 'clean'])
 build.mustRunAfter clean

@@ -14,7 +14,6 @@ interface TestKodeinAware : KodeinAware {
     override val kodein: Kodein get() = prodKodein
 
     @BeforeAll fun parse() {
-        println("kodein")
         if (!isParsed) {
             Arguments.parse(arrayOf("-c", ""))
         }
