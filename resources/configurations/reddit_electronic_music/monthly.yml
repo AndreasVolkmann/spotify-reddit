@@ -21,6 +21,7 @@ playlists:
   - id: 5vK21h3SFZQ1QmfyWHjPTB
     <<: *config
     subreddit: ClassicTrance
+    minUpvotes: 10
 
     # Hardstyle
   - id: 7KrteOLz4BKmEF5WTzywvu
