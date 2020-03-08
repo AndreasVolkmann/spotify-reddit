@@ -3,6 +3,7 @@ package me.avo.spottit.config
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
+import me.avo.spottit.server.Server
 import me.avo.spottit.service.*
 import me.avo.spottit.service.reddit.RedditService
 import me.avo.spottit.service.reddit.RedditServiceImpl
@@ -22,8 +23,10 @@ val prodKodein = Kodein {
         )
     }
 
+    bind<Server>() with singleton { Server(instance(), instance()) }
+
     bind<ManualAuthService>() with singleton {
-        ManualAuthService(instance(), kodein)
+        ManualAuthService(instance(), instance())
     }
 
     bind<TokenRefreshService>() with singleton {

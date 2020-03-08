@@ -1,21 +1,19 @@
 package me.avo.spottit.service.spotify
 
-import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.Configuration
-import me.avo.spottit.server.prepareServer
+import me.avo.spottit.server.Server
 import me.avo.spottit.service.AuthorizationService
 import me.avo.spottit.util.openUrlInBrowser
-import org.kodein.di.Kodein
 
 class ManualAuthService(
     private val spotifyAuthService: SpotifyAuthService,
-    private val kodein: Kodein
+    private val server: Server
 ) : AuthorizationService {
 
-    override fun authorize(configuration: Configuration, arguments: Arguments) {
+    override fun authorize(configuration: Configuration) {
         val scopes = getRequiredScopes(configuration)
         val uri = spotifyAuthService.getRedirectUri(scopes).toString()
-        val server = prepareServer(kodein, arguments.port).start(wait = false)
+        val server = server.prepareServer().start(wait = false)
 
         try {
             openUrlInBrowser(uri)

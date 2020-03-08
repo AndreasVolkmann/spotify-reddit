@@ -7,7 +7,7 @@ import me.avo.spottit.model.Playlist
 
 interface AuthorizationService {
 
-    fun authorize(configuration: Configuration, arguments: Arguments)
+    fun authorize(configuration: Configuration)
 
     fun writeCredentials(credentials: AuthorizationCodeCredentials) {
         Arguments.refreshTokenFile.writeText(credentials.refreshToken)
