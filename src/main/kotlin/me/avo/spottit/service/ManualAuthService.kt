@@ -21,9 +21,9 @@ class ManualAuthService(
             openUrlInBrowser(uri)
         } finally {
             Thread.sleep(5000)
-            val timeout = 2L
-            println("Shutting down server in $timeout seconds")
-            server.stop(timeout, timeout, TimeUnit.SECONDS)
+            val timeout = 2000L
+            println("Shutting down server in $timeout ms")
+            server.stop(timeout, timeout)
         }
     }
 }

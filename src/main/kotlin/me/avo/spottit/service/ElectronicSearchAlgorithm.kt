@@ -30,9 +30,9 @@ class ElectronicSearchAlgorithm(
         else -> searchForTrack(track)
     }
 
-    private fun getTrack(track: RedditTrack): Triple<RedditTrack, Track, Int> {
+    private fun getTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> {
         val id = track.url.substringAfter("/track/").substringBefore("?")
-        val spotifyTrack = spotifyApi.getTrack(id).build().execute()
+        val spotifyTrack = spotifyApi.getTrack(id).build().executeRequest()
         return Triple(track, spotifyTrack, if (spotifyTrack != null) 1 else 0)
     }
 

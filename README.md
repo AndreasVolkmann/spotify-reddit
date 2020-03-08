@@ -1,36 +1,36 @@
 # Spotify + Reddit = Spottit
 ![Spottit Logo](resources/img/spottit-logo-drawn-cropped.png?raw=true "Spottit Logo")
 [![Build Status](https://travis-ci.com/AndreasVolkmann/spotify-reddit.svg?branch=master)](https://travis-ci.com/AndreasVolkmann/spotify-reddit)
-[![GitHub release](https://img.shields.io/badge/Version-0.9.2-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
+[![GitHub release](https://img.shields.io/badge/Version-0.9.3-blue.svg)](https://github.com/AndreasVolkmann/spotify-reddit/releases/)
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-Dynamic Spotify playlists, based on Reddit. Easily set up your own subreddit playlist.  
+Dynamic Spotify playlists, based on Reddit. Easily set up your own subreddit playlist.
 
 Follow [Reddit Electronic Music's Spotify](https://open.spotify.com/user/8j1md7p5ntsj62xu2yeapolfi?si=qj_fqiZYTYeXKUzN9mUxCA)
  to see some of the generated playlists.
 
-### Table of Contents  
-* [How to use](#how-to-use) 
-* [Configuration](#configuration) 
-* [Deployment](#deployment) 
+### Table of Contents
+* [How to use](#how-to-use)
+* [Configuration](#configuration)
+* [Deployment](#deployment)
 
 ### How to use
 To use the program, define your own `config.yml` and run the program with `-c ${PATH_TO_YOUR_CONFIG.YML}`.
 The following assumes that your config is called config.yml and is located in the same directory as the jar.
 
-Before running for the first time, you need to authorize the application. 
+Before running for the first time, you need to authorize the application.
 
 Run with `-ma`: `java -jar spottit-${version}.jar -c config.yml -ma`
 
-This will obtain a refresh token, so that you do not need to authorize again. 
+This will obtain a refresh token, so that you do not need to authorize again.
 
 Once this is done, you can omit the `-ma`. The application should now update the playlists.
- 
-It is also possible to specify the refresh token via an environment variable called `REFRESH_TOKEN`. 
+
+It is also possible to specify the refresh token via an environment variable called `REFRESH_TOKEN`.
 
 
 ### Configuration
-To customize the application, edit the 
+To customize the application, edit the
 [example_config.yml](https://github.com/AndreasVolkmann/spotify-reddit/blob/master/example_config.yml)
  and fill in your own information.
 
@@ -66,7 +66,7 @@ playlists:
     sort: TOP
     timePeriod: ALL
     # Omit minUpvotes to allow any reddit post to be added
-    
+
     # set this to true, if the playlist is private
     isPrivate: true
 
@@ -97,7 +97,7 @@ The last part is your playlist's ID.
 ##### Tag Filtering
 Some subreddits make extensive use of tags, which basically means anything that is captured in parenthesis `()` `[]`.
 
-The `tagFilter` can be declared at playlist level and is used to filter out reddit posts based on their tags. 
+The `tagFilter` can be declared at playlist level and is used to filter out reddit posts based on their tags.
 
 Example config:
 ```yaml
@@ -109,25 +109,25 @@ playlists:
       # Example post that would be included: [FRESH] Luca Brasi - Clothes I Slept In
       includeExact:
         - FRESH
-        
+
       # Tag contains
       # Example post that would be included: Foghorns - All Glands on Deck (indie/folk/punk)
       include:
         - punk
-        
+
       # Tag must not be equal
       # Example post that would be excluded: [Album] Maps & Atlases - Lightlessness Is Nothing New
       excludeExact:
         - Album
-        
+
       # Tag must not include
-      # Example post that would be excluded: [FRESH VIDEO] Preoccupations - Decompose 
-      exclude: 
+      # Example post that would be excluded: [FRESH VIDEO] Preoccupations - Decompose
+      exclude:
         - video
 ```
 
 ##### Date Filtering
-Sometimes you want to only add tracks that match a certain date criteria. 
+Sometimes you want to only add tracks that match a certain date criteria.
 
 The `dateFilter` can be declared at playlist level and supports different ways of checking a track's release date.
 
@@ -139,7 +139,7 @@ playlists:
     dateFilter:
       # Tracks that have been released since the beginning of 2018
       startingFrom: 2018-01-01
-    
+
       # The release date can not exceed the current date minus the specified distance
       # Given a maxDistance of 1 month and 1 year, a track may not be older than 1 month and 1 year
       # Given the current date of 2018-06-16, include only tracks that are released since 2017-05-16
@@ -149,7 +149,7 @@ playlists:
 ```
 
 ##### Scheduling
-As a solution to the limited Heroku Scheduler frequency options, one can specify an execution schedule in the config. 
+As a solution to the limited Heroku Scheduler frequency options, one can specify an execution schedule in the config.
 
 Use `schedule` to define when the lists should be updated. If the current date doesn't match, the program won't run.
 
@@ -161,7 +161,7 @@ playlists:
 schedule:
   # Only execute on Mondays
   dayOfWeek: MONDAY
-  
+
   # Only execute on the first day of the month, for example 2018-06-01
   dayOfMonth: 1
 ```
@@ -198,7 +198,7 @@ More details about deploying to Heroku below.
 * Set the frequency to `Every 10 minutes` and save
 * In order to see the output, use `heroku logs --ps scheduler` from your local project. See more [here](https://devcenter.heroku.com/articles/scheduler#inspecting-output)
 * Once everything works, edit your job and pass your config `java -jar build/libs/spottit-0.7.0.jar -c config.yml`
-* Currently, the Heroku Scheduler has limited frequency options. Use a daily frequency and specify details in your `config.yml`. 
+* Currently, the Heroku Scheduler has limited frequency options. Use a daily frequency and specify details in your `config.yml`.
 See [the Scheduling section](#scheduling)
 
 ![Spottit Heroku Scheduler](resources/img/spottit-heroku-scheduler.PNG?raw=true "Spottit Heroku Scheduler")

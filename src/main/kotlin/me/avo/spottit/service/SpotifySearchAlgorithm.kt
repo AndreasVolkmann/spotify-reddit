@@ -6,6 +6,7 @@ import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException
 import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.Track
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest
+import com.wrapper.spotify.requests.data.tracks.GetTrackRequest
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.RetrySupport
 
@@ -23,6 +24,8 @@ interface SpotifySearchAlgorithm : RetrySupport {
         else -> throw ex
     }
 
-    fun SearchTracksRequest.executeRequest(stack: Int = 0): Paging<Track> = retry(::execute)
+    fun SearchTracksRequest.executeRequest(): Paging<Track> = retry(::execute)
+
+    fun GetTrackRequest.executeRequest(): Track? = retry(::execute)
 
 }
