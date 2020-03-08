@@ -2,8 +2,8 @@ package me.avo.spottit
 
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.service.DynamicPlaylistService
-import me.avo.spottit.service.ManualAuthService
-import me.avo.spottit.service.TokenRefreshService
+import me.avo.spottit.service.spotify.ManualAuthService
+import me.avo.spottit.service.spotify.TokenRefreshService
 import me.avo.spottit.util.YamlConfigReader
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

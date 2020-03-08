@@ -1,11 +1,11 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.spotify
 
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.server.prepareServer
+import me.avo.spottit.service.AuthorizationService
 import me.avo.spottit.util.openUrlInBrowser
 import org.kodein.di.Kodein
-import java.util.concurrent.TimeUnit
 
 class ManualAuthService(
     private val spotifyAuthService: SpotifyAuthService,

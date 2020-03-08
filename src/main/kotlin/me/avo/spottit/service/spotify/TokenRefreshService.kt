@@ -1,4 +1,4 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.spotify
 
 import me.avo.spottit.config.Arguments
 import org.slf4j.LoggerFactory

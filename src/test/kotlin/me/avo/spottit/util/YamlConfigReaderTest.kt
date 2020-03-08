@@ -5,6 +5,7 @@ import me.avo.spottit.config.Arguments
 import me.avo.spottit.model.*
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
+import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotContain
@@ -79,7 +80,7 @@ internal class YamlConfigReaderTest {
         val actual = YamlConfigReader.read(yaml)
 
         expectThat(actual).isEqualTo(expected)
-        actual shouldEqual expected
+        actual shouldBeEqualTo expected
     }
 
     @Test fun `parseMaxDistance should produce correct date`() {
@@ -95,7 +96,7 @@ internal class YamlConfigReaderTest {
         }.time
         val actual = YamlConfigReader.parseMaxDistance(month, year)
 
-        actual shouldEqual expected
+        actual shouldBeEqualTo expected
     }
 
     @Test fun `should only include playlists in useLists when defined`() {

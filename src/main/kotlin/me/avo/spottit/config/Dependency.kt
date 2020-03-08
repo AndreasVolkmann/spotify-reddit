@@ -4,6 +4,9 @@ import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.service.*
+import me.avo.spottit.service.reddit.RedditService
+import me.avo.spottit.service.reddit.RedditServiceImpl
+import me.avo.spottit.service.spotify.*
 import me.avo.spottit.util.TrackFilter
 import org.kodein.di.Kodein
 import org.kodein.di.direct
@@ -28,7 +31,10 @@ val prodKodein = Kodein {
     }
 
     bind<SpotifyService>() with singleton {
-        SpotifyServiceImpl(authService = instance(), getSearchAlgorithm = factory())
+        SpotifyServiceImpl(
+            spotifyApi = instance(),
+            getSearchAlgorithm = factory()
+        )
     }
 
     bind<SpotifyAuthService>() with singleton {
@@ -47,13 +53,22 @@ val prodKodein = Kodein {
         )
     }
 
-    bind<SpotifySearchAlgorithm>() with factory { trackFilter: TrackFilter ->
+    bind<SpotifyApiService>() with singleton {
         val authService: SpotifyAuthService = kodein.direct.instance()
-        ElectronicSearchAlgorithm(authService.getSpotifyApi(), trackFilter)
+        SpotifyApiServiceImpl(authService.getSpotifyApi())
+    }
+
+    bind<SpotifySearchAlgorithm>() with factory { trackFilter: TrackFilter ->
+        ElectronicSearchAlgorithm(instance(), trackFilter)
     }
 
     bind<RedditService>() with factory { playlist: Playlist, flairsToExclude: List<String> ->
-        RedditServiceImpl(playlist, flairsToExclude, Arguments.redditMaxPage, instance())
+        RedditServiceImpl(
+            playlist,
+            flairsToExclude,
+            Arguments.redditMaxPage,
+            instance()
+        )
     }
 
     bind<TrackFilter>() with factory { configuration: Configuration, playlist: Playlist ->

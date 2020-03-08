@@ -19,8 +19,8 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import me.avo.spottit.Spottit
-import me.avo.spottit.service.ManualAuthService
-import me.avo.spottit.service.SpotifyAuthService
+import me.avo.spottit.service.spotify.ManualAuthService
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import org.kodein.di.Kodein
 import org.kodein.di.generic.instance
 import org.slf4j.event.Level
