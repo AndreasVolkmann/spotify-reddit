@@ -1,24 +1,37 @@
 package me.avo.spottit.util
 
+import com.wrapper.spotify.requests.IRequest
+import org.slf4j.Logger
+
 interface RetrySupport {
 
-    val stackSize: Int
+    val logger: Logger
 
-    fun mapTimeout(ex: Exception): Int
+    val stackSize: Int get() = 5
 
-    fun <T> retry(block: () -> T) = retry(block, 0)
+    fun mapTimeout(ex: Exception): Long = 2000
 
-    private fun <T> retry(block: () -> T, stack: Int = 0): T = try {
-        block()
-    } catch (ex: Exception) {
-        val timeout = mapTimeout(ex)
-        when {
-            stack < stackSize -> {
-                val waitForSeconds = timeout / 1000L
-                Thread.sleep(waitForSeconds)
-                retry(block, stack + 1)
-            }
-            else -> throw ex
-        }
+    /**
+     * Executes the request with retry support.
+     */
+    fun <T, X> IRequest.Builder<T, X>.execute(): T = retry {
+        build().execute()
     }
 }
+
+inline fun <T> RetrySupport.retry(block: () -> T): T {
+    var stack = 0
+    do try {
+        return block()
+    }
+    catch (ex: Exception) {
+        logger.error("Exception encountered in retry code.", ex)
+        stack++
+        val timeout = mapTimeout(ex)
+        Thread.sleep(timeout)
+    }
+    while (stack < stackSize)
+
+    throw IllegalStateException("Retry did not return anything.")
+}
+

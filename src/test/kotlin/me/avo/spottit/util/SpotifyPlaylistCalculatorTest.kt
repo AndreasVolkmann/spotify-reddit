@@ -15,12 +15,10 @@ internal class SpotifyPlaylistCalculatorTest {
             val result = SpotifyPlaylistCalculator.createIndexLookup(tracks)
 
             result["0"].shouldNotBeNull().let {
-                it.pop() shouldEqualTo 3 // last index of track with id 0
-                it.pop() shouldEqualTo 0 // next index of track with id 0 after removing popping the previous
+                it.pop() shouldBeEqualTo 3 // last index of track with id 0
+                it.pop() shouldBeEqualTo 0 // next index of track with id 0 after removing popping the previous
             }
-
         }
-
     }
 
     @Nested inner class CalculateTracksToRemoveAndAdd {
@@ -51,18 +49,15 @@ internal class SpotifyPlaylistCalculatorTest {
                 tracksInPlaylist
             )
 
-            remove.size shouldEqualTo 2
+            remove.size shouldBeEqualTo 2
             add.shouldBeEmpty()
         }
-
     }
 
     @Nested inner class CalculateTracksToAdd {
 
         @Test fun `should add no more than max`() {
-            val tracksInPlaylist = listOf(
-                track("1")
-            )
+            val tracksInPlaylist = listOf(track("1"))
 
             val tracksToAdd = listOf(
                 track { setId("1") }, // will be removed
@@ -71,22 +66,19 @@ internal class SpotifyPlaylistCalculatorTest {
                 track { setId("4") }
             )
 
-            val willBeAddedAgain = listOf(
-                track("1")
-            )
+            val willBeAddedAgain = listOf(track("1"))
 
             val maxSize = 3
 
-            val actual =
-                SpotifyPlaylistCalculator.calculateTracksToAdd(
-                    tracksInPlaylist.size,
-                    0,
-                    tracksToAdd,
-                    willBeAddedAgain,
-                    maxSize
-                )
+            val actual = SpotifyPlaylistCalculator.calculateTracksToAdd(
+                tracksInPlaylist.size,
+                0,
+                tracksToAdd,
+                willBeAddedAgain,
+                maxSize
+            )
 
-            actual.size shouldEqualTo maxSize - tracksInPlaylist.size
+            actual.size shouldBeEqualTo maxSize - tracksInPlaylist.size
 
             actual.map { it.id } shouldContainAll listOf("2", "3")
         }
@@ -97,10 +89,9 @@ internal class SpotifyPlaylistCalculatorTest {
 
         @Test fun `should account for removed tracks`() {
             val result = SpotifyPlaylistCalculator.calculateTracksToAdd(5, 2, makeTracks(2), listOf(track("0")), 5)
-            result.size shouldEqualTo 1
+            result.size shouldBeEqualTo 1
             result.first().id shouldBeEqualTo "1"
         }
-
     }
 
     @Nested inner class AddMaxSizeTracks {
@@ -116,7 +107,7 @@ internal class SpotifyPlaylistCalculatorTest {
             val maxSize = 20
             val tracksToAdd = makeTracks(10)
             val result = SpotifyPlaylistCalculator.addMaxSizeTracks(tracksToAdd, maxSize)
-            result.size shouldEqualTo tracksToAdd.size
+            result.size shouldBeEqualTo tracksToAdd.size
         }
     }
 
@@ -136,9 +127,9 @@ internal class SpotifyPlaylistCalculatorTest {
                     maxSize
                 )
 
-            tracksToRemove.size shouldEqualTo willBeRemoved.size
+            tracksToRemove.size shouldBeEqualTo willBeRemoved.size
             tracksToRemove shouldContainAll willBeRemoved
-            filteredAddedAgain shouldEqual willBeAddedAgain
+            filteredAddedAgain shouldBeEqualTo willBeAddedAgain
         }
 
         @Test fun `when sizeAfterRemoval is greater than maxSize`() {
@@ -155,11 +146,11 @@ internal class SpotifyPlaylistCalculatorTest {
                     maxSize
                 )
 
-            tracksToRemove.size shouldEqualTo currentSize - maxSize
+            tracksToRemove.size shouldBeEqualTo currentSize - maxSize
             tracksToRemove shouldContainAll willBeRemoved
             tracksToRemove shouldContainSome willBeAddedAgain
-            filteredAddedAgain.size shouldEqualTo 1
-            filteredAddedAgain shouldEqual willBeAddedAgain.take(1)
+            filteredAddedAgain.size shouldBeEqualTo 1
+            filteredAddedAgain shouldBeEqualTo willBeAddedAgain.take(1)
         }
     }
 
@@ -177,12 +168,12 @@ internal class SpotifyPlaylistCalculatorTest {
                 maxSize
             )
 
-            tracksToRemove.size shouldEqualTo 5
+            tracksToRemove.size shouldBeEqualTo 5
             tracksToRemove.map { it.track.id } shouldContain duplicateId
 
             willBeAddedAgain.map { it.id }
             willBeAddedAgain.first().id shouldBeEqualTo duplicateId
-            willBeAddedAgain.size shouldEqualTo 1
+            willBeAddedAgain.size shouldBeEqualTo 1
         }
     }
 }

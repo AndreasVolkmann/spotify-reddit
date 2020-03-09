@@ -1,18 +1,18 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.40'
-    id "com.github.ben-manes.versions" version "0.21.0"
-    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+    id "com.github.ben-manes.versions" version "0.28.0"
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
 }
 
 ext {
-    ktor_version = '1.1.3'
-    spotify_api_vesrion = '2.2.0'
+    ktor_version = '1.3.1'
+    spotify_api_vesrion = '4.2.1'
     jrawVersion = '1.1.0'
-    junit_version = '5.5.0-M1'
+    junit_version = '5.6.0'
 }
 
 group 'me.avo'
-version '0.9.2'
+version '0.9.3'
 
 task stage(dependsOn: ['bootJar', 'clean'])
 build.mustRunAfter clean
@@ -29,20 +29,19 @@ dependencies {
     compile "net.dean.jraw:JRAW:$jrawVersion"
 
     /* Server */
-    compile group: "io.ktor", name: "ktor-server-core", version: ktor_version
     compile group: "io.ktor", name: "ktor-server-cio", version: ktor_version
     compile "io.ktor:ktor-freemarker:$ktor_version"
 
     /* Util */
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile 'org.kodein.di:kodein-di-generic-jvm:6.2.0'
+    compile 'org.kodein.di:kodein-di-generic-jvm:6.5.3'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
-    compile 'org.yaml:snakeyaml:1.24'
-    compile 'com.apurebase:arkenv:2.0.0'
-    compile 'org.apache.commons:commons-text:1.6'
+    compile 'org.yaml:snakeyaml:1.25'
+    compile 'com.apurebase:arkenv:3.1.0'
+    compile 'org.apache.commons:commons-text:1.8'
 
-    testImplementation "io.strikt:strikt-core:0.21.0"
-    testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.50'
+    testImplementation "io.strikt:strikt-core:0.24.0"
+    testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.60'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }

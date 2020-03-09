@@ -3,6 +3,7 @@ package me.avo.spottit.util
 import me.avo.spottit.redditTrack
 import me.avo.spottit.tagFilter
 import org.amshove.kluent.shouldBe
+import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
@@ -97,7 +98,7 @@ internal class SubmissionParserTest {
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         val staticDate = Date()
         DynamicTest.dynamicTest(expected.artist) {
-            SubmissionParser.parse(raw, null, "", staticDate) shouldEqual expected.copy(created = staticDate)
+            SubmissionParser.parse(raw, null, "", staticDate) shouldBeEqualTo expected.copy(created = staticDate)
         }
     }
 

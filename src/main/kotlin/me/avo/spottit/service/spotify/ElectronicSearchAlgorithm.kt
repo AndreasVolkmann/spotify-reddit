@@ -1,7 +1,5 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.spotify
 
-import com.wrapper.spotify.SpotifyApi
-import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.SpotifyQueryTools
@@ -9,7 +7,7 @@ import me.avo.spottit.util.TrackFilter
 import org.slf4j.LoggerFactory
 
 class ElectronicSearchAlgorithm(
-    override val spotifyApi: SpotifyApi,
+    private val spotifyApi: SpotifyApiService,
     private val trackFilter: TrackFilter
 ) : SpotifySearchAlgorithm {
 
@@ -23,16 +21,14 @@ class ElectronicSearchAlgorithm(
         .onEach { trackFilter.timeout() }
         .toList()
 
-    fun getAlbumForTrack(track: Track): Album = spotifyApi.getAlbum(track.album.id).build().execute()
-
     private fun findTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> = when {
         track.isSpotifyTrack -> getTrack(track)
         else -> searchForTrack(track)
     }
 
-    private fun getTrack(track: RedditTrack): Triple<RedditTrack, Track, Int> {
+    private fun getTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> {
         val id = track.url.substringAfter("/track/").substringBefore("?")
-        val spotifyTrack = spotifyApi.getTrack(id).build().execute()
+        val spotifyTrack = spotifyApi.getTrack(id)
         return Triple(track, spotifyTrack, if (spotifyTrack != null) 1 else 0)
     }
 
@@ -42,7 +38,7 @@ class ElectronicSearchAlgorithm(
             .let { (total, items) ->
                 val chosenTrack = evaluateResults(track, items, 0)?.let {
                     if (trackFilter.doCheckReleaseDate) {
-                        val album = getAlbumForTrack(it)
+                        val album = spotifyApi.getAlbumForTrack(it)
                         if (trackFilter.checkTrackAgeByAlbum(album)) it else null
                     } else it
                 }
@@ -51,7 +47,7 @@ class ElectronicSearchAlgorithm(
 
     private fun searchQuery(query: String): Pair<Int, Array<Track>> {
         logger.debug("Searching for $query")
-        val paging = spotifyApi.searchTracks(query).limit(10).offset(0).build().executeRequest()
+        val paging = spotifyApi.searchTracks(query)
         Thread.sleep(100)
         return paging.total to trackFilter.applyFilters(paging.items)
     }

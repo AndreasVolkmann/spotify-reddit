@@ -3,6 +3,9 @@ package me.avo.spottit.service
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
+import me.avo.spottit.service.reddit.RedditService
+import me.avo.spottit.service.spotify.SpotifyService
+import me.avo.spottit.service.spotify.TokenRefreshService
 import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.TrackFilter
 import net.dean.jraw.models.SubredditSort

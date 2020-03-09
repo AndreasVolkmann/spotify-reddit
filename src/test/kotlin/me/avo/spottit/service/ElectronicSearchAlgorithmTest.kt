@@ -4,6 +4,9 @@ import me.avo.spottit.*
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
 import me.avo.spottit.model.Playlist
+import me.avo.spottit.service.spotify.ElectronicSearchAlgorithm
+import me.avo.spottit.service.spotify.SpotifyApiServiceImpl
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import me.avo.spottit.util.SubmissionParser.parse
 import me.avo.spottit.util.TrackFilter
 import me.avo.spottit.util.artistString
@@ -11,7 +14,6 @@ import me.avo.spottit.util.parseDateString
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldNotBeNull
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
@@ -27,12 +29,14 @@ internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
     private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()
-    private val api get() = spotifyAuthService.getSpotifyApi()
     private val trackFilter by lazy { getTrackFilter(config, config.playlists.first()) }
     private val config = makeConfig(
         DateFilter(startingFrom = parseDateString("2012-04-04"), maxDistance = null)
     )
-    private val alg by lazy { ElectronicSearchAlgorithm(api, trackFilter) }
+    private val alg by lazy {
+        val api = SpotifyApiServiceImpl(spotifyAuthService.getSpotifyApi())
+        ElectronicSearchAlgorithm(api, trackFilter)
+    }
 
     @Test fun `getTrack by id`() {
         val id = "7ICUbPlGOPSBA1oLgudcV4"
@@ -45,8 +49,6 @@ internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
         val track = parse("[FRESH] Joy Again - Nobody Knows", null, url, Date())
         track.isSpotifyTrack shouldBe true
 
-        val alg = ElectronicSearchAlgorithm(api, trackFilter)
-
         val tracks = urls.map { redditTrack("", "", url = it) } + track
         val results = alg.searchForTracks(tracks)
 
@@ -57,10 +59,6 @@ internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
                 it.artistString() shouldBeEqualTo "Joy Again"
                 it.id shouldBeEqualTo id
             }
-
-        results.forEach {
-            alg.getAlbumForTrack(it).let(trackFilter::checkTrackAgeByAlbum).let(::println)
-        }
     }
 
     private val spotifyTrack = track {

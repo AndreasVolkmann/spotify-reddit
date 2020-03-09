@@ -1,4 +1,4 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.reddit
 
 import me.avo.spottit.model.RedditTrack
 

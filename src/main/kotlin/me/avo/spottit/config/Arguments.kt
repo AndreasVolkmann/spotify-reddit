@@ -2,12 +2,9 @@ package me.avo.spottit.config
 
 import com.apurebase.arkenv.Arkenv
 import com.apurebase.arkenv.argument
-import com.apurebase.arkenv.feature.ProfileFeature
 import java.io.File
 
-object Arguments : Arkenv(programName = "Spottit", configuration = {
-    install(ProfileFeature())
-}) {
+object Arguments : Arkenv("Spottit") {
 
     val configPath: String by argument("-c", "--config") {
         description = "The path to your config.yml"

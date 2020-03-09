@@ -164,7 +164,7 @@ internal class SpotifyQueryToolsTest {
         listOf("Get Free (feat. Amber of Dirty Projectors)" to "Get Free").map { (input, expected) ->
             DynamicTest.dynamicTest(input) {
                 with(SpotifyQueryTools) {
-                    input.fixTitle() shouldEqual expected
+                    input.fixTitle() shouldBeEqualTo expected
                 }
             }
         }

@@ -19,44 +19,46 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import me.avo.spottit.Spottit
-import me.avo.spottit.service.ManualAuthService
-import me.avo.spottit.service.SpotifyAuthService
-import org.kodein.di.Kodein
-import org.kodein.di.generic.instance
+import me.avo.spottit.config.Arguments
+import me.avo.spottit.service.spotify.ManualAuthService
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import org.slf4j.event.Level
 
-fun prepareServer(kodein: Kodein, port: Int): ApplicationEngine = embeddedServer(
-    factory = CIO, port = port, module = module(kodein)
-)
+class Server(
+    private val spotifyAuthService: SpotifyAuthService,
+    private val manualAuthService: ManualAuthService
+) {
 
-fun module(kodein: Kodein): Application.() -> Unit = {
-    install(Routing) {
-        val spotifyAuthService: SpotifyAuthService by kodein.instance()
-        val manualAuthService: ManualAuthService by kodein.instance()
+    fun prepareServer(): ApplicationEngine = embeddedServer(
+        factory = CIO, port = Arguments.port, module = module()
+    )
 
-        get("spotify/auth/{...}") {
-            val code = call.parameters["code"]
-            when {
-                code == null || code.isBlank() -> throw StatusException(
-                    HttpStatusCode.BadRequest, "Invalid code supplied"
-                )
-                else -> {
-                    val credentials = spotifyAuthService.grantAccess(code)
-                    call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
-                    manualAuthService.writeCredentials(credentials)
+    private fun module(): Application.() -> Unit = {
+        install(Routing) {
+            get("spotify/auth/{...}") {
+                val code = call.parameters["code"]
+                when {
+                    code == null || code.isBlank() -> throw StatusException(
+                        HttpStatusCode.BadRequest, "Invalid code supplied"
+                    )
+                    else -> {
+                        val credentials = spotifyAuthService.grantAccess(code)
+                        call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
+                        manualAuthService.writeCredentials(credentials)
+                    }
                 }
             }
         }
-    }
-    install(CallLogging) { level = Level.INFO }
-    install(FreeMarker) { setupFreemarker() }
-    install(StatusPages) {
-        exception<Throwable> {
-            val status = when (it) {
-                is StatusException -> it.status
-                else -> InternalServerError
+        install(CallLogging) { level = Level.INFO }
+        install(FreeMarker) { setupFreemarker() }
+        install(StatusPages) {
+            exception<Throwable> {
+                val status = when (it) {
+                    is StatusException -> it.status
+                    else -> InternalServerError
+                }
+                call.respond(status, "${it::class.simpleName}: ${it.message ?: "An error occurred"}")
             }
-            call.respond(status, "${it::class.simpleName}: ${it.message ?: "An error occurred"}")
         }
     }
 }

@@ -1,10 +1,11 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.reddit
 
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.RetrySupport
 import me.avo.spottit.util.SubmissionParser
+import me.avo.spottit.util.retry
 import net.dean.jraw.http.OkHttpNetworkAdapter
 import net.dean.jraw.http.UserAgent
 import net.dean.jraw.models.Submission
@@ -14,6 +15,7 @@ import net.dean.jraw.oauth.Credentials
 import net.dean.jraw.oauth.OAuthHelper
 import net.dean.jraw.pagination.Paginator
 import net.dean.jraw.references.SubredditReference
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.util.*
@@ -104,13 +106,9 @@ class RedditServiceImpl(
     private fun filterMinimumUpvotes(submissions: List<Submission>): List<Submission> =
         playlist.minimumUpvotes?.let { submissions.filter { it.score > playlist.minimumUpvotes } } ?: submissions
 
-    override val stackSize = 5
-
-    override fun mapTimeout(ex: Exception): Int = 2000
-
     private fun parse(submission: Submission): RedditTrack = SubmissionParser.parse(
         submission.title, submission.linkFlairText, submission.url, submission.created
     )
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
+    override val logger: Logger = LoggerFactory.getLogger(this::class.java)
 }

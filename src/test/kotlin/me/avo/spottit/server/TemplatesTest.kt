@@ -33,7 +33,7 @@ internal class TemplatesTest {
         }.start(false)
         openUrlInBrowser(url)
         Thread.sleep(3000)
-        server.stop(2L, 2L, TimeUnit.SECONDS)
+        server.stop(2000L, 2000L)
     }
 
     @Test fun auth() {

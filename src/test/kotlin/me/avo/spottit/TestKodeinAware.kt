@@ -3,7 +3,7 @@ package me.avo.spottit
 import com.apurebase.arkenv.parse
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.config.prodKodein
-import me.avo.spottit.service.TokenRefreshService
+import me.avo.spottit.service.spotify.TokenRefreshService
 import org.junit.jupiter.api.BeforeAll
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
