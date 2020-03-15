@@ -4,8 +4,8 @@ import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.service.reddit.RedditService
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import me.avo.spottit.service.spotify.SpotifyService
-import me.avo.spottit.service.spotify.TokenRefreshService
 import me.avo.spottit.util.Scheduler
 import me.avo.spottit.util.TrackFilter
 import net.dean.jraw.models.SubredditSort
@@ -13,20 +13,18 @@ import net.dean.jraw.models.TimePeriod
 import org.slf4j.LoggerFactory
 
 class DynamicPlaylistService(
-    private val refreshService: TokenRefreshService,
+    private val spotifyAuthService: SpotifyAuthService,
     private val spotifyService: SpotifyService,
     private val getRedditService: (Playlist, List<String>) -> RedditService,
     private val getTrackFilter: (Configuration, Playlist) -> TrackFilter
 ) {
 
-    fun updatePlaylists(configuration: Configuration) = when {
-        Scheduler.shouldExecute(configuration.schedule) -> {
-            refreshService.refresh()
-            configuration.playlists.forEach {
-                processPlaylist(configuration, it)
-            }
+    fun updatePlaylists(configuration: Configuration) {
+        if (!Scheduler.shouldExecute(configuration.schedule)) return
+        spotifyAuthService.refresh()
+        configuration.playlists.forEach {
+            processPlaylist(configuration, it)
         }
-        else -> Unit
     }
 
     private fun processPlaylist(configuration: Configuration, playlist: Playlist) {

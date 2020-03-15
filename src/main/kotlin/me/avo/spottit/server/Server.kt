@@ -20,13 +20,13 @@ import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import me.avo.spottit.Spottit
 import me.avo.spottit.config.Arguments
-import me.avo.spottit.service.spotify.ManualAuthService
+import me.avo.spottit.service.AuthorizationService
 import me.avo.spottit.service.spotify.SpotifyAuthService
 import org.slf4j.event.Level
 
 class Server(
     private val spotifyAuthService: SpotifyAuthService,
-    private val manualAuthService: ManualAuthService
+    private val authService: AuthorizationService
 ) {
 
     fun prepareServer(): ApplicationEngine = embeddedServer(
@@ -44,7 +44,7 @@ class Server(
                     else -> {
                         val credentials = spotifyAuthService.grantAccess(code)
                         call.respond(Templates.auth(credentials.accessToken, credentials.refreshToken))
-                        manualAuthService.writeCredentials(credentials)
+                        authService.writeCredentials(credentials)
                     }
                 }
             }

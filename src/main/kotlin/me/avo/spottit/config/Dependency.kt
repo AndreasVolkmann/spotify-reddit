@@ -4,7 +4,7 @@ import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.server.Server
-import me.avo.spottit.service.*
+import me.avo.spottit.service.DynamicPlaylistService
 import me.avo.spottit.service.reddit.RedditService
 import me.avo.spottit.service.reddit.RedditServiceImpl
 import me.avo.spottit.service.spotify.*
@@ -16,7 +16,7 @@ import org.kodein.di.generic.*
 val prodKodein = Kodein {
     bind<DynamicPlaylistService>() with singleton {
         DynamicPlaylistService(
-            refreshService = instance(),
+            instance(),
             spotifyService = instance(),
             getRedditService = factory2(),
             getTrackFilter = factory2()
@@ -27,10 +27,6 @@ val prodKodein = Kodein {
 
     bind<ManualAuthService>() with singleton {
         ManualAuthService(instance(), instance())
-    }
-
-    bind<TokenRefreshService>() with singleton {
-        TokenRefreshService(spotifyAuthService = instance())
     }
 
     bind<SpotifyService>() with singleton {

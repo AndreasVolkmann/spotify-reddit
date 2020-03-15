@@ -10,12 +10,9 @@ interface SpotifyAuthService {
     val clientSecret: String
     val redirectUri: String
 
-    var accessToken: String
-    var refreshToken: String
-
     fun grantAccess(authCode: String): AuthorizationCodeCredentials
 
-    fun refresh(): String
+    fun refresh()
 
     fun getSpotifyApi(): SpotifyApi
 
