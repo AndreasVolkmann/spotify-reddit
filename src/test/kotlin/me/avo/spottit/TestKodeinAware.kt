@@ -3,7 +3,7 @@ package me.avo.spottit
 import com.apurebase.arkenv.parse
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.config.prodKodein
-import me.avo.spottit.service.spotify.TokenRefreshService
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import org.junit.jupiter.api.BeforeAll
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -17,9 +17,9 @@ interface TestKodeinAware : KodeinAware {
         if (!isParsed) {
             Arguments.parse(arrayOf("-c", ""))
         }
-        val tokenRefreshService: TokenRefreshService by instance()
+        val spotifyAuthService: SpotifyAuthService by instance()
         if (!isRefreshed) {
-            tokenRefreshService.refresh()
+            spotifyAuthService.refresh()
             isRefreshed = true
         }
     }

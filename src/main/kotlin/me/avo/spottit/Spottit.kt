@@ -3,7 +3,7 @@ package me.avo.spottit
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.service.DynamicPlaylistService
 import me.avo.spottit.service.spotify.ManualAuthService
-import me.avo.spottit.service.spotify.TokenRefreshService
+import me.avo.spottit.service.spotify.SpotifyAuthService
 import me.avo.spottit.util.YamlConfigReader
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -12,20 +12,20 @@ import java.io.File
 
 class Spottit(kodein: Kodein) : KodeinAware by kodein {
 
-    private val configuration by lazy { YamlConfigReader.read(File(Arguments.configPath).readText()) }
+    private val conf by lazy { YamlConfigReader.read(File(Arguments.configPath).readText()) }
     private val manualAuthService: ManualAuthService by instance()
-    private val tokenRefreshService: TokenRefreshService by instance()
+    private val spotifyAuthService: SpotifyAuthService by instance()
     private val dynamicPlaylistService: DynamicPlaylistService by instance()
 
     fun run() = with(Arguments) {
         when {
             help -> return@with
 
-            manualAuth -> manualAuthService.authorize(configuration)
+            manualAuth -> manualAuthService.authorize(conf)
 
-            doRefresh -> tokenRefreshService.refresh()
+            doRefresh -> spotifyAuthService.refresh()
 
-            else -> dynamicPlaylistService.updatePlaylists(configuration)
+            else -> dynamicPlaylistService.updatePlaylists(conf)
         }
     }
 }
