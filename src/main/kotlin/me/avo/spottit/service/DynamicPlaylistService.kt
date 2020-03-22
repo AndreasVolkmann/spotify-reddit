@@ -23,15 +23,15 @@ class DynamicPlaylistService(
         if (!Scheduler.shouldExecute(configuration.schedule)) return
         spotifyAuthService.refresh()
         configuration.playlists.forEach {
-            processPlaylist(configuration, it)
+            val redditService = getRedditService(it, configuration.flairsToExclude)
+            val trackFilter = getTrackFilter(configuration, it)
+            processPlaylist(it, redditService, trackFilter)
         }
     }
 
-    private fun processPlaylist(configuration: Configuration, playlist: Playlist) {
+    private fun processPlaylist(playlist: Playlist, redditService: RedditService, trackFilter: TrackFilter) {
         logger.info("Processing playlist ${playlist.id}")
-        val redditService = getRedditService(playlist, configuration.flairsToExclude)
         val foundTracks = mutableListOf<Track>()
-        val trackFilter = getTrackFilter(configuration, playlist)
 
         while (foundTracks.size < playlist.maxSize && !redditService.isDone) redditService
             .getTracks()

@@ -46,8 +46,7 @@ class SpotifyServiceImpl(
 
     private fun addTracks(tracks: Collection<Track>, playlistId: String) {
         if (tracks.isEmpty()) {
-            logger.warn("Did not find any tracks to add")
-            return
+            return logger.warn("Did not find any tracks to add")
         }
         tracks.forEach { logger.info("Adding ${it.format()}") }
         spotifyApi.addTracksToPlaylist(playlistId, tracks)

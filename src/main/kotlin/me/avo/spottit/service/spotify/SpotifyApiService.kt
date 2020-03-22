@@ -1,5 +1,6 @@
 package me.avo.spottit.service.spotify
 
+import com.wrapper.spotify.model_objects.special.SnapshotResult
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.PlaylistTrack
@@ -21,7 +22,7 @@ interface SpotifyApiService {
 
     fun searchTracks(query: String): Paging<Track>
 
-    fun removeTracksFromPlaylist(playlistId: String, tracks: List<TrackInPlaylist>)
+    fun removeTracksFromPlaylist(playlistId: String, tracks: List<TrackInPlaylist>): SnapshotResult
 
-    fun addTracksToPlaylist(playlistId: String, tracks: Collection<Track>)
+    fun addTracksToPlaylist(playlistId: String, tracks: Collection<Track>): SnapshotResult
 }
