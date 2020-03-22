@@ -51,7 +51,7 @@ class RedditServiceImpl(
                 break@loop
             }
 
-            val redditTracks = page.let(::filterMinimumUpvotes)
+            val redditTracks = filterMinimumUpvotes(page)
 
             if (redditTracks.isEmpty()) {
                 stop("RedditTracks empty") // if there are no submissions left after upvote filtering, stop looking

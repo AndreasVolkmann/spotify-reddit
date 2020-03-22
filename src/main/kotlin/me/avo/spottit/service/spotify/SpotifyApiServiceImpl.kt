@@ -7,6 +7,7 @@ import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.exceptions.detailed.BadGatewayException
 import com.wrapper.spotify.exceptions.detailed.ServiceUnavailableException
 import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException
+import com.wrapper.spotify.model_objects.special.SnapshotResult
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Paging
 import com.wrapper.spotify.model_objects.specification.PlaylistTrack
@@ -31,13 +32,13 @@ class SpotifyApiServiceImpl(private val spotifyApi: SpotifyApi) : SpotifyApiServ
         return spotifyApi.getPlaylistsTracks(playlistId).execute()
     }
 
-    override fun removeTracksFromPlaylist(playlistId: String, tracks: List<TrackInPlaylist>) {
+    override fun removeTracksFromPlaylist(playlistId: String, tracks: List<TrackInPlaylist>): SnapshotResult {
         val jsonTracks = makeJsonTracksForRemoval(tracks)
-        spotifyApi.removeTracksFromPlaylist(playlistId, jsonTracks)
+        return spotifyApi.removeTracksFromPlaylist(playlistId, jsonTracks).execute()
     }
 
-    override fun addTracksToPlaylist(playlistId: String, tracks: Collection<Track>) {
-        spotifyApi.addTracksToPlaylist(playlistId, tracks.map { it.uri }.toTypedArray())
+    override fun addTracksToPlaylist(playlistId: String, tracks: Collection<Track>): SnapshotResult {
+        return spotifyApi.addTracksToPlaylist(playlistId, tracks.map { it.uri }.toTypedArray()).execute()
     }
 
     private fun makeJsonTracksForRemoval(tracks: List<TrackInPlaylist>) = tracks.map {
