@@ -10,10 +10,12 @@ data class RedditTrack(
     val mix: String?,
     val extraInformation: List<String>,
     val flair: String?,
-    val url: String,
+    val url: URL?,
     val created: Date
 ) {
 
-    val isSpotifyTrack get() = SubmissionParser.isSpotifyTrack(URL(url))
+    val isSpotifyTrack get() = url != null && SubmissionParser.isSpotifyTrack(url)
+
+    val isSpotifyAlbum get() = url != null && SubmissionParser.isSpotifyAlbum(url)
 
 }

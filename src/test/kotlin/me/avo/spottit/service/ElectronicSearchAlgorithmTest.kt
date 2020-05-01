@@ -21,6 +21,7 @@ import org.kodein.di.generic.factory2
 import org.kodein.di.generic.instance
 import strikt.api.expectThat
 import strikt.assertions.isNull
+import java.net.URL
 import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,7 +46,7 @@ internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
             "https://open.spotify.com/track/4lFxQyVeTYkM010VUtCp6o?si=SrEvWeOzRtK02n5bVL8Slw",
             "https://open.spotify.com/track/63pvV3o0aeVrwRWdtx4wOX?si=x9klrbFJRkWfZl7o2VB3vw",
             "https://open.spotify.com/track/3DPFmwFtV5ElQaTniLOdgk?si=NScDaJS4RpGzoFn2pzdoGQ"
-        )
+        ).map(::URL)
         val track = parse("[FRESH] Joy Again - Nobody Knows", null, url, Date())
         track.isSpotifyTrack shouldBe true
 

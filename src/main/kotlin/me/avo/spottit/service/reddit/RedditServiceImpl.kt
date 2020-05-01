@@ -17,7 +17,6 @@ import net.dean.jraw.pagination.Paginator
 import net.dean.jraw.references.SubredditReference
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URL
 import java.util.*
 
 class RedditServiceImpl(
@@ -51,23 +50,14 @@ class RedditServiceImpl(
                 break@loop
             }
 
-            val redditTracks = filterMinimumUpvotes(page)
+            val submissions = filterMinimumUpvotes(page)
 
-            if (redditTracks.isEmpty()) {
+            if (submissions.isEmpty()) {
                 stop("RedditTracks empty") // if there are no submissions left after upvote filtering, stop looking
                 break@loop
             }
 
-            redditTracks
-                .asSequence()
-                .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
-                .filterNot { it.isSelfPost }
-                .filterNot { it.linkFlairText in flairsToExclude }
-                .map(::parse)
-                .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
-                .filterNot { SubmissionParser.isSpotifyAlbum(URL(it.url)) }
-                .toList() // filter out albums
-                .let(validPosts::addAll)
+            processSubmissions(submissions).let(validPosts::addAll)
         }
 
         if (paginator.pageNumber >= maxPage || currentSize >= playlist.maxSize) {
@@ -76,6 +66,19 @@ class RedditServiceImpl(
 
         return validPosts
     }
+
+    private fun processSubmissions(submissions: List<Submission>): List<RedditTrack> = submissions
+        .asSequence()
+        .filter { SubmissionParser.isValidTrackTitle(it.title) } // artist - track delimiter
+        .filterNot { it.isSelfPost }
+        .filterNot { it.linkFlairText in flairsToExclude }
+        .map(::parse)
+        .let(::processRedditTracks)
+        .toList()
+
+    fun processRedditTracks(tracks: Sequence<RedditTrack>) = tracks
+        .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
+        .filterNot(RedditTrack::isSpotifyAlbum) // filter out albums
 
     override fun update(amountTaken: Int) {
         logger.info("Adding $amountTaken tracks")
