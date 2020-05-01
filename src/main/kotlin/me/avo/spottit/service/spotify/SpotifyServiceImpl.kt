@@ -26,13 +26,12 @@ class SpotifyServiceImpl(
 
     private fun clearPlaylist(tracksToAdd: List<Track>, playlistId: String, maxSize: Int): List<Track> {
         logger.info("Clearing Playlist")
-        val tracksInPlaylist = spotifyApi.getPlaylistsTracks(playlistId).items.map { it.track }
+        val tracksInPlaylist = spotifyApi.getPlaylistsTracks(playlistId)
+        val playlistCalculator = SpotifyPlaylistCalculator(tracksInPlaylist)
         return when {
-            tracksInPlaylist.isEmpty() -> SpotifyPlaylistCalculator.addMaxSizeTracks(tracksToAdd, maxSize)
+            tracksInPlaylist.isEmpty() -> playlistCalculator.getMaxSizeTracks(tracksToAdd, maxSize)
             else -> {
-                val (toRemove, toAdd) = SpotifyPlaylistCalculator.calculateTracksToRemoveAndAdd(
-                    tracksToAdd, maxSize, tracksInPlaylist
-                )
+                val (toRemove, toAdd) = playlistCalculator.calculateTracksToRemoveAndAdd(tracksToAdd, maxSize)
                 removeTracksFromPlaylist(playlistId, toRemove)
                 toAdd
             }

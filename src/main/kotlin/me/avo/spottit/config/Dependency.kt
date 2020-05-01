@@ -1,6 +1,6 @@
 package me.avo.spottit.config
 
-import me.avo.spottit.model.Configuration
+import me.avo.spottit.data.UpdateDetails
 import me.avo.spottit.model.Playlist
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.server.Server
@@ -16,10 +16,8 @@ import org.kodein.di.generic.*
 val prodKodein = Kodein {
     bind<DynamicPlaylistService>() with singleton {
         DynamicPlaylistService(
-            instance(),
-            spotifyService = instance(),
-            getRedditService = factory2(),
-            getTrackFilter = factory2()
+            spotifyAuthService = instance(),
+            getUpdateService = factory()
         )
     }
 
@@ -61,16 +59,21 @@ val prodKodein = Kodein {
         ElectronicSearchAlgorithm(instance(), trackFilter)
     }
 
-    bind<RedditService>() with factory { playlist: Playlist, flairsToExclude: List<String> ->
-        RedditServiceImpl(
+    bind<PlaylistUpdateService>() with factory { updateDetails: UpdateDetails ->
+        val (configuration, playlist) = updateDetails
+        val redditService = RedditServiceImpl(
             playlist,
-            flairsToExclude,
+            configuration.flairsToExclude,
             Arguments.redditMaxPage,
             instance()
         )
-    }
-
-    bind<TrackFilter>() with factory { configuration: Configuration, playlist: Playlist ->
-        TrackFilter(configuration, playlist)
+        val trackFilter = TrackFilter(configuration, playlist)
+        PlaylistUpdateService(
+            playlist,
+            redditService,
+            trackFilter,
+            instance(),
+            instance()
+        )
     }
 }

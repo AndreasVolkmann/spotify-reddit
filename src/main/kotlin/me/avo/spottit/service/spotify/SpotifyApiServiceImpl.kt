@@ -28,8 +28,11 @@ class SpotifyApiServiceImpl(private val spotifyApi: SpotifyApi) : SpotifyApiServ
     override fun searchTracks(query: String): Paging<Track> =
         spotifyApi.searchTracks(query).limit(10).offset(0).execute()
 
-    override fun getPlaylistsTracks(playlistId: String): Paging<PlaylistTrack> {
-        return spotifyApi.getPlaylistsTracks(playlistId).execute()
+    override fun getPlaylistsTracks(playlistId: String): List<Track> {
+        return spotifyApi
+            .getPlaylistsTracks(playlistId)
+            .execute()
+            .items.map { it.track }
     }
 
     override fun removeTracksFromPlaylist(playlistId: String, tracks: List<TrackInPlaylist>): SnapshotResult {

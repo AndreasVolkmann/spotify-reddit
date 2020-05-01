@@ -14,7 +14,7 @@ interface SpotifyApiService {
 
     fun getTrack(id: String): Track?
 
-    fun getPlaylistsTracks(playlistId: String): Paging<PlaylistTrack>
+    fun getPlaylistsTracks(playlistId: String): List<Track>
 
     fun getAlbum(id: String): Album
 
