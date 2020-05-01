@@ -8,6 +8,7 @@ import org.amshove.kluent.*
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import java.net.URL
 import java.util.*
 
 internal class SpotifyQueryToolsTest {
@@ -133,7 +134,7 @@ internal class SpotifyQueryToolsTest {
             extraInformation = listOf("2018", "Adaro & The Machine Bootleg"),
             flair = "Track",
             mix = "Adaro & The Machine Bootleg",
-            url = "https://m.youtube.com/watch?v=saCXuNkfw1E"
+            url = URL("https://m.youtube.com/watch?v=saCXuNkfw1E")
         )
         val spotify = track {
             setArtists(artist("Dynoro"), artist("Gigi D'Agostino"))

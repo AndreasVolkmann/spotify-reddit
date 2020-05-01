@@ -9,10 +9,18 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import strikt.api.expectThat
+import strikt.assertions.isNull
 import java.net.URL
 import java.util.*
 
 internal class SubmissionParserTest {
+
+    @Test fun `invalid url should be parsed as null`() {
+        val invalidUrl = "/r/electronicmusic/comments/abc/some/"
+        val track = SubmissionParser.parse("Test", null, invalidUrl, Date())
+        expectThat(track).get { url }.isNull()
+    }
 
     @Test fun `should identify spotify urls`() {
         val spotifyUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
