@@ -2,6 +2,7 @@ package me.avo.spottit.util
 
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.model.TagFilter
+import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 
@@ -17,9 +18,15 @@ object SubmissionParser {
                 .filterNotNull()
                 .map { it.removePrefixSuffix() },
             flair = flairText,
-            url = url,
+            url = tryParseUrl(url),
             created = created
         )
+    }
+
+    private fun tryParseUrl(spec: String) = try {
+        URL(spec)
+    } catch (ex: MalformedURLException) {
+        null
     }
 
     private fun processTitle(title: String): Triple<String, String?, List<String>> {
