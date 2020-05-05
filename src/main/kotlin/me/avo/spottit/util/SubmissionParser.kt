@@ -74,6 +74,12 @@ object SubmissionParser {
 
     fun isSpotifyUrl(url: URL): Boolean = url.host == "open.spotify.com"
 
+    /**
+     * Check if the [track] has the required tags according to the [tagFilter].
+     * @param track the track to check for required tags
+     * @param tagFilter the [TagFilter] to apply
+     * @return true, if the track has the required tags, otherwise false.
+     */
     fun filterTags(track: RedditTrack, tagFilter: TagFilter): Boolean {
         val tags = track.extraInformation
         val (include, includeExact, exclude, excludeExact) = tagFilter

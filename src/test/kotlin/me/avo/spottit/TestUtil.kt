@@ -3,11 +3,10 @@ package me.avo.spottit
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified
 import com.wrapper.spotify.model_objects.specification.Track
-import me.avo.spottit.model.Configuration
-import me.avo.spottit.model.DateFilter
-import me.avo.spottit.model.RedditTrack
-import me.avo.spottit.model.TagFilter
+import me.avo.spottit.model.*
 import me.avo.spottit.util.YamlConfigReader
+import net.dean.jraw.models.SubredditSort
+import net.dean.jraw.models.TimePeriod
 import java.net.URL
 import java.util.*
 
@@ -22,6 +21,8 @@ fun makeTracks(amount: Int, startFrom: Int = 0): List<Track> = (startFrom until 
         setName(it.toString())
     }
 }
+
+fun makePlaylist() = Playlist("1", 2, "test", SubredditSort.TOP, TimePeriod.ALL, 0, true, TagFilter(listOf(), listOf(), listOf(), listOf()), DateFilter(null, null), true)
 
 fun album(builder: Album.Builder.() -> Unit): Album = Album.Builder().apply(builder).build()
 

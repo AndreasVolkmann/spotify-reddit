@@ -9,7 +9,10 @@ import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.Playlist
 import org.slf4j.LoggerFactory
 
-class TrackFilter(private val configuration: Configuration, playlist: Playlist) {
+class TrackFilter(
+        private val configuration: Configuration,
+        playlist: Playlist,
+        val editDistanceThreshold: Int = Arguments.editDistance) {
 
     fun applyFilters(tracks: Array<Track>): Array<Track> = tracks
         .filter(::checkTrackLength)
@@ -44,8 +47,6 @@ class TrackFilter(private val configuration: Configuration, playlist: Playlist) 
     private val dateFilter = playlist.dateFilter
     private val datesToCheck = listOfNotNull(dateFilter.startingFrom, dateFilter.maxDistance)
     val doCheckReleaseDate = datesToCheck.isNotEmpty()
-
-    val editDistanceThreshold = Arguments.editDistance
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

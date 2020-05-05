@@ -8,7 +8,7 @@ import java.util.*
 
 fun openUrlInBrowser(url: String) = Desktop.getDesktop().browse(URI(url))
 
-fun Track.format() = "${artists.map { it.name }} - $name"
+fun Track.format() = "${artists?.map { it.name }} - $name"
 
 fun Track.artistString() = artists.joinToString(" ") { it.name }
 val Track.firstArtistName: String get() = artists.first().name

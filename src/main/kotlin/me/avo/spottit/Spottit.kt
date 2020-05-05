@@ -25,7 +25,7 @@ class Spottit(kodein: Kodein) : KodeinAware by kodein {
 
             doRefresh -> spotifyAuthService.refresh()
 
-            else -> dynamicPlaylistService.updatePlaylists(conf)
+            else -> dynamicPlaylistService.run(conf)
         }
     }
 }

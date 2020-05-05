@@ -12,26 +12,26 @@ object Scheduler {
         dayOfMonth?.let {
             val current = getCalendar(DAY_OF_MONTH)
             if (dayOfMonth != current) {
-                log("Day of month should be $dayOfMonth, is $current")
-                return false
+                return logReason("Day of month should be $dayOfMonth, is $current")
             }
         }
 
         dayOfWeek?.let {
             val current = getCalendar(DAY_OF_WEEK)
             if (dayOfWeek != current) {
-                log("Day of week should be $dayOfWeek, is $current")
-                return false
+                return logReason("Day of week should be $dayOfWeek, is $current")
             }
         }
 
         return true
     }
 
-
-    private fun log(reason: String) = logger.info(
-        "According to the specified schedule, this configuration should not be executed. $reason"
-    )
+    private fun logReason(reason: String): Boolean {
+        logger.info(
+            "According to the specified schedule, this configuration should not be executed. $reason"
+        )
+        return false
+    }
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 

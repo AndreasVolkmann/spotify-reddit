@@ -1,31 +1,32 @@
 package me.avo.spottit.config
 
-import me.avo.spottit.model.Configuration
-import me.avo.spottit.model.Playlist
+import me.avo.spottit.data.UpdateDetails
 import me.avo.spottit.model.RedditCredentials
 import me.avo.spottit.server.Server
 import me.avo.spottit.service.DynamicPlaylistService
-import me.avo.spottit.service.reddit.RedditService
+import me.avo.spottit.service.TrackFinderService
 import me.avo.spottit.service.reddit.RedditServiceImpl
 import me.avo.spottit.service.spotify.*
 import me.avo.spottit.util.TrackFilter
 import org.kodein.di.Kodein
 import org.kodein.di.direct
-import org.kodein.di.generic.*
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.factory
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
 
 val prodKodein = Kodein {
-    bind<DynamicPlaylistService>() with singleton {
+    bind() from singleton {
         DynamicPlaylistService(
-            instance(),
+            spotifyAuthService = instance(),
             spotifyService = instance(),
-            getRedditService = factory2(),
-            getTrackFilter = factory2()
+            getUpdateService = factory()
         )
     }
 
-    bind<Server>() with singleton { Server(instance(), instance()) }
+    bind() from singleton { Server(instance(), instance()) }
 
-    bind<ManualAuthService>() with singleton {
+    bind() from singleton {
         ManualAuthService(instance(), instance())
     }
 
@@ -44,7 +45,7 @@ val prodKodein = Kodein {
         )
     }
 
-    bind<RedditCredentials>() with singleton {
+    bind() from singleton {
         RedditCredentials(
             clientId = Arguments.redditClientId,
             clientSecret = Arguments.redditClientSecret,
@@ -61,16 +62,18 @@ val prodKodein = Kodein {
         ElectronicSearchAlgorithm(instance(), trackFilter)
     }
 
-    bind<RedditService>() with factory { playlist: Playlist, flairsToExclude: List<String> ->
-        RedditServiceImpl(
+    bind() from factory { (configuration, playlist): UpdateDetails ->
+        val redditService = RedditServiceImpl(
             playlist,
-            flairsToExclude,
+            configuration.flairsToExclude,
             Arguments.redditMaxPage,
             instance()
         )
-    }
-
-    bind<TrackFilter>() with factory { configuration: Configuration, playlist: Playlist ->
-        TrackFilter(configuration, playlist)
+        TrackFinderService(
+            playlist,
+            redditService,
+            TrackFilter(configuration, playlist),
+            instance()
+        )
     }
 }

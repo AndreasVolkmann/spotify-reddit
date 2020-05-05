@@ -4,10 +4,14 @@ import me.avo.spottit.artist
 import me.avo.spottit.redditTrack
 import me.avo.spottit.track
 import me.avo.spottit.util.SubmissionParser.parse
-import org.amshove.kluent.*
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import strikt.api.expectThat
+import strikt.assertions.isEmpty
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 import java.net.URL
 import java.util.*
 
@@ -80,7 +84,7 @@ internal class SpotifyQueryToolsTest {
             val actual = tracks.toList().shuffled(Random(925L)).sortedWith(comparator).first()
 
             val expected = candidates.single(Candidate::isCorrect)
-            "${actual.name} ${actual.durationMs}" shouldBeEqualTo expected.toString()
+            expectThat("${actual.name} ${actual.durationMs}").isEqualTo(expected.toString())
         }
     }
 
@@ -99,7 +103,7 @@ internal class SpotifyQueryToolsTest {
             threshold
         )
 
-        result.shouldBeEmpty()
+        expectThat(result).isEmpty()
     }
 
     private val shouldPass = listOf(
@@ -112,7 +116,8 @@ internal class SpotifyQueryToolsTest {
             val reddit = parse(raw, null, "", Date())
             val spotify = candidate.toTrack()
             SpotifyQueryTools.getTrackDistance(spotify, reddit)
-            SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold) shouldBe false
+            val exceedsThreshold = SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold)
+            expectThat(exceedsThreshold).isFalse()
         }
     }
 
@@ -124,7 +129,8 @@ internal class SpotifyQueryToolsTest {
         }
 
         SpotifyQueryTools.getTrackDistance(spotify, reddit).also(::println)
-        SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold) shouldBe false
+        val exceedsThreshold = SpotifyQueryTools.exceedsThreshold(spotify, reddit, threshold)
+        expectThat(exceedsThreshold).isFalse()
     }
 
     @Test fun `bootleg should be more difficult to match`() {
@@ -142,7 +148,7 @@ internal class SpotifyQueryToolsTest {
         }
         SpotifyQueryTools.getTrackDistance(spotify, redditTrack).also(::println)
         val isExceeded = SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, threshold)
-        isExceeded.shouldBeTrue()
+        expectThat(isExceeded).isTrue()
     }
 
     @Test fun `edit should not match original`() {
@@ -152,7 +158,8 @@ internal class SpotifyQueryToolsTest {
             setName("Adagio For Strings")
         }
         SpotifyQueryTools.getTrackDistance(spotify, redditTrack).also(::println)
-        SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, threshold).shouldBeTrue()
+        val exceedsThreshold = SpotifyQueryTools.exceedsThreshold(spotify, redditTrack, threshold)
+        expectThat(exceedsThreshold).isTrue()
     }
 
     private fun Candidate.toTrack() = track {
@@ -165,7 +172,7 @@ internal class SpotifyQueryToolsTest {
         listOf("Get Free (feat. Amber of Dirty Projectors)" to "Get Free").map { (input, expected) ->
             DynamicTest.dynamicTest(input) {
                 with(SpotifyQueryTools) {
-                    input.fixTitle() shouldBeEqualTo expected
+                    expectThat(input.fixTitle()).isEqualTo(expected)
                 }
             }
         }

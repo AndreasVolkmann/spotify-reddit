@@ -5,13 +5,15 @@ import me.avo.spottit.model.TrackInPlaylist
 import org.slf4j.LoggerFactory
 import java.util.*
 
-object SpotifyPlaylistCalculator {
+class SpotifyPlaylistCalculator(
+    private val tracksInPlaylist: List<Track>
+) {
 
     /**
      * Creates a look up of the index / position of tracks in the playlist.
      * Calling .pop() on the value / list will return the highest index of the track in the playlist
      */
-    fun createIndexLookup(tracksInPlaylist: List<Track>) = tracksInPlaylist
+    fun createIndexLookup(): Map<String, LinkedList<Int>> = tracksInPlaylist
         .mapIndexed { index, track -> track.id to index } // map track id to index
         .groupBy { (id) -> id } // group by
         .mapValues { (_, list) ->
@@ -20,14 +22,10 @@ object SpotifyPlaylistCalculator {
         .mapValues { (_, indices) -> LinkedList(indices) } // create a LinkedList so that we can pop from the stack
 
     fun calculateTracksToRemoveAndAdd(
-        tracksToAdd: List<Track>, maxSize: Int, tracksInPlaylist: List<Track>
+        tracksToAdd: List<Track>, maxSize: Int
     ): Pair<List<TrackInPlaylist>, List<Track>> {
         val idsToAdd = tracksToAdd.map { it.id }
-        val (tracksToRemove, willBeAddedAgain) = calculateToRemoveAndAddAgain(
-            tracksInPlaylist,
-            idsToAdd,
-            maxSize
-        )
+        val (tracksToRemove, willBeAddedAgain) = calculateToRemoveAndAddAgain(idsToAdd, maxSize)
 
         logger.info("${tracksInPlaylist.size} tracks are already in the playlist, ${tracksToRemove.size} tracks will be removed, ${willBeAddedAgain.size} tracks will be added again / kept")
         return tracksToRemove to calculateTracksToAdd(
@@ -39,11 +37,7 @@ object SpotifyPlaylistCalculator {
         )
     }
 
-    fun calculateToRemoveAndAddAgain(
-        tracksInPlaylist: List<Track>,
-        idsToAdd: List<String>,
-        maxSize: Int
-    ): Pair<List<TrackInPlaylist>, List<Track>> {
+    fun calculateToRemoveAndAddAgain(idsToAdd: List<String>, maxSize: Int): Pair<List<TrackInPlaylist>, List<Track>> {
         val (willBeAddedAgain, willBeRemoved) = tracksInPlaylist.partition { idsToAdd.contains(it.id) }
 
         val duplicatesToRemove = willBeAddedAgain
@@ -61,7 +55,7 @@ object SpotifyPlaylistCalculator {
             maxSize
         )
 
-        val indexLookup = SpotifyPlaylistCalculator.createIndexLookup(tracksInPlaylist)
+        val indexLookup = createIndexLookup()
         val tracksInPlaylistToRemove = remove.map { trackToRemove ->
             TrackInPlaylist(
                 track = trackToRemove,
@@ -87,7 +81,7 @@ object SpotifyPlaylistCalculator {
         return remove to addAgain.distinctBy { it.id }
     }
 
-    fun addMaxSizeTracks(tracksToAdd: List<Track>, maxSize: Int): List<Track> {
+    fun getMaxSizeTracks(tracksToAdd: List<Track>, maxSize: Int): List<Track> {
         logger.info("The playlist is currently empty, all found tracks will be added")
         return tracksToAdd.take(maxSize)
     }

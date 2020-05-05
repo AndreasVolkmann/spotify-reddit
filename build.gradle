@@ -1,14 +1,14 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.70'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id "com.github.ben-manes.versions" version "0.28.0"
-    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
 }
 
 ext {
     ktor_version = '1.3.1'
-    spotify_api_vesrion = '4.2.1'
+    spotify_api_vesrion = '4.3.0'
     jrawVersion = '1.1.0'
-    junit_version = '5.6.0'
+    junit_version = '5.6.1'
 }
 
 group 'me.avo'
@@ -34,14 +34,14 @@ dependencies {
 
     /* Util */
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile 'org.kodein.di:kodein-di-generic-jvm:6.5.3'
+    compile 'org.kodein.di:kodein-di-generic-jvm:6.5.5'
     compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
-    compile 'org.yaml:snakeyaml:1.25'
+    compile 'org.yaml:snakeyaml:1.26'
     compile 'com.apurebase:arkenv:3.1.0'
     compile 'org.apache.commons:commons-text:1.8'
 
-    testImplementation "io.strikt:strikt-core:0.24.0"
-    testCompile group: 'org.amshove.kluent', name: 'kluent', version: '1.60'
+    testImplementation "io.strikt:strikt-core:0.26.0"
+    testImplementation "io.mockk:mockk:1.10.0"
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
@@ -58,8 +58,8 @@ test {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }

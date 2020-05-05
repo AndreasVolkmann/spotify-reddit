@@ -17,15 +17,15 @@ internal class DynamicPlaylistServiceTest : TestKodeinAware {
     private val testConfig = getTestConfig()
 
     @Test fun indieheads() {
-        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("indieheads"))
+        dynamicPlaylistService.run(getSinglePlaylist("indieheads"))
     }
 
     @Test fun hardstyle() {
-        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("hardstyle"))
+        dynamicPlaylistService.run(getSinglePlaylist("hardstyle"))
     }
 
     @Test fun electronicmusic() {
-        dynamicPlaylistService.updatePlaylists(getSinglePlaylist("electronicmusic"))
+        dynamicPlaylistService.run(getSinglePlaylist("electronicmusic"))
     }
 
     @Test fun `top all time list`() {
@@ -37,7 +37,7 @@ internal class DynamicPlaylistServiceTest : TestKodeinAware {
                 .copy(id = "492vM7yqKZxqV32jb5UWHf", isPrivate = true, maxSize = 10)
             it.copy(playlists = listOf(playlist))
         }
-        dynamicPlaylistService.updatePlaylists(config)
+        dynamicPlaylistService.run(config)
     }
 
     private fun getSinglePlaylist(name: String) =

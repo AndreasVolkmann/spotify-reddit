@@ -2,15 +2,13 @@ package me.avo.spottit.util
 
 import me.avo.spottit.redditTrack
 import me.avo.spottit.tagFilter
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldEqual
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import strikt.api.expect
 import strikt.api.expectThat
-import strikt.assertions.isNull
+import strikt.assertions.*
 import java.net.URL
 import java.util.*
 
@@ -26,87 +24,106 @@ internal class SubmissionParserTest {
         val spotifyUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
         val otherUrl = URL("https://github.com/AndreasVolkmann/spotify-reddit/issues/19")
 
-        SubmissionParser.isSpotifyUrl(spotifyUrl) shouldBe true
-        SubmissionParser.isSpotifyUrl(otherUrl) shouldBe false
+        expect {
+            that(SubmissionParser.isSpotifyUrl(spotifyUrl)).isTrue()
+            that(SubmissionParser.isSpotifyUrl(otherUrl)).isFalse()
+        }
     }
 
     @Test fun `should identify spotify albums`() {
         val albumUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
         val trackUrl = URL("https://open.spotify.com/track/2t5ePzdyeR5jG1nW65zxce?si=rQspA45BRM63pqAVOJ9FDA")
 
-        SubmissionParser.isSpotifyAlbum(albumUrl) shouldBe true
-        SubmissionParser.isSpotifyAlbum(trackUrl) shouldBe false
+        expect {
+            that(SubmissionParser.isSpotifyAlbum(albumUrl)).isTrue()
+            that(SubmissionParser.isSpotifyAlbum(trackUrl)).isFalse()
+        }
     }
 
     @Test fun `should identify spotify tracks`() {
         val albumUrl = URL("https://open.spotify.com/album/1vWnB0hYmluskQuzxwo25a")
         val trackUrl = URL("https://open.spotify.com/track/2t5ePzdyeR5jG1nW65zxce?si=rQspA45BRM63pqAVOJ9FDA")
 
-        SubmissionParser.isSpotifyTrack(albumUrl) shouldBe false
-        SubmissionParser.isSpotifyTrack(trackUrl) shouldBe true
+        expect {
+            that(SubmissionParser.isSpotifyTrack(albumUrl)).isFalse()
+            that(SubmissionParser.isSpotifyTrack(trackUrl)).isTrue()
+        }
     }
 
     @Test fun `should filter out titles without - in actual title`() {
         val invalid = "Dancing to Justice (r/Gifsound x-post)"
         val valid = pairs.map { it.first }
 
-        SubmissionParser.isValidTrackTitle(invalid) shouldBe false
-        valid.forEach {
-            SubmissionParser.isValidTrackTitle(it) shouldBe true
+        expect {
+            that(SubmissionParser.isValidTrackTitle(invalid)).isFalse()
+            that(valid).all { get { SubmissionParser.isValidTrackTitle(this) }.isTrue() }
         }
     }
 
     @Nested inner class HasValidTag {
 
+        private val trackTags = listOf("test news", "one track")
+
+        private fun includesTag(isExact: Boolean, vararg tags: String) =
+                SubmissionParser.includesTag(trackTags, tags.toList(), isExact)
+
+        private fun excludesTag(isExact: Boolean, tag: String) =
+                SubmissionParser.excludesTag(trackTags, listOf(tag), isExact)
+
         @Test fun `should include`() {
-            val trackTags = listOf("test news", "one track")
-            SubmissionParser.includesTag(trackTags, listOf("one"), false) shouldBe true
-            SubmissionParser.includesTag(trackTags, listOf("two"), false) shouldBe false
+            expect {
+                that(includesTag(false, "one")).isTrue()
+                that(includesTag(false, "two")).isFalse()
+            }
         }
 
         @Test fun `should include exact`() {
-            val trackTags = listOf("test news", "one track")
-            SubmissionParser.includesTag(trackTags, listOf("one track"), true) shouldBe true
-            SubmissionParser.includesTag(trackTags, listOf("test"), true) shouldBe false
+            expect {
+                that(includesTag(true, "one track")).isTrue()
+                that(includesTag(true, "test")).isFalse()
+            }
         }
 
         @Test fun `should exclude`() {
-            val trackTags = listOf("test news", "one track")
-            SubmissionParser.excludesTag(trackTags, listOf("one"), false) shouldBe false
-            SubmissionParser.excludesTag(trackTags, listOf("two"), false) shouldBe true
+            expect {
+                that(excludesTag(false, "one")).isFalse()
+                that(excludesTag(false, "two")).isTrue()
+            }
         }
 
         @Test fun `should exclude exact`() {
-            val trackTags = listOf("test news", "one track")
-            SubmissionParser.excludesTag(trackTags, listOf("one track"), true) shouldBe false
-            SubmissionParser.excludesTag(trackTags, listOf("test"), true) shouldBe true
+            expect {
+                that(excludesTag(true, "one track")).isFalse()
+                that(excludesTag(true, "test")).isTrue()
+            }
         }
-
     }
 
     @Nested inner class FilterTags {
 
         @Test fun `include`() {
-            SubmissionParser.filterTags(
+            val result = SubmissionParser.filterTags(
                 redditTrack("", "", null, listOf("test news", "one track")),
                 tagFilter(include = listOf("one"))
-            ) shouldBe true
+            )
+            expectThat(result).isTrue()
         }
 
         @Test fun `exclude`() {
-            SubmissionParser.filterTags(
+            val result = SubmissionParser.filterTags(
                 redditTrack("", "", null, listOf("test news", "one track")),
                 tagFilter(exclude = listOf("one track"))
-            ) shouldBe false
+            )
+            expectThat(result).isFalse()
         }
-
     }
 
 
     @TestFactory fun parse() = pairs.map { (raw, expected) ->
         val staticDate = Date()
         DynamicTest.dynamicTest(expected.artist) {
-            SubmissionParser.parse(raw, null, "", staticDate) shouldBeEqualTo expected.copy(created = staticDate)
+            val parsed = SubmissionParser.parse(raw, null, "", staticDate)
+            expectThat(parsed).isEqualTo(expected.copy(created = staticDate))
         }
     }
 
