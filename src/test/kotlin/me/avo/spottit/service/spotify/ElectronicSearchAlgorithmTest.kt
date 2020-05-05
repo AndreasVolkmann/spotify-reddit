@@ -1,26 +1,20 @@
-package me.avo.spottit.service
+package me.avo.spottit.service.spotify
 
 import me.avo.spottit.*
-import me.avo.spottit.model.Configuration
 import me.avo.spottit.model.DateFilter
-import me.avo.spottit.model.Playlist
-import me.avo.spottit.service.spotify.ElectronicSearchAlgorithm
-import me.avo.spottit.service.spotify.SpotifyApiServiceImpl
-import me.avo.spottit.service.spotify.SpotifyAuthService
 import me.avo.spottit.util.SubmissionParser.parse
 import me.avo.spottit.util.TrackFilter
 import me.avo.spottit.util.artistString
 import me.avo.spottit.util.parseDateString
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
-import org.kodein.di.generic.factory2
 import org.kodein.di.generic.instance
 import strikt.api.expectThat
+import strikt.assertions.isEqualTo
+import strikt.assertions.isNotNull
 import strikt.assertions.isNull
+import strikt.assertions.isTrue
 import java.net.URL
 import java.util.*
 
@@ -29,11 +23,10 @@ import java.util.*
 internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
 
     private val spotifyAuthService: SpotifyAuthService by instance()
-    private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()
-    private val trackFilter by lazy { getTrackFilter(config, config.playlists.first()) }
     private val config = makeConfig(
         DateFilter(startingFrom = parseDateString("2012-04-04"), maxDistance = null)
     )
+    private val trackFilter by lazy { TrackFilter(config, config.playlists.first()) }
     private val alg by lazy {
         val api = SpotifyApiServiceImpl(spotifyAuthService.getSpotifyApi())
         ElectronicSearchAlgorithm(api, trackFilter)
@@ -48,18 +41,16 @@ internal class ElectronicSearchAlgorithmTest : TestKodeinAware {
             "https://open.spotify.com/track/3DPFmwFtV5ElQaTniLOdgk?si=NScDaJS4RpGzoFn2pzdoGQ"
         ).map(::URL)
         val track = parse("[FRESH] Joy Again - Nobody Knows", null, url, Date())
-        track.isSpotifyTrack shouldBe true
+        expectThat(track).get { isSpotifyTrack }.isTrue()
 
         val tracks = urls.map { redditTrack("", "", url = it) } + track
         val results = alg.searchForTracks(tracks)
+        val result = results.find { it.name == "Nobody Knows (2018)" }
 
-        results
-            .find { it.name == "Nobody Knows (2018)" }
-            .shouldNotBeNull()
-            .also {
-                it.artistString() shouldBeEqualTo "Joy Again"
-                it.id shouldBeEqualTo id
-            }
+        expectThat(result).isNotNull().and {
+            get { artistString() }.isEqualTo("Joy Again")
+            get { id }.isEqualTo(id)
+        }
     }
 
     private val spotifyTrack = track {

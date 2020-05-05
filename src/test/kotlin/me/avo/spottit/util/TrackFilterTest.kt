@@ -10,17 +10,18 @@ import me.avo.spottit.model.*
 import me.avo.spottit.track
 import net.dean.jraw.models.SubredditSort
 import net.dean.jraw.models.TimePeriod
-import org.amshove.kluent.shouldBe
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.TestInstance
-import org.kodein.di.generic.factory2
+import strikt.api.expect
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class TrackFilterTest : TestKodeinAware {
-
-    private val getTrackFilter: (Configuration, Playlist) -> TrackFilter by factory2()
 
     @Test fun `checkTrackLength should calculate correctly`() {
         val configuration = Configuration(listOf(), listOf(), 1, 500, Schedule(null, null))
@@ -31,7 +32,7 @@ internal class TrackFilterTest : TestKodeinAware {
             setDurationMs(999)
         }
 
-        val trackFilter = getTrackFilter(
+        val trackFilter = TrackFilter(
             configuration,
             Playlist(
                 "", 5, "", SubredditSort.CONTROVERSIAL, TimePeriod.ALL, null, false,
@@ -39,8 +40,10 @@ internal class TrackFilterTest : TestKodeinAware {
             )
         )
 
-        trackFilter.checkTrackLength(trackAbove) shouldBe true
-        trackFilter.checkTrackLength(trackBelow) shouldBe false
+        expect {
+            that(trackFilter.checkTrackLength(trackAbove)).isTrue()
+            that(trackFilter.checkTrackLength(trackBelow)).isFalse()
+        }
     }
 
     @TestFactory fun `Dates before 2012-04-04 should return false`(): List<DynamicTest> {
@@ -61,7 +64,8 @@ internal class TrackFilterTest : TestKodeinAware {
         ).map { DynamicTest.dynamicTest("${it.first.releaseDate} should return ${it.second}") { trackFilter.check(it) } }
     }
 
-    private fun TrackFilter.check(pair: Pair<Album, Boolean>) = checkTrackAgeByAlbum(pair.first) shouldBe pair.second
+    private fun TrackFilter.check(pair: Pair<Album, Boolean>) =
+            expectThat(checkTrackAgeByAlbum(pair.first)) isEqualTo  pair.second
 
     private fun makeAlbum(date: String, precision: ReleaseDatePrecision, expectation: Boolean): Pair<Album, Boolean> =
         album {

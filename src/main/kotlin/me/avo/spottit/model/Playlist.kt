@@ -14,4 +14,7 @@ data class Playlist(
     val tagFilter: TagFilter,
     val dateFilter: DateFilter,
     val isPrivate: Boolean
-)
+) {
+
+    override fun toString(): String = "Playlist(id=${id}, subReddit=${subreddit})"
+}

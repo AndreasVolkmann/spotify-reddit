@@ -2,9 +2,11 @@ package me.avo.spottit.util
 
 import me.avo.spottit.makeTracks
 import me.avo.spottit.track
-import org.amshove.kluent.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import strikt.api.expect
+import strikt.api.expectThat
+import strikt.assertions.*
 
 internal class SpotifyPlaylistCalculatorTest {
 
@@ -16,9 +18,9 @@ internal class SpotifyPlaylistCalculatorTest {
             val tracks = makeTracks(3) + track("0")
             val result = SpotifyPlaylistCalculator(tracks).createIndexLookup()
 
-            result["0"].shouldNotBeNull().let {
-                it.pop() shouldBeEqualTo 3 // last index of track with id 0
-                it.pop() shouldBeEqualTo 0 // next index of track with id 0 after removing popping the previous
+            expectThat(result["0"]).isNotNull().and {
+                get { pop() }.isEqualTo(3) // last index of track with id 0
+                get { pop() }.isEqualTo(0) // next index of track with id 0 after removing popping the previous
             }
         }
     }
@@ -32,8 +34,10 @@ internal class SpotifyPlaylistCalculatorTest {
             val (remove, add) = SpotifyPlaylistCalculator(tracksInPlaylist)
                 .calculateTracksToRemoveAndAdd(tracksToAdd, maxSize)
 
-            remove.shouldBeEmpty()
-            add.shouldContainAll(tracksToAdd.takeLast(5))
+            expect {
+                that(remove).isEmpty()
+                that(add).contains(tracksToAdd.takeLast(5))
+            }
         }
 
         @Test fun `should remove duplicates`() {
@@ -45,8 +49,10 @@ internal class SpotifyPlaylistCalculatorTest {
             val (remove, add) = SpotifyPlaylistCalculator(tracksInPlaylist)
                 .calculateTracksToRemoveAndAdd(tracksToAdd, maxSize)
 
-            remove.size shouldBeEqualTo 2
-            add.shouldBeEmpty()
+            expect {
+                that(remove).size.isEqualTo(2)
+                that(add).isEmpty()
+            }
         }
     }
 
@@ -74,19 +80,23 @@ internal class SpotifyPlaylistCalculatorTest {
                 maxSize
             )
 
-            actual.size shouldBeEqualTo maxSize - tracksInPlaylist.size
-
-            actual.map { it.id } shouldContainAll listOf("2", "3")
+            expect {
+                that(actual).size.isEqualTo(maxSize - tracksInPlaylist.size)
+                that(actual.map { it.id }).contains(listOf("2", "3"))
+            }
         }
 
         @Test fun `should return empty list when amountInPlaylist is biggerEqual than maxSize`() {
-            playlistCalculator.calculateTracksToAdd(10, 0, listOf(track { }), listOf(), 5).shouldBeEmpty()
+            val tracksToAdd = playlistCalculator.calculateTracksToAdd(10, 0, listOf(track { }), listOf(), 5)
+            expectThat(tracksToAdd).isEmpty()
         }
 
         @Test fun `should account for removed tracks`() {
             val result = playlistCalculator.calculateTracksToAdd(5, 2, makeTracks(2), listOf(track("0")), 5)
-            result.size shouldBeEqualTo 1
-            result.first().id shouldBeEqualTo "1"
+            expectThat(result) {
+                size.isEqualTo(1)
+                get { first().id }.isEqualTo("1")
+            }
         }
     }
 
@@ -96,14 +106,14 @@ internal class SpotifyPlaylistCalculatorTest {
             val maxSize = 20
             val tracksToAdd = makeTracks(40)
             val result = playlistCalculator.getMaxSizeTracks(tracksToAdd, maxSize)
-            result.size shouldBeLessOrEqualTo maxSize
+            expectThat(result).size.isLessThanOrEqualTo(maxSize)
         }
 
         @Test fun `should return tracksToAdd if there are less than maxSize`() {
             val maxSize = 20
             val tracksToAdd = makeTracks(10)
             val result = playlistCalculator.getMaxSizeTracks(tracksToAdd, maxSize)
-            result.size shouldBeEqualTo tracksToAdd.size
+            expectThat(result).size.isEqualTo(tracksToAdd.size)
         }
     }
 
@@ -123,9 +133,11 @@ internal class SpotifyPlaylistCalculatorTest {
                     maxSize
                 )
 
-            tracksToRemove.size shouldBeEqualTo willBeRemoved.size
-            tracksToRemove shouldContainAll willBeRemoved
-            filteredAddedAgain shouldBeEqualTo willBeAddedAgain
+            expect {
+                that(tracksToRemove).size.isEqualTo(willBeRemoved.size)
+                that(tracksToRemove).contains(willBeRemoved)
+                that(filteredAddedAgain).isEqualTo(willBeAddedAgain)
+            }
         }
 
         @Test fun `when sizeAfterRemoval is greater than maxSize`() {
@@ -134,19 +146,23 @@ internal class SpotifyPlaylistCalculatorTest {
             val willBeRemoved = makeTracks(1, 5)
             val maxSize = 15
 
-            val (tracksToRemove, filteredAddedAgain) =
-                playlistCalculator.calculateTracksToRemove(
+            val (tracksToRemove, filteredAddedAgain) = playlistCalculator.calculateTracksToRemove(
                     currentSize,
                     willBeAddedAgain,
                     willBeRemoved,
                     maxSize
-                )
+            )
 
-            tracksToRemove.size shouldBeEqualTo currentSize - maxSize
-            tracksToRemove shouldContainAll willBeRemoved
-            tracksToRemove shouldContainSome willBeAddedAgain
-            filteredAddedAgain.size shouldBeEqualTo 1
-            filteredAddedAgain shouldBeEqualTo willBeAddedAgain.take(1)
+            expect {
+                that(tracksToRemove) {
+                    size.isEqualTo(currentSize - maxSize)
+                    contains(willBeRemoved)
+                }
+                that(filteredAddedAgain) {
+                    size.isEqualTo(1)
+                    isEqualTo(willBeAddedAgain.take(1))
+                }
+            }
         }
     }
 
@@ -161,12 +177,16 @@ internal class SpotifyPlaylistCalculatorTest {
             val (tracksToRemove, willBeAddedAgain) = SpotifyPlaylistCalculator(tracksInPlaylist)
                 .calculateToRemoveAndAddAgain(idsToAdd, maxSize)
 
-            tracksToRemove.size shouldBeEqualTo 5
-            tracksToRemove.map { it.track.id } shouldContain duplicateId
-
-            willBeAddedAgain.map { it.id }
-            willBeAddedAgain.first().id shouldBeEqualTo duplicateId
-            willBeAddedAgain.size shouldBeEqualTo 1
+            expect {
+                that(tracksToRemove) {
+                    size.isEqualTo(5)
+                    get { map { it.track.id } }.contains(duplicateId)
+                }
+                that(willBeAddedAgain) {
+                    size.isEqualTo(1)
+                    get { first().id }.isEqualTo(duplicateId)
+                }
+            }
         }
     }
 }

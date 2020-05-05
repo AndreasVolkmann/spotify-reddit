@@ -1,9 +1,6 @@
 package me.avo.spottit.config
 
 import com.apurebase.arkenv.parse
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldEqualTo
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo

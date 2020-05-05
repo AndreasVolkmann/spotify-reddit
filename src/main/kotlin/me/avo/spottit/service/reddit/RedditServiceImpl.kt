@@ -34,10 +34,11 @@ class RedditServiceImpl(
         OAuthHelper.automatic(adapter, credentials)
     }
 
-    override var isDone = false
-        private set
+    private var isDone = false
 
-    override fun getTracks(): List<RedditTrack> {
+    override fun isDone(): Boolean = isDone
+
+    override fun getRedditTracks(): List<RedditTrack> {
         val validPosts = mutableListOf<RedditTrack>()
         initializePaginator()
 
@@ -80,9 +81,8 @@ class RedditServiceImpl(
         .filter { track -> SubmissionParser.filterTags(track, playlist.tagFilter) }
         .filterNot(RedditTrack::isSpotifyAlbum) // filter out albums
 
-    override fun update(amountTaken: Int) {
-        logger.info("Adding $amountTaken tracks")
-        currentSize += amountTaken
+    override fun setCurrentSize(size: Int) {
+        currentSize = size
     }
 
     private lateinit var paginator: Paginator<Submission>
