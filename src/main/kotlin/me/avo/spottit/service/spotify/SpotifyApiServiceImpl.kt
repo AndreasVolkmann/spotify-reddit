@@ -5,6 +5,7 @@ import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
 import com.wrapper.spotify.SpotifyApi
 import com.wrapper.spotify.exceptions.detailed.BadGatewayException
+import com.wrapper.spotify.exceptions.detailed.NotFoundException
 import com.wrapper.spotify.exceptions.detailed.ServiceUnavailableException
 import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException
 import com.wrapper.spotify.model_objects.special.SnapshotResult
@@ -19,7 +20,11 @@ import org.slf4j.LoggerFactory
 
 class SpotifyApiServiceImpl(private val spotifyApi: SpotifyApi) : SpotifyApiService, RetrySupport {
 
-    override fun getTrack(id: String): Track? = spotifyApi.getTrack(id).execute()
+    override fun getTrack(id: String): Track? = try {
+        spotifyApi.getTrack(id).execute()
+    } catch (ex: NotFoundException) {
+        null
+    }
 
     override fun getAlbum(id: String): Album = spotifyApi.getAlbum(id).execute()
 
