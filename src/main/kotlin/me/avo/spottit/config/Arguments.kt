@@ -2,6 +2,7 @@ package me.avo.spottit.config
 
 import com.apurebase.arkenv.Arkenv
 import com.apurebase.arkenv.argument
+import me.avo.spottit.exception.InvalidRefreshTokenException
 import java.io.File
 
 object Arguments : Arkenv("Spottit") {
@@ -12,7 +13,6 @@ object Arguments : Arkenv("Spottit") {
 
     val useLists: List<String> by argument {
         description = "When defined will only update lists with the provided comma-separated ids"
-        mapping = { it.split(',') }
         defaultValue = ::emptyList
     }
 
@@ -33,18 +33,19 @@ object Arguments : Arkenv("Spottit") {
         mapping = ::File
     }
 
-    val refreshToken: String by argument {
-        defaultValue = { refreshTokenFile.readText().trim() }
-    }
-
     val editDistance: Int by argument()
-
     val spotifyClientId: String by argument()
     val spotifyClientSecret: String by argument()
     val redirectUri: String by argument()
-
     val redditClientId: String by argument()
     val redditClientSecret: String by argument()
     val deviceName: String by argument()
     val redditMaxPage: Int by argument()
+
+    private val refreshTokenArg: String? by argument("--refresh-token", "-rt")
+
+    fun getRefreshToken(): String {
+        return if (refreshTokenFile.exists()) refreshTokenFile.readText().trim()
+        else refreshTokenArg ?: throw InvalidRefreshTokenException()
+    }
 }
