@@ -5,6 +5,7 @@ import me.avo.spottit.model.Playlist
 import me.avo.spottit.server.Server
 import me.avo.spottit.service.AuthorizationService
 import me.avo.spottit.util.openUrlInBrowser
+import kotlin.concurrent.thread
 
 class ManualAuthService(
     private val spotifyAuthService: SpotifyAuthService,
@@ -12,18 +13,21 @@ class ManualAuthService(
 ) : AuthorizationService {
 
     override fun authorize(configuration: Configuration) {
-        val scopes = getRequiredScopes(configuration)
-        val uri = spotifyAuthService.getRedirectUri(scopes).toString()
-        val server = server.prepareServer().start(wait = false)
-
-        try {
+        thread {
+            val uri = getUri(configuration)
+            println("Loading ...")
+            Thread.sleep(3_000)
+            println("Opening Spotify auth page")
+            Thread.sleep(500)
             openUrlInBrowser(uri)
-        } finally {
-            Thread.sleep(5000)
-            val timeout = 2000L
-            println("Shutting down server in $timeout ms")
-            server.stop(timeout, timeout)
         }
+        println("Press ctrl+c to shut down.")
+        server.prepareServer().start(wait = true)
+    }
+
+    private fun getUri(configuration: Configuration): String {
+        val scopes = getRequiredScopes(configuration)
+        return spotifyAuthService.getRedirectUri(scopes).toString()
     }
 
     override fun getRequiredScopes(configuration: Configuration): Iterable<String> {
