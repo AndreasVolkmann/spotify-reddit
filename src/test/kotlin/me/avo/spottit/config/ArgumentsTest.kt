@@ -24,4 +24,9 @@ internal class ArgumentsTest {
     @Test fun `manual auth should not require refresh token`() {
         Arguments.parse(arrayOf("-c", configPath, "-ma", "--refreshTokenFile", "does_not_exist"))
     }
+
+    @Test fun `refresh token by cli`() {
+        Arguments.parse(arrayOf("-c", configPath, "-ma", "--refreshTokenFile", "does_not_exist", "--refreshToken", "a"))
+        expectThat(Arguments.getRefreshToken()) isEqualTo "a"
+    }
 }

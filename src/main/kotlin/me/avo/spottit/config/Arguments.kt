@@ -33,21 +33,19 @@ object Arguments : Arkenv("Spottit") {
         mapping = ::File
     }
 
-    private val refreshTokenArg: String? by argument {
-        defaultValue = refreshTokenFile.readText()::trim
-    }
-
     val editDistance: Int by argument()
-
     val spotifyClientId: String by argument()
-
     val spotifyClientSecret: String by argument()
     val redirectUri: String by argument()
     val redditClientId: String by argument()
-
     val redditClientSecret: String by argument()
     val deviceName: String by argument()
     val redditMaxPage: Int by argument()
 
-    fun getRefreshToken(): String = refreshTokenArg ?: throw InvalidRefreshTokenException()
+    private val refreshTokenArg: String? by argument("--refresh-token", "-rt")
+
+    fun getRefreshToken(): String {
+        return if (refreshTokenFile.exists()) refreshTokenFile.readText().trim()
+        else refreshTokenArg ?: throw InvalidRefreshTokenException()
+    }
 }
