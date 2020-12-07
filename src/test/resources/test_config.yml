@@ -1,17 +1,17 @@
 playlists:
   - id: 6cQk28LM0k3ogiCNEH0d9e # reddit test
-    maxSize: 10
+    maxSize: 6
     subreddit: indieheads
     sort: TOP
     timePeriod: MONTH
-    minUpvotes: 5
+    minUpvotes: 4
     isStrictMix: true
     tagFilter:
       includeExact:
         - FRESH
 
   - id: 492vM7yqKZxqV32jb5UWHf # private spottit
-    maxSize: 20
+    maxSize: 4
     subreddit: hardstyle
     sort: TOP
     timePeriod: MONTH
@@ -19,7 +19,7 @@ playlists:
     isPrivate: true
 
   - id: 5oCt1rrIqdJhvTzBN6LN2a # private spottit #2
-    maxSize: 10
+    maxSize: 5
     subreddit: electronicmusic
     sort: TOP
     timePeriod: ALL

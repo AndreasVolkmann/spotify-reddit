@@ -24,7 +24,7 @@ val prodKodein = Kodein {
         )
     }
 
-    bind() from singleton { Server(instance(), instance()) }
+    bind() from singleton { Server(instance()) }
 
     bind() from singleton {
         ManualAuthService(instance(), instance())

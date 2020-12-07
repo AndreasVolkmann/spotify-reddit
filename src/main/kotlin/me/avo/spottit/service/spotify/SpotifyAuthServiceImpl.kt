@@ -5,7 +5,6 @@ import com.wrapper.spotify.SpotifyHttpManager
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import me.avo.spottit.config.Arguments
 import me.avo.spottit.util.RetrySupport
-import org.kodein.di.generic.instance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -28,7 +27,7 @@ class SpotifyAuthServiceImpl(
         val auth = SpotifyApi.Builder()
             .setClientId(clientId)
             .setClientSecret(clientSecret)
-            .setRefreshToken(Arguments.refreshToken)
+            .setRefreshToken(getRefreshToken())
             .build()
             .authorizationCodeRefresh()
             .execute()
@@ -43,7 +42,7 @@ class SpotifyAuthServiceImpl(
     private fun updateCredentials(auth: AuthorizationCodeCredentials) {
         accessToken = auth.accessToken
         expiresInSeconds = auth.expiresIn
-        refreshToken = auth.refreshToken ?: Arguments.refreshToken
+        refreshToken = auth.refreshToken ?: getRefreshToken()
         isInitialized = true
     }
 
@@ -63,7 +62,9 @@ class SpotifyAuthServiceImpl(
         .setClientId(clientId)
         .setClientSecret(clientSecret)
         .setRedirectUri(SpotifyHttpManager.makeUri(redirectUri))
-        .build()!!
+        .build()
+
+    private fun getRefreshToken(): String = Arguments.getRefreshToken()
 
     override val logger: Logger = LoggerFactory.getLogger(this::class.java)
 }
