@@ -4,14 +4,10 @@ import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
 import com.wrapper.spotify.SpotifyApi
-import com.wrapper.spotify.exceptions.detailed.BadGatewayException
-import com.wrapper.spotify.exceptions.detailed.NotFoundException
-import com.wrapper.spotify.exceptions.detailed.ServiceUnavailableException
-import com.wrapper.spotify.exceptions.detailed.TooManyRequestsException
+import com.wrapper.spotify.exceptions.detailed.*
 import com.wrapper.spotify.model_objects.special.SnapshotResult
 import com.wrapper.spotify.model_objects.specification.Album
 import com.wrapper.spotify.model_objects.specification.Paging
-import com.wrapper.spotify.model_objects.specification.PlaylistTrack
 import com.wrapper.spotify.model_objects.specification.Track
 import me.avo.spottit.model.TrackInPlaylist
 import me.avo.spottit.util.RetrySupport
@@ -23,6 +19,8 @@ class SpotifyApiServiceImpl(private val spotifyApi: SpotifyApi) : SpotifyApiServ
     override fun getTrack(id: String): Track? = try {
         spotifyApi.getTrack(id).execute()
     } catch (ex: NotFoundException) {
+        null
+    } catch (ex: BadRequestException) {
         null
     }
 
