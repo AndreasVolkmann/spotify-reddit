@@ -1,6 +1,7 @@
 package me.avo.spottit.service.spotify
 
 import com.wrapper.spotify.model_objects.specification.Track
+import me.avo.spottit.data.TrackResult
 import me.avo.spottit.model.RedditTrack
 import me.avo.spottit.util.SpotifyQueryTools
 import me.avo.spottit.util.TrackFilter
@@ -13,7 +14,7 @@ class ElectronicSearchAlgorithm(
 
     override fun searchForTracks(tracks: List<RedditTrack>): List<Track> = tracks
         .asSequence()
-        .map(::findTrack)
+        .map(::tryFindTrack)
         .mapNotNull { (reddit, chosenTrack, total) ->
             logger.info("Found $total results for: $reddit | ${chosenTrack?.artists?.joinToString { it.name }} - ${chosenTrack?.name}")
             chosenTrack
@@ -21,18 +22,25 @@ class ElectronicSearchAlgorithm(
         .onEach { trackFilter.timeout() }
         .toList()
 
-    private fun findTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> = when {
+    private fun tryFindTrack(track: RedditTrack): TrackResult = try {
+        findTrack(track)
+    } catch (ex: Exception) {
+        logger.warn("Exception finding track $track", ex)
+        TrackResult(track, null, 0)
+    }
+
+    private fun findTrack(track: RedditTrack): TrackResult = when {
         track.isSpotifyTrack -> getTrack(track)
         else -> searchForTrack(track)
     }
 
-    private fun getTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> {
+    private fun getTrack(track: RedditTrack): TrackResult {
         val id = track.url!!.toString().substringAfter("/track/").substringBefore("?")
         val spotifyTrack = spotifyApi.getTrack(id)
-        return Triple(track, spotifyTrack, if (spotifyTrack != null) 1 else 0)
+        return TrackResult(track, spotifyTrack, if (spotifyTrack != null) 1 else 0)
     }
 
-    private fun searchForTrack(track: RedditTrack): Triple<RedditTrack, Track?, Int> =
+    private fun searchForTrack(track: RedditTrack): TrackResult =
         SpotifyQueryTools.initialQuery(track, useTags = true)
             .let(::searchQuery)
             .let { (total, items) ->
@@ -42,7 +50,7 @@ class ElectronicSearchAlgorithm(
                         if (trackFilter.checkTrackAgeByAlbum(album)) it else null
                     } else it
                 }
-                Triple(track, chosenTrack, total)
+                TrackResult(track, chosenTrack, total)
             }
 
     private fun searchQuery(query: String): Pair<Int, Array<Track>> {

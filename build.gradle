@@ -1,7 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
     id "com.github.ben-manes.versions" version "0.36.0"
-    id 'org.springframework.boot' version '2.4.0'
+    id 'org.springframework.boot' version '2.4.2'
 }
 
 ext {
@@ -40,8 +40,8 @@ dependencies {
     compile 'com.apurebase:arkenv:3.1.0'
     compile 'org.apache.commons:commons-text:1.9'
 
-    testImplementation "io.strikt:strikt-core:0.28.1"
-    testImplementation "io.mockk:mockk:1.10.3"
+    testImplementation "io.strikt:strikt-core:0.28.2"
+    testImplementation "io.mockk:mockk:1.10.6"
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit_version
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
@@ -58,9 +58,8 @@ test {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
     kotlinOptions.useIR = true
-
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "13"
