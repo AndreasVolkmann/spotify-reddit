@@ -47,20 +47,30 @@ playlists:
 
 # When a reddit post has any of the following flairs, it will be excluded
 flairsToExclude:
-- Mix
-- Liveset
-- Radio
-- Show
-- Album
-- Upcoming
-- AMA
-- Concluded
-- RIP
-- Discussion
-- Meme
-- Other
-- News
-- Video
+  - Mix
+  - Liveset
+  - Radio
+  - Show
+  - Album
+  - Upcoming
+  - AMA
+  - Concluded
+  - RIP
+  - Discussion
+  - Photos
+  - Photo
+  - News
+  - Article
+  - Satire
+  - Official AMA
+  - Misleading
+  - Twitter
+  - Meme
+  - Other
+  - Question
+  - Podcast
+  - Production
+  - Unreleased
 
 # minimum length of tracks in seconds in order to be added to the playlists
 minimumLength: 100
