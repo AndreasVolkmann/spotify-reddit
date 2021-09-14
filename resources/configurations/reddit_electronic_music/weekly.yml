@@ -61,6 +61,7 @@ flairsToExclude:
   - RIP
   - Discussion
   - Photos
+  - Photo
   - News
   - Article
   - Satire
@@ -69,5 +70,9 @@ flairsToExclude:
   - Twitter
   - Meme
   - Other
+  - Question
+  - Podcast
+  - Production
+  - Unreleased
 
 minimumLength: 100
